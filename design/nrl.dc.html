@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#05080d;font-family:'Barlow',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
+[data-sc]{scrollbar-width:none;-ms-overflow-style:none}
+[data-sc]::-webkit-scrollbar{display:none;width:0;height:0}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+</style>
+</helmet>
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%,#12233a 0%,#0a1119 45%,#05080d 100%);display:flex;align-items:center;justify-content:center;padding:28px 16px;font-family:'Barlow',system-ui,sans-serif">
+<div style="width:402px;height:864px;flex:none;background:#04070c;border-radius:56px;padding:11px;box-shadow:0 40px 90px -20px rgba(0,0,0,.8),0 0 0 2px #1a2530,inset 0 0 0 1px rgba(255,255,255,.04);position:relative">
+<div style="position:relative;width:100%;height:100%;background:#0a1420;border-radius:45px;overflow:hidden;display:flex;flex-direction:column">
+
+<div style="height:50px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;position:relative;z-index:8;color:#fff">
+<div style="font:600 15px/1 'Barlow';letter-spacing:.4px">9:41</div>
+<div style="position:absolute;left:50%;top:10px;transform:translateX(-50%);width:98px;height:30px;background:#000;border-radius:16px"></div>
+<div style="display:flex;gap:7px;align-items:center">
+<svg width="18" height="13" viewBox="0 0 18 13" fill="#fff"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="8" rx="1"/><rect x="10" y="2.5" width="3" height="10.5" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1" opacity=".4"/></svg>
+<svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M8.5 3.4c2.2 0 4.2.85 5.7 2.25M8.5 3.4C6.3 3.4 4.3 4.25 2.8 5.65M8.5 8.2c.9 0 1.75.35 2.4.95M8.5 8.2c-.9 0-1.75.35-2.4.95" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="11.4" r="1.2" fill="#fff"/></svg>
+<svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="21" height="11" rx="3" stroke="#fff" stroke-opacity=".5" stroke-width="1.2"/><rect x="2.6" y="2.6" width="16" height="7.8" rx="1.6" fill="#fff"/><rect x="23.4" y="4.2" width="1.6" height="4.6" rx=".8" fill="#fff" fill-opacity=".5"/></svg>
+</div>
+</div>
+
+<div style="flex:none;min-height:50px;display:flex;align-items:center;justify-content:space-between;padding:4px 15px 11px;position:relative;z-index:7;gap:10px">
+<div style="display:flex;align-items:center;gap:9px;min-width:0">
+<sc-if value="{{ showBack }}"><button onClick="{{ back }}" aria-label="Back" style="width:34px;height:34px;flex:none;border-radius:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);display:grid;place-items:center;color:#dbe6f2;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></sc-if>
+<sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}"><img src="assets/nrl.png" alt="NRL" style="width:31px;height:31px;flex:none;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))"/></sc-if>
+<div style="font:800 21px/1.35 'Saira Condensed';letter-spacing:.6px;color:#fff;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ title }}</div>
+</div>
+<button onClick="{{ openNotifs }}" aria-label="Notifications" style="position:relative;width:36px;height:36px;flex:none;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);display:grid;place-items:center;color:#dbe6f2;cursor:pointer">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.2 7.5-2.2 7.5h16.4S18 14.5 18 8.5"/><path d="M10.2 20a2.1 2.1 0 0 0 3.6 0"/></svg>
+<sc-if value="{{ hasUnread }}"><span style="position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#f5822d;color:#1a0d02;font:800 10px/1 'Barlow';display:grid;place-items:center;border:2px solid #0a1420">{{ unreadCount }}</span></sc-if>
+</button>
+</div>
+
+<div data-sc ref="{{ setScrollRef }}" style="flex:1;overflow-y:auto;overflow-x:hidden;position:relative">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div style="padding-bottom:112px">
+<div style="position:relative;margin:12px 14px 2px;border-radius:24px;overflow:hidden;background:linear-gradient(152deg,#14344f 0%,#0c2138 52%,#161f2e 100%);border:1px solid rgba(255,255,255,.09)">
+<div style="position:absolute;inset:0;background:radial-gradient(120% 95% at 82% 6%,rgba(245,130,45,.32),transparent 52%),radial-gradient(95% 85% at 6% 96%,rgba(41,160,234,.30),transparent 58%)"></div>
+<div style="position:relative;padding:18px">
+<div style="display:flex;align-items:center;gap:11px">
+<img src="assets/nrl.png" alt="NRL crest" style="width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 5px 12px rgba(0,0,0,.55))"/>
+<div style="min-width:0"><div style="font:700 11px/1.1 'Barlow';letter-spacing:2.4px;color:#9fc4e6">NATIONAL ROCKET LEAGUE</div><div style="font:800 17px/1 'Saira Condensed';letter-spacing:.6px;color:#fff;margin-top:5px">SEASON III</div></div>
+<div style="margin-left:auto;font:700 10px/1 'Barlow';letter-spacing:1.6px;color:#ffce8a;background:rgba(245,130,45,.16);border:1px solid rgba(245,130,45,.42);padding:6px 10px;border-radius:20px;white-space:nowrap">OFF-SEASON</div>
+</div>
+<div style="margin-top:18px;font:600 10.5px/1 'Barlow';letter-spacing:2px;color:#8ea9c6;text-transform:uppercase">Season 3 kicks off in</div>
+<div style="display:flex;gap:7px;margin-top:10px">
+<div style="flex:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:11px 0;text-align:center"><div style="font:800 27px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.d }}</div><div style="font:700 8.5px/1 'Barlow';letter-spacing:1.4px;color:#7f96b0;margin-top:5px">DAYS</div></div>
+<div style="flex:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:11px 0;text-align:center"><div style="font:800 27px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.h }}</div><div style="font:700 8.5px/1 'Barlow';letter-spacing:1.4px;color:#7f96b0;margin-top:5px">HRS</div></div>
+<div style="flex:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:11px 0;text-align:center"><div style="font:800 27px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.m }}</div><div style="font:700 8.5px/1 'Barlow';letter-spacing:1.4px;color:#7f96b0;margin-top:5px">MIN</div></div>
+</div>
+<button onClick="{{ navMoves }}" style="margin-top:17px;width:100%;border:none;cursor:pointer;background:linear-gradient(135deg,#1c93da,#37a9ec);color:#03121e;font:800 13px/1 'Saira Condensed';letter-spacing:1.2px;text-transform:uppercase;padding:14px;border-radius:13px;box-shadow:0 8px 20px -6px rgba(41,160,234,.6)">View Player Moves</button>
+</div>
+</div>
+
+<div style="margin:24px 18px 11px;font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Hall of Champions</div>
+<div style="display:flex;gap:11px;padding:0 14px">
+<div style="flex:1;background:radial-gradient(120% 100% at 50% 0%,#132638,#0c1826);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:13px 10px 12px;text-align:center">
+<img src="assets/champ1.png" alt="Season 1 champion" style="width:100%;max-width:78px;aspect-ratio:1;object-fit:contain;margin:0 auto;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))"/>
+<div style="font:700 9.5px/1 'Barlow';letter-spacing:1.3px;color:#8ea9c6;margin-top:9px">{{ champ1.label }}</div>
+<sc-if value="{{ champ1.hasChamp }}"><div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:7px"><div style="width:19px;height:19px;flex:none"><dc-import name="TeamBadge" t="{{ champ1.champTeam }}" fs="8px" radius="6px" style="width:19px;height:19px" hint-size="19px,19px"></dc-import></div><div style="font:700 12px/1 'Saira Condensed';letter-spacing:.4px;color:#fff;text-transform:uppercase">{{ champ1.champName }}</div></div></sc-if>
+</div>
+<div style="flex:1;background:radial-gradient(120% 100% at 50% 0%,#132638,#0c1826);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:13px 10px 12px;text-align:center">
+<img src="assets/champ2.png" alt="Season 2 champion" style="width:100%;max-width:78px;aspect-ratio:1;object-fit:contain;margin:0 auto;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))"/>
+<div style="font:700 9.5px/1 'Barlow';letter-spacing:1.3px;color:#8ea9c6;margin-top:9px">{{ champ2.label }}</div>
+<sc-if value="{{ champ2.hasChamp }}"><div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:7px"><div style="width:19px;height:19px;flex:none"><dc-import name="TeamBadge" t="{{ champ2.champTeam }}" fs="8px" radius="6px" style="width:19px;height:19px" hint-size="19px,19px"></dc-import></div><div style="font:700 12px/1 'Saira Condensed';letter-spacing:.4px;color:#fff;text-transform:uppercase">{{ champ2.champName }}</div></div></sc-if>
+</div>
+<div style="flex:1;background:radial-gradient(120% 100% at 50% 0%,#132638,#0c1826);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:13px 10px 12px;text-align:center">
+<img src="assets/champ3.png" alt="Season 3" style="width:100%;max-width:78px;aspect-ratio:1;object-fit:contain;margin:0 auto;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))"/>
+<div style="font:700 9.5px/1 'Barlow';letter-spacing:1.3px;color:#8ea9c6;margin-top:9px">{{ champ3.label }}</div>
+<div style="margin-top:7px;font:700 9px/1 'Barlow';letter-spacing:1.2px;color:#5fd0ff;background:rgba(41,160,234,.14);border-radius:20px;padding:5px 0">UP NEXT</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
+<div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Playoff Picture · S2</div>
+<button onClick="{{ navStandings }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">Standings <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+<div style="display:flex;gap:11px;padding:0 14px">
+<sc-for list="{{ confPreview }}" as="cf" hint-placeholder-count="2">
+<div style="flex:1;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 12px 6px">
+<div style="font:700 10px/1 'Barlow';letter-spacing:1.4px;color:{{ cf.color }};text-transform:uppercase;margin-bottom:8px">{{ cf.name }}</div>
+<sc-for list="{{ cf.rows }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.05)">
+<span style="font:800 12px/1 'Saira Condensed';color:{{ r.seedCol }};width:12px;font-variant-numeric:tabular-nums">{{ r.rank }}</span>
+<div style="width:24px;height:24px;flex:none"><dc-import name="TeamBadge" t="{{ r }}" fs="9px" radius="7px" style="width:24px;height:24px" hint-size="24px,24px"></dc-import></div>
+<span style="flex:1;font:700 13px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.abbr }}</span>
+<span style="font:700 11px/1 'Barlow';color:#b9c9da;font-variant-numeric:tabular-nums">{{ r.rec }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
+<div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Latest Moves</div>
+<button onClick="{{ navMoves }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">All <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ latestMoves }}" as="m" hint-placeholder-count="3">
+<button onClick="{{ navMoves }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;text-align:left;cursor:pointer">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:{{ m.tint }};display:grid;place-items:center"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ m.color }}">{{ m.badge }}</span></div>
+<div style="flex:1;min-width:0"><div style="font:700 13px/1.25 'Barlow';color:#eef4fb">{{ m.title }}</div><div style="font:600 10px/1 'Barlow';color:#647c96;margin-top:4px">{{ m.when }}</div></div>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTeams }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 14px 12px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ teamSegs }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:1px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+<sc-if value="{{ teamViewTeams }}">
+<sc-for list="{{ confList }}" as="cf" hint-placeholder-count="2">
+<div style="margin:6px 18px 10px;display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:{{ cf.color }}"></span><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">{{ cf.name }} Conference</span></div>
+<div style="margin:0 14px 6px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ cf.rows }}" as="t" hint-placeholder-count="5">
+<button onClick="{{ t.open }}" style="display:flex;align-items:center;gap:13px;width:100%;padding:13px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-left:4px solid {{ t.c }};border-radius:15px;text-align:left;cursor:pointer">
+<div style="width:46px;height:46px;flex:none"><dc-import name="TeamBadge" t="{{ t }}" fs="15px" radius="13px" style="width:46px;height:46px" hint-size="46px,46px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 18px/1 'Saira Condensed';letter-spacing:.5px;color:#eef4fb;text-transform:uppercase">{{ t.name }}</div></div>
+<div style="text-align:right"><div style="font:700 16px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ t.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#5f758f;margin-top:5px">S2</div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</sc-for>
+</sc-if>
+<sc-if value="{{ teamViewPlayers }}">
+<div style="margin:0 14px 12px;display:flex;align-items:center;gap:9px;background:#0f1e2d;border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:0 12px;height:44px">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#647c96" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+<input value="{{ pq }}" onChange="{{ onPQ }}" placeholder="Search players" style="flex:1;background:none;border:none;outline:none;color:#eef4fb;font:500 14px 'Barlow'"/>
+<sc-if value="{{ pq }}"><button onClick="{{ clearPQ }}" style="background:none;border:none;cursor:pointer;padding:2px;display:grid;place-items:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></sc-if>
+</div>
+<div style="margin:0 18px 8px;font:600 11px/1 'Barlow';color:#647c96">{{ playerCount }} players across 10 teams</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ playerList }}" as="p" hint-placeholder-count="8">
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
+<div style="width:36px;height:36px;flex:none"><dc-import name="TeamBadge" t="{{ p.team }}" fs="11px" radius="10px" style="width:36px;height:36px" hint-size="36px,36px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ p.n }}</div><div style="font:500 10.5px/1 'Barlow';color:#7089a2;margin-top:4px">{{ p.team.name }} · {{ p.roleLabel }}</div></div>
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:{{ p.userCol }};background:{{ p.userTint }};padding:5px 8px;border-radius:6px">{{ p.u }}</span>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ playerEmpty }}"><div style="text-align:center;font:500 13px/1.5 'Barlow';color:#647c96;margin:24px 24px 0">No players match your search.</div></sc-if>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTeam }}">
+<div style="padding-bottom:112px">
+<div style="position:relative;overflow:hidden;padding:6px 18px 18px">
+<div style="position:absolute;inset:0;background:linear-gradient(155deg,{{ td.c }} -20%,transparent 62%);opacity:.20"></div>
+<div style="position:absolute;top:-40px;right:-30px;width:150px;height:150px;border-radius:50%;background:{{ td.c }};opacity:.12;filter:blur(22px)"></div>
+<div style="position:relative;display:flex;align-items:center;gap:15px">
+<div style="width:74px;height:74px;flex:none"><dc-import name="TeamBadge" t="{{ td }}" fs="24px" radius="20px" style="width:74px;height:74px" hint-size="74px,74px"></dc-import></div>
+<div style="min-width:0"><div style="font:600 11px/1 'Barlow';letter-spacing:1.6px;color:#9fb2c8;text-transform:uppercase">{{ td.confName }} Conference</div><div style="font:800 30px/1 'Saira Condensed';letter-spacing:.5px;color:#fff;text-transform:uppercase;margin-top:5px">{{ td.name }}</div>
+<div style="display:flex;align-items:center;gap:10px;margin-top:9px"><span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:#0a1420;background:#eef4fb;padding:4px 8px;border-radius:6px">#{{ td.rank }} {{ td.confAbbr }}</span><span style="font:700 13px/1 'Saira Condensed';color:#cdd8e4;font-variant-numeric:tabular-nums">{{ td.rec }} · S2</span></div></div>
+</div>
+<button onClick="{{ follow }}" style="position:relative;margin-top:16px;width:100%;border:1px solid rgba(255,255,255,.14);cursor:pointer;background:rgba(255,255,255,.06);color:#eef4fb;font:700 12px 'Saira Condensed';letter-spacing:1.4px;text-transform:uppercase;padding:12px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:7px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Follow Team</button>
+</div>
+<div style="margin:2px 14px 0;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ td.tdTabs }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:1px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+
+<sc-if value="{{ tdOverview }}">
+<div style="padding:14px 14px 0">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 8px;text-align:center"><div style="font:800 24px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ td.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-top:6px">S2 RECORD</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 8px;text-align:center"><div style="font:800 24px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">#{{ td.rank }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-top:6px">{{ td.confAbbr }} SEED</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 8px;text-align:center"><div style="font:800 24px/1 'Saira Condensed';color:#f2c14e;font-variant-numeric:tabular-nums">{{ td.rings }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-top:6px">TITLES</div></div>
+</div>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Recent Games · S2</div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<sc-for list="{{ td.games }}" as="g" hint-placeholder-count="3">
+<button onClick="{{ g.open }}" style="display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#647c96;width:34px">{{ g.round }}</span>
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ g.A }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div><span style="flex:1;font:700 14px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.A.abbr }}</span><span style="font:800 15px/1 'Saira Condensed';color:{{ g.saCol }};font-variant-numeric:tabular-nums">{{ g.sa }}</span></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ g.B }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div><span style="flex:1;font:700 14px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.B.abbr }}</span><span style="font:800 15px/1 'Saira Condensed';color:{{ g.sbCol }};font-variant-numeric:tabular-nums">{{ g.sb }}</span></div></div>
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ tdRoster }}">
+<div style="padding:14px 14px 0">
+<sc-for list="{{ td.rosterGroups }}" as="grp" hint-placeholder-count="2">
+<div style="margin:0 4px 9px;display:flex;align-items:center;gap:8px"><span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:{{ grp.col }};background:{{ grp.tint }};padding:5px 9px;border-radius:6px">{{ grp.user }}</span><span style="font:700 11px/1 'Saira Condensed';letter-spacing:1px;color:#9fb2c8;text-transform:uppercase">Squad</span></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;margin-bottom:16px">
+<sc-for list="{{ grp.players }}" as="p" hint-placeholder-count="2">
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
+<span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ p.roleCol }};background:{{ p.roleTint }};padding:5px 7px;border-radius:6px;width:54px;text-align:center">{{ p.roleLabel }}</span>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ p.n }}</div><div style="font:500 10px/1 'Barlow';color:#647c96;margin-top:4px">{{ p.o }}</div></div>
+<sc-if value="{{ p.flag }}"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ p.flagCol }};background:{{ p.flagTint }};padding:5px 7px;border-radius:6px">{{ p.flag }}</span></sc-if>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</sc-for>
+<div style="margin:0 4px 9px;font:700 11px/1 'Saira Condensed';letter-spacing:1px;color:#9fb2c8;text-transform:uppercase">Coaching Staff</div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<sc-for list="{{ td.staff }}" as="co" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-top:1px solid rgba(255,255,255,.05)">
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#9fb2c8;background:rgba(255,255,255,.06);padding:6px 8px;border-radius:6px;width:40px;text-align:center">{{ co.role }}</span>
+<div style="flex:1;font:700 15px/1.1 'Barlow';color:#eef4fb">{{ co.n }}</div>
+<span style="font:600 10px/1 'Barlow';color:#647c96">{{ co.roleLabel }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ tdSchedule }}">
+<div style="padding:14px 14px 0">
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:0 4px 10px">Season 2 · Games</div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<sc-for list="{{ td.games }}" as="g" hint-placeholder-count="5">
+<button onClick="{{ g.open }}" style="display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#647c96;width:34px">{{ g.round }}</span>
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ g.A }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div><span style="flex:1;font:700 14px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.A.abbr }}</span><span style="font:800 15px/1 'Saira Condensed';color:{{ g.saCol }};font-variant-numeric:tabular-nums">{{ g.sa }}</span></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ g.B }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div><span style="flex:1;font:700 14px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.B.abbr }}</span><span style="font:800 15px/1 'Saira Condensed';color:{{ g.sbCol }};font-variant-numeric:tabular-nums">{{ g.sb }}</span></div></div>
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPlayer }}">
+<div style="padding-bottom:112px">
+<div style="position:relative;overflow:hidden;text-align:center;padding:10px 18px 20px">
+<div style="position:absolute;inset:0;background:linear-gradient(160deg,{{ pd.team.c }} -20%,transparent 60%);opacity:.18"></div>
+<div style="position:relative">
+<div style="width:84px;height:84px;margin:2px auto 0;border-radius:24px;overflow:hidden;display:inline-block"><dc-import name="TeamBadge" t="{{ pd.team }}" fs="30px" radius="24px" style="width:84px;height:84px" hint-size="84px,84px"></dc-import></div>
+<div style="font:800 26px/1 'Saira Condensed';color:#fff;margin-top:13px;letter-spacing:.5px;text-transform:uppercase">{{ pd.n }}</div>
+<div style="display:inline-flex;align-items:center;gap:8px;margin-top:11px">
+<span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:{{ pd.userCol }};background:{{ pd.userTint }};padding:6px 10px;border-radius:20px">{{ pd.userName }}</span>
+<span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:#cdd8e4;background:rgba(255,255,255,.07);padding:6px 10px;border-radius:20px">{{ pd.roleLabel }}</span>
+<sc-if value="{{ pd.flag }}"><span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:{{ pd.flagCol }};background:{{ pd.flagTint }};padding:6px 10px;border-radius:20px">{{ pd.flag }}</span></sc-if>
+</div>
+</div>
+</div>
+<div style="margin:2px 14px 0;display:flex;flex-direction:column;gap:9px">
+<button onClick="{{ pd.openTeam }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;text-align:left;cursor:pointer">
+<div style="width:34px;height:34px;flex:none"><dc-import name="TeamBadge" t="{{ pd.team }}" fs="11px" radius="10px" style="width:34px;height:34px" hint-size="34px,34px"></dc-import></div>
+<div style="flex:1"><div style="font:700 15px/1.1 'Saira Condensed';letter-spacing:.4px;color:#eef4fb;text-transform:uppercase">{{ pd.team.name }}</div><div style="font:500 10px/1 'Barlow';color:#647c96;margin-top:4px">{{ pd.team.confName }} Conference</div></div>
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+<div style="display:flex;gap:9px">
+<div style="flex:1;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px"><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96">ORIGIN</div><div style="font:700 13px/1.2 'Barlow';color:#eef4fb;margin-top:7px">{{ pd.o }}</div></div>
+<div style="flex:1;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px"><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96">CONTROLLED BY</div><div style="font:700 13px/1.2 'Barlow';color:#eef4fb;margin-top:7px">{{ pd.userName }}</div></div>
+</div>
+<sc-if value="{{ pd.hasAwards }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px">
+<div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-bottom:10px">ACCOLADES</div>
+<div style="display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ pd.aw }}" as="a" hint-placeholder-count="2"><span style="font:700 10px/1 'Barlow';letter-spacing:.3px;color:#f2c14e;background:rgba(242,193,78,.13);border:1px solid rgba(242,193,78,.28);padding:6px 10px;border-radius:8px">{{ a }}</span></sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ pd.hasStats }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-top:2px">
+<div style="display:flex;align-items:center;padding:10px 14px;background:rgba(255,255,255,.03)"><span style="flex:1;font:700 9px 'Barlow';letter-spacing:1px;color:#647c96">REGULAR SEASON</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">GP</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">G</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">A</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">SV</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">SH</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">W</span></div>
+<sc-for list="{{ pd.stRows }}" as="s" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;padding:11px 14px;border-top:1px solid rgba(255,255,255,.05);background:{{ s.rowBg }}"><span style="flex:1;font:700 12px 'Saira Condensed';letter-spacing:.4px;color:{{ s.labelCol }};text-transform:uppercase">{{ s.label }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ s.gp }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ s.g }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ s.a }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ s.sv }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ s.sh }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ s.w }}</span></div>
+</sc-for>
+</div>
+<sc-if value="{{ pd.hasPO }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-top:9px">
+<div style="display:flex;align-items:center;padding:10px 14px;background:rgba(242,193,78,.08)"><span style="flex:1;font:700 9px 'Barlow';letter-spacing:1px;color:#f2c14e">PLAYOFFS · CAREER</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">GP</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">G</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">A</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">SV</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">SH</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">W</span></div>
+<div style="display:flex;align-items:center;padding:11px 14px;border-top:1px solid rgba(255,255,255,.05)"><span style="flex:1;font:700 12px 'Saira Condensed';letter-spacing:.4px;color:#f2c14e;text-transform:uppercase">Postseason</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ pd.stPO.gp }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ pd.stPO.g }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ pd.stPO.a }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ pd.stPO.sv }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ pd.stPO.sh }}</span><span style="width:26px;text-align:center;font:700 13px 'Barlow';color:#eef4fb;font-variant-numeric:tabular-nums">{{ pd.stPO.w }}</span></div>
+</div>
+</sc-if>
+</sc-if>
+<sc-if value="{{ pd.noStats }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center;margin-top:2px"><div style="font:400 11.5px/1.5 'Barlow';color:#647c96">No game stats logged yet — this player hasn't recorded NRL minutes.</div></div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isScores }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 14px 14px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ scoreSegs }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:1px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+<sc-if value="{{ scoreResults }}">
+<div style="margin:0 18px 4px;font:500 11.5px/1.4 'Barlow';color:#8296ad">Season 2 · tap a game for the box score.</div>
+<sc-for list="{{ resultGroups }}" as="grp" hint-placeholder-count="3">
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:16px 18px 9px">{{ grp.label }}</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ grp.items }}" as="g" hint-placeholder-count="4">
+<button onClick="{{ g.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:15px;text-align:left;cursor:pointer">
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:9px"><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ g.A }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.A.name }}</span><span style="font:800 18px/1 'Saira Condensed';color:{{ g.saCol }};font-variant-numeric:tabular-nums">{{ g.sa }}</span></div>
+<div style="display:flex;align-items:center;gap:9px;margin-top:8px"><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ g.B }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.B.name }}</span><span style="font:800 18px/1 'Saira Condensed';color:{{ g.sbCol }};font-variant-numeric:tabular-nums">{{ g.sb }}</span></div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</sc-for>
+</sc-if>
+<sc-if value="{{ scoreSchedule }}">
+<div style="margin:34px 24px 0;text-align:center;display:flex;flex-direction:column;align-items:center">
+<img src="assets/champ3.png" alt="Season 3" style="width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))"/>
+<div style="font:800 20px/1.15 'Saira Condensed';letter-spacing:.6px;color:#eef4fb;text-transform:uppercase;margin-top:14px">Season 3 Schedule<br/>Not Released Yet</div>
+<div style="font:400 13px/1.5 'Barlow';color:#8296ad;margin-top:10px;max-width:250px">Fixtures drop when the Season 3 slate is set. Until then, relive the Season 2 results.</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isGame }}">
+<div style="padding-bottom:112px">
+<div style="position:relative;overflow:hidden;text-align:center;padding:8px 18px 18px">
+<div style="position:absolute;inset:0;background:linear-gradient(120deg,{{ gd.A.c }} -40%,transparent 42%,transparent 58%,{{ gd.B.c }} 140%);opacity:.16"></div>
+<div style="position:relative"><div style="font:700 10px/1 'Barlow';letter-spacing:1.6px;color:#9fb2c8;text-transform:uppercase">{{ gd.roundLabel }}</div>
+<div style="display:flex;align-items:flex-start;justify-content:center;gap:12px;margin-top:16px">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><div style="width:58px;height:58px"><dc-import name="TeamBadge" t="{{ gd.A }}" fs="18px" radius="16px" style="width:58px;height:58px" hint-size="58px,58px"></dc-import></div><div style="font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb;text-transform:uppercase">{{ gd.A.name }}</div></div>
+<div style="flex:none;padding-top:6px"><div style="display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums"><span style="font:800 42px/1 'Saira Condensed';color:{{ gd.saCol }}">{{ gd.sa }}</span><span style="font:700 22px/1 'Saira Condensed';color:#3a4b60">–</span><span style="font:800 42px/1 'Saira Condensed';color:{{ gd.sbCol }}">{{ gd.sb }}</span></div><div style="font:700 10px/1 'Barlow';letter-spacing:2.5px;color:#647c96;margin-top:6px">FINAL</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><div style="width:58px;height:58px"><dc-import name="TeamBadge" t="{{ gd.B }}" fs="18px" radius="16px" style="width:58px;height:58px" hint-size="58px,58px"></dc-import></div><div style="font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb;text-transform:uppercase">{{ gd.B.name }}</div></div>
+</div></div>
+</div>
+<div style="margin:6px 14px 0;background:rgba(70,166,239,.08);border:1px solid rgba(70,166,239,.2);border-radius:14px;padding:13px 15px">
+<div style="font:700 10px/1 'Barlow';letter-spacing:1.2px;color:#5fd0ff;text-transform:uppercase">How it's scored</div>
+<div style="font:400 12px/1.5 'Barlow';color:#9fc4e6;margin-top:7px">Each side plays a 2v2 game. Score = 10 ± the goal differential, +2 for a forced forfeit. Higher total wins the matchup.</div>
+</div>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:20px 18px 10px">Lineups</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ gd.lineups }}" as="ln" hint-placeholder-count="2">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,.03)"><div style="width:24px;height:24px;flex:none"><dc-import name="TeamBadge" t="{{ ln.team }}" fs="8px" radius="7px" style="width:24px;height:24px" hint-size="24px,24px"></dc-import></div><span style="flex:1;font:700 13px/1 'Saira Condensed';letter-spacing:.5px;color:#eef4fb;text-transform:uppercase">{{ ln.team.name }}</span><span style="font:800 16px/1 'Saira Condensed';color:{{ ln.scoreCol }};font-variant-numeric:tabular-nums">{{ ln.score }}</span></div>
+<sc-for list="{{ ln.players }}" as="p" hint-placeholder-count="2">
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ p.userCol }};background:{{ p.userTint }};padding:5px 7px;border-radius:6px">{{ p.u }}</span><span style="flex:1;font:700 14px/1.1 'Barlow';color:#eef4fb">{{ p.n }}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isStandings }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 14px 14px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ seasonChips }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+<sc-if value="{{ standTable }}">
+<sc-if value="{{ standChampHas }}">
+<div style="margin:0 14px 14px;display:flex;align-items:center;gap:13px;padding:12px 14px;background:linear-gradient(100deg,#12293c,#0e1d2c);border:1px solid rgba(255,255,255,.09);border-radius:15px">
+<sc-if value="{{ standIsS1 }}"><img src="assets/champ1.png" alt="champion" style="width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))"/></sc-if><sc-if value="{{ standIsS2 }}"><img src="assets/champ2.png" alt="champion" style="width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))"/></sc-if>
+<div style="flex:1"><div style="font:600 9px/1 'Barlow';letter-spacing:1.5px;color:#9fb2c8;text-transform:uppercase">{{ standLabel }}</div><div style="display:flex;align-items:center;gap:7px;margin-top:7px"><span style="font:700 9px/1 'Barlow';letter-spacing:1.2px;color:#f2c14e">CHAMPION</span><div style="width:20px;height:20px;flex:none"><dc-import name="TeamBadge" t="{{ standChampTeam }}" fs="8px" radius="6px" style="width:20px;height:20px" hint-size="20px,20px"></dc-import></div><span style="font:700 15px/1 'Saira Condensed';color:#fff;text-transform:uppercase">{{ standChampName }}</span></div></div>
+</div>
+</sc-if>
+<sc-for list="{{ standConfs }}" as="cf" hint-placeholder-count="2">
+<div style="margin:2px 18px 9px;display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:{{ cf.color }}"></span><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">{{ cf.name }}</span></div>
+<div style="margin:0 14px 16px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(255,255,255,.03)"><span style="width:14px;text-align:center;font:700 9px 'Barlow';color:#647c96">#</span><span style="width:30px"></span><span style="flex:1;font:700 9px 'Barlow';letter-spacing:1px;color:#647c96">TEAM</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">W</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">L</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">T</span><span style="width:42px;text-align:right;font:700 9px 'Barlow';color:#647c96">PCT</span></div>
+<sc-for list="{{ cf.rows }}" as="row" hint-placeholder-count="5">
+<button onClick="{{ row.open }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
+<span style="width:14px;text-align:center;font:800 14px 'Saira Condensed';color:{{ row.seedCol }};font-variant-numeric:tabular-nums">{{ row.rank }}</span>
+<div style="width:30px;height:30px;flex:none"><dc-import name="TeamBadge" t="{{ row }}" fs="10px" radius="9px" style="width:30px;height:30px" hint-size="30px,30px"></dc-import></div>
+<span style="flex:1;min-width:0;font:700 15px 'Saira Condensed';letter-spacing:.4px;color:#eef4fb;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.name }}</span>
+<span style="width:26px;text-align:center;font:700 12px 'Barlow';color:#cdd8e4;font-variant-numeric:tabular-nums">{{ row.w }}</span>
+<span style="width:26px;text-align:center;font:700 12px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ row.l }}</span>
+<span style="width:26px;text-align:center;font:700 12px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ row.t }}</span>
+<span style="width:42px;text-align:right;font:700 12px 'Barlow';color:#fff;font-variant-numeric:tabular-nums">{{ row.pct }}</span>
+</button>
+</sc-for>
+</div>
+</sc-for>
+<div style="margin:0 18px;font:400 11px/1.5 'Barlow';color:#647c96">Top 3 in each conference make the playoffs; the #1 seed earns a first-round bye.</div>
+</sc-if>
+<sc-if value="{{ standS3 }}">
+<div style="margin:24px 24px 0;text-align:center;display:flex;flex-direction:column;align-items:center">
+<img src="assets/champ3.png" alt="Season 3" style="width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))"/>
+<div style="font:800 20px/1.15 'Saira Condensed';letter-spacing:.6px;color:#eef4fb;text-transform:uppercase;margin-top:14px">Season 3 Hasn't<br/>Kicked Off Yet</div>
+<div style="font:400 13px/1.5 'Barlow';color:#8296ad;margin-top:10px;max-width:260px">Standings go live once Season 3 begins. Check the Moves feed for offseason roster news.</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMoves }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 14px 10px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ moveSeasonChips }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+<div data-sc style="display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px">
+<sc-for list="{{ moveTypeChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="flex:none;border:1px solid {{ c.bd }};cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};font:700 11px 'Barlow';letter-spacing:.4px;padding:8px 14px;border-radius:20px;white-space:nowrap">{{ c.label }}</button></sc-for>
+</div>
+<sc-for list="{{ moveGroups }}" as="grp" hint-placeholder-count="3">
+<div style="margin:14px 18px 9px;font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">{{ grp.phase }}</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ grp.items }}" as="m" hint-placeholder-count="2">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-left:3px solid {{ m.color }};border-radius:14px;padding:13px 14px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:{{ m.tint }};display:grid;place-items:center"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ m.color }}">{{ m.badge }}</span></div>
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><span style="font:700 8px/1 'Barlow';letter-spacing:1.2px;color:{{ m.color }}">{{ m.typeLabel }}</span><span style="font:600 9.5px/1 'Barlow';color:#5f758f">{{ m.when }}</span></div><div style="font:700 15px/1.2 'Barlow';color:#eef4fb;margin-top:5px">{{ m.title }}</div></div>
+<sc-for list="{{ m.badges }}" as="bt" hint-placeholder-count="1"><div style="width:28px;height:28px;flex:none"><dc-import name="TeamBadge" t="{{ bt }}" fs="9px" radius="8px" style="width:28px;height:28px" hint-size="28px,28px"></dc-import></div></sc-for>
+</div>
+<div style="font:400 12px/1.5 'Barlow';color:#8296ad;margin-top:9px">{{ m.detail }}</div>
+<sc-if value="{{ m.hasPicks }}">
+<div style="margin-top:11px;border-top:1px solid rgba(255,255,255,.06);padding-top:4px">
+<sc-for list="{{ m.picks }}" as="pk" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-top:1px solid rgba(255,255,255,.04)">
+<span style="font:800 12px/1 'Saira Condensed';color:#647c96;width:20px;text-align:center;font-variant-numeric:tabular-nums">{{ pk.pk }}</span>
+<span style="width:9px;height:9px;border-radius:2px;background:{{ pk.color }};flex:none"></span>
+<span style="font:700 11px/1 'Saira Condensed';letter-spacing:.4px;color:#8ea3bd;width:34px">{{ pk.abbr }}</span>
+<span style="flex:1;font:600 12.5px/1.1 'Barlow';color:{{ pk.nameCol }}">{{ pk.name }}</span>
+<span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ pk.userCol }};background:{{ pk.userTint }};padding:4px 6px;border-radius:5px">{{ pk.u }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isStats }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 14px 10px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ statSplitChips }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:1px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+<sc-if value="{{ isSeasonSplit }}">
+<div style="margin:0 14px 10px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ statSeasonChips }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:8px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+</sc-if>
+<div data-sc style="display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px">
+<sc-for list="{{ statCatChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onClick }}" style="flex:none;border:1px solid {{ c.bd }};cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};font:700 11px 'Barlow';letter-spacing:.4px;padding:8px 14px;border-radius:20px;white-space:nowrap">{{ c.label }}</button></sc-for>
+</div>
+<div style="margin:0 18px 10px;font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">{{ statTitle }} · {{ statCatLabel }} Leaders</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ statBoard }}" as="t" hint-placeholder-count="8">
+<button onClick="{{ t.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:15px;text-align:left;cursor:pointer">
+<span style="width:18px;font:800 16px 'Saira Condensed';color:{{ t.rankCol }};text-align:center;font-variant-numeric:tabular-nums">{{ t.rank }}</span>
+<div style="width:38px;height:38px;flex:none"><dc-import name="TeamBadge" t="{{ t.team }}" fs="11px" radius="11px" style="width:38px;height:38px" hint-size="38px,38px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ t.n }}</div><div style="height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:7px;overflow:hidden"><div style="height:100%;width:{{ t.bar }}%;background:{{ t.team.c }};border-radius:3px"></div></div></div>
+<div style="text-align:right"><div style="font:800 22px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ t.val }}</div><div style="font:600 9px/1 'Barlow';color:#647c96;margin-top:4px">{{ t.gp }} GP</div></div>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ statBoardEmpty }}"><div style="text-align:center;font:500 13px/1.5 'Barlow';color:#647c96;margin:24px 24px 0">No stats recorded for this split yet.</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNotifs }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="display:flex;justify-content:flex-end;padding:0 16px 10px"><button onClick="{{ markAllRead }}" style="background:none;border:none;cursor:pointer;font:700 11px 'Barlow';letter-spacing:.3px;color:#7fbef0">Mark all read</button></div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ notifs }}" as="n" hint-placeholder-count="5">
+<div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:{{ n.tint }};display:grid;place-items:center"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ n.color }}">{{ n.tag }}</span></div>
+<div style="flex:1;min-width:0"><div style="font:600 9.5px/1 'Barlow';color:#5f758f">{{ n.time }}</div><div style="font:700 14px/1.25 'Barlow';color:#eef4fb;margin-top:6px">{{ n.title }}</div><div style="font:400 12px/1.45 'Barlow';color:#8296ad;margin-top:4px">{{ n.body }}</div></div>
+<sc-if value="{{ n.unread }}"><div style="width:8px;height:8px;flex:none;border-radius:50%;background:#f5822d;margin-top:5px"></div></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+</div>
+
+<div style="flex:none;height:82px;background:rgba(8,15,23,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.08);display:flex;padding:9px 4px 0;position:relative;z-index:9">
+<button onClick="{{ navHome }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ homeCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.8 12 4l8 6.8"/><path d="M6 9.6V20h12V9.6"/><path d="M9.6 20v-5.4h4.8V20"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Home</span></button>
+<button onClick="{{ navTeams }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ teamsCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 19 5.6v6c0 4.4-3.1 7.3-7 9-3.9-1.7-7-4.6-7-9v-6z"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Teams</span></button>
+<button onClick="{{ navScores }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ scoresCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Scores</span></button>
+<button onClick="{{ navStandings }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ standCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M9.5 4.5v15"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Standings</span></button>
+<button onClick="{{ navMoves }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ movesCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11M4 7l3-3M4 7l3 3"/><path d="M20 17H9M20 17l-3-3M20 17l-3 3"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Moves</span></button>
+<button onClick="{{ navStats }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ statsCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M12 20V4M19 20v-6"/><path d="M3.5 20h17"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Stats</span></button>
+</div>
+
+<sc-if value="{{ toast }}"><div style="position:absolute;bottom:98px;left:50%;transform:translateX(-50%);z-index:20;background:#eef4fb;color:#0a1420;font:700 12px/1 'Barlow';letter-spacing:.2px;padding:12px 18px;border-radius:22px;box-shadow:0 12px 30px -8px rgba(0,0,0,.6);animation:toastin .28s ease;white-space:nowrap">{{ toast }}</div></sc-if>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;teams&quot;,&quot;scores&quot;,&quot;standings&quot;,&quot;moves&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;countdownDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:0,&quot;max&quot;:120,&quot;unit&quot;:&quot;d&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+class Component extends DCLogic {
+  TEAMS = [
+    {id:'barracudas', name:'Barracudas', abbr:'BAR', conf:'F', c:'#14b8c4', mono:true,  logo:'',                       tag:'Deep Strikers', s1:[2,3,0], s2:[4,0,1]},
+    {id:'surge',      name:'Surge',      abbr:'SRG', conf:'F', c:'#18a6e6', mono:false, logo:'assets/teams/surge.png',   tag:'Storm Chasers', s1:[3,2,0], s2:[3,2,0]},
+    {id:'frogs',      name:'Frogs',      abbr:'FRG', conf:'F', c:'#5cb838', mono:false, logo:'assets/teams/frogs.png',   tag:'Leap Squad',    s1:[3,2,0,2], s2:[2,3,0]},
+    {id:'coyotes',    name:'Coyotes',    abbr:'COY', conf:'F', c:'#d1743b', mono:false, logo:'assets/teams/coyotes.png', tag:'Desert Pack',   s1:[2,3,0], s2:[1,2,2]},
+    {id:'guardians',  name:'Guardians',  abbr:'GRD', conf:'F', c:'#c99a3a', mono:true,  logo:'',                       tag:'The Wall',      s1:[3,2,0,1], s2:[1,4,0]},
+    {id:'turtles',    name:'Turtles',    abbr:'TRT', conf:'H', c:'#12a06a', mono:false, logo:'assets/teams/turtles.png', tag:'Shellshock',    s1:[3,1,1], s2:[4,1,0]},
+    {id:'vipers',     name:'Vipers',     abbr:'VPR', conf:'H', c:'#8b46c9', mono:true,  logo:'',                       tag:'Venom',         s1:[0,5,0], s2:[3,2,0]},
+    {id:'scorpions',  name:'Scorpions',  abbr:'SCP', conf:'H', c:'#d1443f', mono:true,  logo:'',                       tag:'The Sting',     s1:[3,2,0,1], s2:[2,3,0]},
+    {id:'vortex',     name:'Vortex',     abbr:'VTX', conf:'H', c:'#5566e0', mono:true,  logo:'',                       tag:'The Storm',     s1:[2,2,1], s2:[1,2,2]},
+    {id:'goats',      name:'Goats',      abbr:'GOA', conf:'H', c:'#3f8a63', mono:false, logo:'assets/teams/goats.png',  tag:'Summit Kings',  s1:[3,2,0], s2:[1,3,1]},
+  ];
+  CONFS = {F:{name:'Frontier', abbr:'FRO', color:'#4aa8ef'}, H:{name:'Horizon', abbr:'HOR', color:'#f5a24a'}};
+  CHAMPS = [
+    {s:'I',   label:'SEASON 1', logo:'assets/champ1.png', champ:'turtles'},
+    {s:'II',  label:'SEASON 2', logo:'assets/champ2.png', champ:'surge'},
+    {s:'III', label:'SEASON 3', logo:'assets/champ3.png', champ:null},
+  ];
+  RINGS = {turtles:1, surge:1};
+  PLAYERS = [
+    {n:'Barry Cuda', t:'barracudas', u:'G', r:'S', o:'S1 Draft · Pick 1',  aw:['S1 All-Star Reserve']},
+    {n:'Cody Coconut', t:'barracudas', u:'G', r:'B', o:'S2 Draft · Pick 12'},
+    {n:'Perry Penguin', t:'barracudas', u:'N', r:'S', o:'S2 Draft · Pick 2'},
+    {n:'Finn Diesel', t:'barracudas', u:'N', r:'B', o:'S1 Draft · Pick 16'},
+    {n:'Wiley Coyote', t:'coyotes', u:'G', r:'S', o:'S1 Draft · Pick 15', aw:['S1 DPOY','S1 All-Star Reserve']},
+    {n:'Cactus Carl', t:'coyotes', u:'G', r:'B', o:'S2 Draft · Pick 14'},
+    {n:'Bacon McSizzle', t:'coyotes', u:'N', r:'S', o:'S2 Draft · Pick 3'},
+    {n:'Dizzy Spin', t:'coyotes', u:'N', r:'B', o:'Acquired · Trade (VTX)'},
+    {n:'Tad Pole', t:'frogs', u:'G', r:'S', o:'S1 Draft · Pick 3', aw:['S1 MVP','S1 All-Star Starter']},
+    {n:'Quack Johnson', t:'frogs', u:'G', r:'B', o:'S2 Draft · Pick 15'},
+    {n:'Toast Malone', t:'frogs', u:'N', r:'S', o:'S2 Draft · Pick 5', st:'inj'},
+    {n:'Jeremiah Bullfrog', t:'frogs', u:'N', r:'B', o:'S1 Draft · Pick 10'},
+    {n:'Billy Gruff', t:'goats', u:'G', r:'S', o:'S1 Draft · Pick 17', aw:['S1 TMOY']},
+    {n:'Colby Cheddar', t:'goats', u:'G', r:'B', o:'S2 Draft · Pick 17'},
+    {n:'Horny Hank', t:'goats', u:'N', r:'S', o:'S1 Draft · Pick 2', st:'out', aw:['S1 All-Star Starter']},
+    {n:'Larry Lobster', t:'goats', u:'N', r:'B', o:'S2 Draft · Pick 7'},
+    {n:'Brick Wall Bill', t:'guardians', u:'G', r:'S', o:'S1 Draft · Pick 5', aw:['S1 All-Star Starter']},
+    {n:'Rocky Balboulder', t:'guardians', u:'G', r:'B', o:'S2 Draft · Pick 19'},
+    {n:'Brock Boulder', t:'guardians', u:'N', r:'S', o:'S2 Draft · Pick 9'},
+    {n:'Sir Blocksalot', t:'guardians', u:'N', r:'B', o:'S1 Draft · Pick 8', st:'bench'},
+    {n:'Gary Gumball', t:'scorpions', u:'G', r:'S', o:'S2 Draft · Pick 6'},
+    {n:'Pinchy Pete', t:'scorpions', u:'G', r:'B', o:'S1 Draft · Pick 7'},
+    {n:'Scorpio Jones', t:'scorpions', u:'N', r:'S', o:'S1 Draft · Pick 14', aw:['S1 All-Star Starter']},
+    {n:'Benny Bagel', t:'scorpions', u:'N', r:'B', o:'S2 Draft · Pick 16'},
+    {n:'Bolt McLightning', t:'surge', u:'G', r:'S', o:'S1 Draft · Pick 11', aw:['S1 All-Star Reserve']},
+    {n:'Marty Moose', t:'surge', u:'G', r:'B', o:'S2 Draft · Pick 18'},
+    {n:'Watt Zapper', t:'surge', u:'N', r:'S', o:'S1 Draft · Pick 20', st:'inj'},
+    {n:'Cornelius Cobb', t:'surge', u:'N', r:'B', o:'S2 Draft · Pick 8'},
+    {n:'Sheldon Shelby', t:'turtles', u:'G', r:'S', o:'S1 Draft · Pick 19', aw:['S1 All-Star Starter']},
+    {n:'Carter Cone', t:'turtles', u:'G', r:'B', o:'S2 Draft · Pick 20'},
+    {n:'Turbo Turtle', t:'turtles', u:'N', r:'S', o:'S1 Draft · Pick 6'},
+    {n:'Parker Pickles', t:'turtles', u:'N', r:'B', o:'S2 Draft · Pick 10'},
+    {n:'Ricky Raccoon', t:'vipers', u:'G', r:'S', o:'S2 Draft · Pick 4'},
+    {n:'Donnie Dough', t:'vipers', u:'G', r:'B', o:'Signed · Undrafted FA'},
+    {n:'Wally Waffles', t:'vipers', u:'N', r:'S', o:'S2 Draft · Pick 1'},
+    {n:'Fang McBite', t:'vipers', u:'N', r:'B', o:'S1 Draft · Pick 12'},
+    {n:'Tornado Tim', t:'vortex', u:'G', r:'S', o:'S1 Draft · Pick 9'},
+    {n:'Snakey Jake', t:'vortex', u:'G', r:'B', o:'Acquired · Trade (VPR)'},
+    {n:'Dusty Paws', t:'vortex', u:'N', r:'S', o:'Acquired · Trade (COY)', aw:['S1 All-Star Starter']},
+    {n:'Pretzel Preston', t:'vortex', u:'N', r:'B', o:'S2 Draft · Pick 11'},
+  ];
+  COACHES = [
+    {n:'Wade Waters', t:'barracudas', role:'HC'}, {n:'Dylan Drift', t:'barracudas', role:'OC'}, {n:'Reef Riley', t:'barracudas', role:'DC'},
+    {n:'Wyatt West', t:'coyotes', role:'HC'}, {n:'Ryder Ridge', t:'coyotes', role:'OC'}, {n:'Travis Thorn', t:'coyotes', role:'DC'},
+    {n:'Freddie Hopper', t:'frogs', role:'HC'}, {n:'Skip Splash', t:'frogs', role:'OC'}, {n:'Mason Moss', t:'frogs', role:'DC'},
+    {n:'Hank Haymaker', t:'goats', role:'HC'}, {n:'Cody Charge', t:'goats', role:'OC'}, {n:'Duke Dragger', t:'goats', role:'DC'},
+    {n:'Everett Steele', t:'guardians', role:'HC'}, {n:'Caleb Cannon', t:'guardians', role:'OC'}, {n:'Bruce Bulwark', t:'guardians', role:'DC'},
+    {n:'Sawyer Sting', t:'scorpions', role:'HC'}, {n:'Carter Claw', t:'scorpions', role:'OC'}, {n:'Flint Fang', t:'scorpions', role:'DC'},
+    {n:'Trevor Thunder', t:'surge', role:'HC'}, {n:'Dash Driver', t:'surge', role:'OC'}, {n:'Miles Magnet', t:'surge', role:'DC'},
+    {n:'Marvin Marsh', t:'turtles', role:'HC'}, {n:'Finn Float', t:'turtles', role:'OC'}, {n:'Rocky Reef', t:'turtles', role:'DC'},
+    {n:'Victor Venom', t:'vipers', role:'HC'}, {n:'Tyler Toxin', t:'vipers', role:'OC'}, {n:'Mason Mamba', t:'vipers', role:'DC'},
+    {n:'Cyrus Cyclone', t:'vortex', role:'HC'}, {n:'Jett Jetstream', t:'vortex', role:'OC'}, {n:'Zeke Zero', t:'vortex', role:'DC'},
+  ];
+  ROLELABEL = {HC:'Head Coach', OC:'Offensive Coord.', DC:'Defensive Coord.'};
+  S1PICKS = [
+    [1,'barracudas','Barry Cuda','G'],[2,'goats','Horny Hank','N'],[3,'frogs','Tad Pole','G'],[4,'coyotes','Dusty Paws','N'],
+    [5,'guardians','Brick Wall Bill','G'],[6,'turtles','Turbo Turtle','N'],[7,'scorpions','Pinchy Pete','G'],[8,'guardians','Sir Blocksalot','N'],
+    [9,'vortex','Tornado Tim','G'],[10,'frogs','Jeremiah Bullfrog','N'],[11,'surge','Bolt McLightning','G'],[12,'vipers','Fang McBite','N'],
+    [13,'vipers','Snakey Jake','G'],[14,'scorpions','Scorpio Jones','N'],[15,'coyotes','Wiley Coyote','G'],[16,'barracudas','Finn Diesel','N'],
+    [17,'goats','Billy Gruff','G'],[18,'vortex','Dizzy Spin','N'],[19,'turtles','Sheldon Shelby','G'],[20,'surge','Watt Zapper','N'],
+  ];
+  S2PICKS = [
+    [1,'vipers','Wally Waffles','N'],[2,'barracudas','Perry Penguin','N'],[3,'coyotes','Bacon McSizzle','N'],[4,'vipers','Ricky Raccoon','G'],
+    [5,'frogs','Toast Malone','N'],[6,'scorpions','Gary Gumball','G'],[7,'goats','Larry Lobster','N'],[8,'surge','Cornelius Cobb','N'],
+    [9,'guardians','Brock Boulder','N'],[10,'turtles','Parker Pickles','N'],[11,'vortex','Pretzel Preston','N'],[12,'barracudas','Cody Coconut','G'],
+    [13,'vortex','—','F'],[14,'coyotes','Cactus Carl','G'],[15,'frogs','Quack Johnson','G'],[16,'scorpions','Benny Bagel','N'],
+    [17,'goats','Colby Cheddar','G'],[18,'surge','Marty Moose','G'],[19,'guardians','Rocky Balboulder','G'],[20,'turtles','Carter Cone','G'],
+  ];
+  MTYPE = {
+    trade:  {label:'TRADE',   badge:'TRD', color:'#46a6ef', tint:'rgba(41,160,234,.15)'},
+    draft:  {label:'DRAFT',   badge:'DFT', color:'#9b7cff', tint:'rgba(155,124,255,.16)'},
+    sign:   {label:'SIGNING', badge:'SGN', color:'#37c98a', tint:'rgba(55,201,138,.15)'},
+    injury: {label:'INJURY',  badge:'INJ', color:'#ff5f5f', tint:'rgba(255,95,95,.15)'},
+    lineup: {label:'LINEUP',  badge:'LNP', color:'#f5a531', tint:'rgba(245,165,49,.15)'},
+  };
+  MOVES = [
+    {id:'m1', s:'2', phase:'Season 2 · In-Season', type:'injury', when:'Week 4', title:'Watt Zapper — Engine Failure', detail:'Surge starter (Nolan) is sidelined for 3 games with an engine failure.', a:'surge'},
+    {id:'m2', s:'2', phase:'Season 2 · In-Season', type:'injury', when:'Week 4', title:'Horny Hank — Bent Axle', detail:'Goats starter (Nolan) is out for the remainder of the regular season.', a:'goats'},
+    {id:'m3', s:'2', phase:'Season 2 · In-Season', type:'injury', when:'Week 4', title:'Toast Malone — Bent Axle', detail:'Frogs starter (Nolan) will miss the next 2 games.', a:'frogs'},
+    {id:'m4', s:'2', phase:'Season 2 · In-Season', type:'lineup', when:'Week 1', title:'Guardians Shake Up the Lineup', detail:'Brock Boulder is promoted to starter; Sir Blocksalot moves to the bench.', a:'guardians'},
+    {id:'m5', s:'2', phase:'Season 2 · Draft Night', type:'sign', when:'Draft Night', title:'Vipers Sign Donnie Dough', detail:'Undrafted free agent joins the Vipers as Griffin\u2019s backup.', a:'vipers'},
+    {id:'m6', s:'2', phase:'Season 2 · Draft Night', type:'trade', when:'Draft Night', title:'Vipers \u21C4 Vortex', detail:'Vipers send the #11 pick, Snakey Jake, and a S3 2nd-round pick to Vortex for the #4 overall pick.', a:'vipers', b:'vortex'},
+    {id:'m7', s:'2', phase:'Season 2 · Draft Night', type:'trade', when:'Draft Night', title:'Coyotes \u21C4 Vortex', detail:'Coyotes send the #4 pick and Dusty Paws to Vortex for the #3 pick and Dizzy Spin.', a:'coyotes', b:'vortex'},
+    {id:'m8', s:'2', phase:'Season 2 · Draft Night', type:'draft', when:'Draft Night', title:'Season 2 Draft', detail:'Rosters expand to four \u2014 each team adds a backup for Griffin and Nolan.', picks:'s2'},
+    {id:'m9', s:'1', phase:'Season 1 · Inaugural', type:'draft', when:'Preseason', title:'Season 1 Inaugural Draft', detail:'The league\u2019s first 20 selections set the original two-per-team rosters.', picks:'s1'},
+  ];
+  state = {
+    stack: [{s: (this.props && this.props.startScreen) || 'home'}],
+    teamSeg:'teams', tdTab:'overview', scoresSeg:'results', standSeason:'s2',
+    moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'2', statCat:'g',
+    notifs: [
+      {id:'n1', type:'result',    time:'Now',       title:'Surge win the Season 2 Championship', body:'Surge sweep the Vipers in the Finals to claim their first NRL title.', unread:true},
+      {id:'n2', type:'injury',    time:'S2 · Wk 4', title:'Watt Zapper suffers engine failure', body:'The Surge starter will miss three games.', unread:true},
+      {id:'n3', type:'injury',    time:'S2 · Wk 4', title:'Horny Hank out for the season', body:'A bent axle ends the Goats starter\u2019s regular season.', unread:true},
+      {id:'n4', type:'roster',    time:'S2 · Wk 1', title:'Guardians promote Brock Boulder', body:'Sir Blocksalot moves to the bench.', unread:false},
+      {id:'n5', type:'news',      time:'Preseason', title:'Season 2 Draft complete', body:'20 picks, 2 trades, and rosters expand to four players per team.', unread:false},
+    ],
+    toast: null,
+  };
+  NTYPE = {
+    result:{tag:'FINAL',color:'#46a6ef',tint:'rgba(41,160,234,.15)'},
+    injury:{tag:'INJURY',color:'#ff5f5f',tint:'rgba(255,95,95,.15)'},
+    roster:{tag:'LINEUP',color:'#f5a531',tint:'rgba(245,165,49,.15)'},
+    news:{tag:'NEWS',color:'#9b7cff',tint:'rgba(155,124,255,.16)'},
+  };
+  RESULTS = [
+    {id:'r1',  rd:'W1', a:'frogs', sa:'9', b:'coyotes', sb:'15', w:'b'},
+    {id:'r2',  rd:'W1', a:'guardians', sa:'7', b:'vortex', sb:'14', w:'b'},
+    {id:'r3',  rd:'W1', a:'turtles', sa:'14', b:'scorpions', sb:'12', w:'a'},
+    {id:'r4',  rd:'W1', a:'vipers', sa:'9', b:'goats', sb:'8', w:'a'},
+    {id:'r5',  rd:'W2', a:'barracudas', sa:'15', b:'guardians', sb:'8', w:'a'},
+    {id:'r6',  rd:'W2', a:'scorpions', sa:'7', b:'surge', sb:'8', w:'b'},
+    {id:'r7',  rd:'W2', a:'vipers', sa:'11', b:'frogs', sb:'15', w:'b'},
+    {id:'r8',  rd:'W2', a:'goats', sa:'11', b:'coyotes', sb:'11', w:'t'},
+    {id:'r9',  rd:'W2', a:'vortex', sa:'9', b:'turtles', sb:'12', w:'b'},
+    {id:'r10', rd:'W3', a:'coyotes', sa:'9', b:'barracudas', sb:'11', w:'b'},
+    {id:'r11', rd:'W3', a:'surge', sa:'9', b:'vipers', sb:'8', w:'a'},
+    {id:'r12', rd:'W3', a:'frogs', sa:'8', b:'scorpions', sb:'9', w:'b'},
+    {id:'r13', rd:'W3', a:'turtles', sa:'11', b:'guardians', sb:'9', w:'a'},
+    {id:'r14', rd:'W3', a:'goats', sa:'11', b:'vortex', sb:'9', w:'a'},
+    {id:'r15', rd:'W4', a:'guardians', sa:'17', b:'surge', sb:'15', w:'a'},
+    {id:'r16', rd:'W4', a:'frogs', sa:'14', b:'goats', sb:'11', w:'a'},
+    {id:'r17', rd:'W4', a:'vortex', sa:'11', b:'barracudas', sb:'11', w:'t'},
+    {id:'r18', rd:'W4', a:'scorpions', sa:'9', b:'vipers', sb:'13', w:'b'},
+    {id:'r19', rd:'W5', a:'surge', sa:'7', b:'turtles', sb:'15', w:'b'},
+    {id:'r20', rd:'W5', a:'coyotes', sa:'3', b:'vipers', sb:'18', w:'b'},
+    {id:'r21', rd:'W5', a:'barracudas', sa:'15', b:'goats', sb:'9', w:'a'},
+    {id:'r22', rd:'W5', a:'guardians', sa:'11', b:'scorpions', sb:'14', w:'b'},
+    {id:'r23', rd:'W6', a:'surge', sa:'16', b:'frogs', sb:'6', w:'a'},
+    {id:'r24', rd:'W6', a:'coyotes', sa:'9', b:'vortex', sb:'9', w:'t'},
+    {id:'r25', rd:'W6', a:'barracudas', sa:'16', b:'turtles', sb:'12', w:'a'},
+    {id:'r26', rd:'QF', a:'surge', sa:'15', b:'frogs', sb:'14', w:'a'},
+    {id:'r27', rd:'QF', a:'vipers', sa:'15', b:'scorpions', sb:'6', w:'a'},
+    {id:'r28', rd:'CF', a:'barracudas', sa:'10', b:'surge', sb:'3', w:'a'},
+    {id:'r29', rd:'CF', a:'barracudas', sa:'12', b:'surge', sb:'15', w:'b'},
+    {id:'r30', rd:'CF', a:'barracudas', sa:'9', b:'surge', sb:'9+1', w:'b'},
+    {id:'r31', rd:'CF', a:'turtles', sa:'14', b:'vipers', sb:'15', w:'b'},
+    {id:'r32', rd:'CF', a:'turtles', sa:'9', b:'vipers', sb:'14', w:'b'},
+    {id:'r33', rd:'F', a:'surge', sa:'6+1', b:'vipers', sb:'6', w:'a'},
+    {id:'r34', rd:'F', a:'surge', sa:'17', b:'vipers', sb:'12', w:'a'},
+  ];
+  RDLABEL = {W1:'Week 1',W2:'Week 2',W3:'Week 3',W4:'Week 4',W5:'Week 5',W6:'Week 6',QF:'Quarterfinals',CF:'Conference Finals',F:'Finals'};
+  RDSHORT = {W1:'W1',W2:'W2',W3:'W3',W4:'W4',W5:'W5',W6:'W6',QF:'QF',CF:'CF',F:'F'};
+
+  STATS = {
+    'Barry Cuda':{rs1:[5,13,0,3,18,2],rs2:[5,11,2,4,13,4],ps2:[3,3,3,6,10,1]},
+    'Finn Diesel':{rs1:[5,2,4,3,13,2]},
+    'Wiley Coyote':{rs1:[5,12,3,7,18,2],rs2:[5,5,1,8,12,1]},
+    'Dusty Paws':{rs1:[5,12,4,2,20,2],rs2:[5,5,2,2,12,1]},
+    'Tad Pole':{rs1:[5,15,2,3,24,3],rs2:[5,8,1,2,16,2],ps1:[1,1,0,1,6,0],ps2:[1,1,2,0,2,0]},
+    'Jeremiah Bullfrog':{rs1:[5,8,4,3,16,3],ps1:[1,1,0,0,2,0],ps2:[1,3,0,0,5,0]},
+    'Billy Gruff':{rs1:[5,10,6,3,16,3],rs2:[5,6,3,8,17,1],ps1:[3,5,0,2,13,1]},
+    'Horny Hank':{rs1:[5,10,4,3,16,3],rs2:[4,8,1,3,18,1],ps1:[3,3,1,2,9,1]},
+    'Brick Wall Bill':{rs1:[5,13,2,6,20,3],rs2:[5,10,3,10,19,1],ps1:[6,15,4,12,21,4]},
+    'Sir Blocksalot':{rs1:[5,5,1,2,14,3],rs2:[1,0,0,0,2,0],ps1:[6,13,5,3,24,4]},
+    'Pinchy Pete':{rs1:[5,8,3,5,17,3],ps1:[1,1,1,3,1,0]},
+    'Scorpio Jones':{rs1:[5,10,3,4,19,3],rs2:[5,5,4,1,10,2],ps1:[1,2,1,1,3,0],ps2:[1,0,0,0,2,0]},
+    'Bolt McLightning':{rs1:[5,12,3,5,20,3],rs2:[5,7,2,3,16,3],ps1:[2,1,2,2,8,0],ps2:[6,10,2,9,19,5]},
+    'Watt Zapper':{rs1:[5,10,3,5,11,3],rs2:[3,6,1,4,11,2],ps1:[2,3,0,2,4,0],ps2:[5,5,3,4,12,4]},
+    'Sheldon Shelby':{rs1:[5,13,6,2,21,3],rs2:[5,10,3,8,17,4],ps1:[5,9,1,6,17,4],ps2:[2,4,0,3,10,0]},
+    'Turbo Turtle':{rs1:[5,10,4,1,15,3],rs2:[5,7,5,4,11,4],ps1:[5,8,4,2,13,4],ps2:[2,1,2,0,5,0]},
+    'Snakey Jake':{rs1:[5,7,2,3,25,0]},
+    'Fang McBite':{rs1:[5,5,0,0,15,0]},
+    'Tornado Tim':{rs1:[5,10,5,5,21,2],rs2:[5,12,1,14,25,1]},
+    'Dizzy Spin':{rs1:[5,9,4,3,23,2]},
+    'Larry Lobster':{rs2:[1,3,0,0,5,0]},
+    'Gary Gumball':{rs2:[5,12,1,6,17,2],ps2:[1,0,0,1,4,0]},
+    'Wally Waffles':{rs2:[5,10,3,2,20,3],ps2:[5,10,5,1,16,3]},
+    'Bacon McSizzle':{rs2:[5,11,2,2,24,1]},
+    'Perry Penguin':{rs2:[5,8,1,4,11,4],ps2:[3,4,1,1,7,1]},
+    'Ricky Raccoon':{rs2:[5,7,4,4,18,3],ps2:[5,9,5,7,11,3]},
+    'Toast Malone':{rs2:[5,7,1,2,13,2]},
+    'Cornelius Cobb':{rs2:[2,2,0,2,6,1],ps2:[1,2,1,1,3,1]},
+    'Brock Boulder':{rs2:[4,4,2,2,11,1]},
+  };
+  kickoff = Date.now() + ((((this.props && this.props.countdownDays) != null ? this.props.countdownDays : 4) * 86400 + 6*3600 + 51*60) * 1000);
+  _scroll = null;
+
+  team(id){ return this.TEAMS.find(t => t.id === id); }
+  cur(){ return this.state.stack[this.state.stack.length - 1]; }
+  base(){ return this.state.stack[0].s; }
+  scrollTop(){ requestAnimationFrame(() => { if (this._scroll) this._scroll.scrollTop = 0; }); }
+  go(s, p){ this.setState(st => ({stack:[...st.stack, Object.assign({s}, p || {})]})); this.scrollTop(); }
+  back(){ this.setState(st => ({stack: st.stack.length > 1 ? st.stack.slice(0, -1) : st.stack})); this.scrollTop(); }
+  setTab(s){ this.setState({stack:[{s}]}); this.scrollTop(); }
+  showToast(m){ this.setState({toast:m}); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({toast:null}), 2200); }
+  pct(rec){ const g = rec[0]+rec[1]+rec[2]; return g ? ((rec[0]+0.5*rec[2])/g).toFixed(3).replace(/^0/, '') : '.000'; }
+  recStr(rec){ return rec[2] ? rec[0]+'-'+rec[1]+'-'+rec[2] : rec[0]+'-'+rec[1]; }
+  confStanding(conf, season){
+    const key = season || 's2';
+    return this.TEAMS.filter(t=>t.conf===conf).map(t=>({t, rec:t[key]}))
+      .sort((x,y)=> (parseFloat(this.pct(y.rec))-parseFloat(this.pct(x.rec))) || (y.rec[0]-x.rec[0]) || ((x.rec[3]||0)-(y.rec[3]||0)))
+      .map((o,i)=>({...o.t, rank:i+1, w:o.rec[0], l:o.rec[1], t:o.rec[2], rec:this.recStr(o.rec), pct:this.pct(o.rec),
+        seedCol: i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f'),
+        open:()=>this.go('team',{teamId:o.t.id})}));
+  }
+  rankInConf(id){ const t=this.team(id); const arr=this.confStanding(t.conf,'s2'); return (arr.find(r=>r.id===id)||{}).rank || '—'; }
+  seg(label,active,onClick){ return {label,active,onClick, bg: active?'#eef4fb':'transparent', fg: active?'#0a1420':'#8ea3bd'}; }
+  userMeta(u){ return u==='G' ? {name:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)'} : {name:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)'}; }
+  flagMeta(st){ if(st==='out') return {label:'OUT', col:'#ff7a7a', tint:'rgba(255,95,95,.16)'}; if(st==='inj') return {label:'INJ', col:'#ffb066', tint:'rgba(245,165,49,.16)'}; if(st==='bench') return {label:'BENCH', col:'#9db2cc', tint:'rgba(255,255,255,.08)'}; return null; }
+  statLine(name, split){ const s=this.STATS[name]; if(!s) return null; const add=(a,b)=>{ if(!a&&!b)return null; a=a||[0,0,0,0,0,0]; b=b||[0,0,0,0,0,0]; return a.map((v,i)=>v+(b[i]||0)); };
+    if(split==='rs1') return s.rs1||null; if(split==='rs2') return s.rs2||null; if(split==='ps1') return s.ps1||null; if(split==='ps2') return s.ps2||null;
+    if(split==='career') return add(s.rs1,s.rs2); if(split==='playoffs') return add(s.ps1,s.ps2); return null; }
+
+  renderVals(){
+    const st = this.state, r = this.cur().s, base = this.base();
+    const is = k => r === k;
+    const flags = {isHome:is('home'),isTeams:is('teams'),isScores:is('scores'),isStandings:is('standings'),isMoves:is('moves'),isStats:is('stats'),isTeam:is('team'),isGame:is('game'),isPlayer:is('player'),isNotifs:is('notifs')};
+    const showBack = flags.isTeam||flags.isGame||flags.isPlayer||flags.isNotifs;
+
+    const ms = Math.max(0, this.kickoff - Date.now());
+    const cd = {d:String(Math.floor(ms/86400000)), h:String(Math.floor(ms/3600000)%24).padStart(2,'0'), m:String(Math.floor(ms/60000)%60).padStart(2,'0')};
+
+    // champions
+    const champRow = this.CHAMPS.map(c=>{ const ct=c.champ?this.team(c.champ):null; return {s:c.s,label:c.label,logo:c.logo,hasChamp:!!ct,upcoming:!ct,champName:ct?ct.name:'',champTeam:ct||{}}; });
+
+    // home conference preview (top 3)
+    const confPreview = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s2').slice(0,3)}));
+
+    // results decorated
+    const decGame = g => { const A=this.team(g.a), B=this.team(g.b); return {id:g.id, A, B, sa:g.sa, sb:g.sb, rd:g.rd, w:g.w, round:this.RDSHORT[g.rd], roundLabel:this.RDLABEL[g.rd],
+      saCol: g.w==='a'?'#fff':(g.w==='t'?'#cdd8e4':'#647c96'), sbCol: g.w==='b'?'#fff':(g.w==='t'?'#cdd8e4':'#647c96'),
+      open:()=>this.go('game',{gameId:g.id})}; };
+    const results = this.RESULTS.map(decGame);
+    const resultGroups = [];
+    results.forEach(g=>{ let grp=resultGroups.find(x=>x.rd===g.rd); if(!grp){grp={rd:g.rd,label:this.RDLABEL[g.rd],items:[]};resultGroups.push(grp);} grp.items.push(g); });
+
+    // moves
+    const mt = st.moveType, msn = st.moveSeason;
+    const decPick = arr => { const t=this.team(arr[1]); const forf=arr[3]==='F'; const um=forf?null:this.userMeta(arr[3]);
+      return {pk:String(arr[0]).padStart(2,'0'), abbr:t?t.abbr:'', color:t?t.c:'#333', name:forf?'Forfeited':arr[2], nameCol:forf?'#5f758f':'#e7eef6', u:forf?'':arr[3], userCol:um?um.col:'', userTint:um?um.tint:''}; };
+    const movesAll = this.MOVES.filter(m=>(mt==='all'||m.type===mt) && (msn==='all'||m.s===msn)).map(m=>{ const meta=this.MTYPE[m.type]; const badges=[]; if(m.a)badges.push(this.team(m.a)); if(m.b)badges.push(this.team(m.b));
+      return {...m, ...meta, typeLabel:meta.label, badges, hasPicks:!!m.picks, picks: m.picks==='s1'?this.S1PICKS.map(decPick):(m.picks==='s2'?this.S2PICKS.map(decPick):[])}; });
+    const moveGroups=[]; movesAll.forEach(m=>{ let grp=moveGroups.find(x=>x.phase===m.phase); if(!grp){grp={phase:m.phase,items:[]};moveGroups.push(grp);} grp.items.push(m); });
+    const latestMoves = this.MOVES.slice(0,3).map(m=>{ const meta=this.MTYPE[m.type]; return {title:m.title, when:m.phase.replace('Season','S').replace(' · ',' · ')+' · '+m.when, badge:meta.badge, color:meta.color, tint:meta.tint}; });
+    const moveTypeChips = [['all','All'],['trade','Trades'],['draft','Draft'],['sign','Signings'],['injury','Injuries'],['lineup','Lineup']].map(([k,lbl])=>({label:lbl, active:mt===k, onClick:()=>this.setState({moveType:k}), bg:mt===k?'#173650':'rgba(255,255,255,.05)', fg:mt===k?'#7fd0ff':'#9db2cc', bd:mt===k?'#2c6c98':'rgba(255,255,255,.09)'}));
+    const moveSeasonChips = [['all','All'],['2','Season 2'],['1','Season 1']].map(([k,lbl])=>this.seg(lbl, msn===k, ()=>this.setState({moveSeason:k})));
+
+    // players directory
+    const pq = st.pq.trim().toLowerCase();
+    const decPlayer = p => { const tm=this.team(p.t); const um=this.userMeta(p.u); const fm=this.flagMeta(p.st);
+      return {...p, team:tm, roleLabel:p.r==='S'?'Starter':'Backup', userName:um.name, userCol:um.col, userTint:um.tint,
+        roleCol:p.r==='S'?'#7fd0ff':'#9db2cc', roleTint:p.r==='S'?'rgba(41,160,234,.14)':'rgba(255,255,255,.06)',
+        flag:fm?fm.label:'', flagCol:fm?fm.col:'', flagTint:fm?fm.tint:'',
+        hasAwards:!!(p.aw&&p.aw.length), aw:p.aw||[],
+        open:()=>this.go('player',{pName:p.n}), openTeam:()=>this.go('team',{teamId:p.t})}; };
+    let playerList = this.PLAYERS.filter(p=> !pq || (p.n+' '+this.team(p.t).name).toLowerCase().includes(pq));
+    playerList = playerList.map(decPlayer);
+
+    // selected team detail
+    const selTeam = flags.isTeam ? this.team(this.cur().teamId) : null;
+    let td=null;
+    if(selTeam){
+      const roster = this.PLAYERS.filter(p=>p.t===selTeam.id).map(decPlayer);
+      const byUser = u => roster.filter(p=>p.u===u).sort((a,b)=> (a.r==='S'?0:1)-(b.r==='S'?0:1));
+      const rosterGroups = [{user:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)', players:byUser('G')},{user:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)', players:byUser('N')}];
+      const staff = this.COACHES.filter(c=>c.t===selTeam.id).map(c=>({...c, roleLabel:this.ROLELABEL[c.role]}));
+      const games = results.filter(g=>g.A.id===selTeam.id||g.B.id===selTeam.id);
+      td = {...selTeam, confName:this.CONFS[selTeam.conf].name, confAbbr:this.CONFS[selTeam.conf].abbr, rec:this.recStr(selTeam.s2), rank:this.rankInConf(selTeam.id), rings:this.RINGS[selTeam.id]||0,
+        rosterGroups, staff, games,
+        tdTabs:[this.seg('Overview',st.tdTab==='overview',()=>this.setState({tdTab:'overview'})),this.seg('Roster',st.tdTab==='roster',()=>this.setState({tdTab:'roster'})),this.seg('Schedule',st.tdTab==='schedule',()=>this.setState({tdTab:'schedule'}))]};
+    }
+
+    // selected game
+    const selGame = flags.isGame ? this.RESULTS.find(x=>x.id===this.cur().gameId) : null;
+    let gd=null;
+    if(selGame){ const g=decGame(selGame);
+      const lineup = (teamId, score, scoreCol) => ({team:this.team(teamId), score, scoreCol, players:this.PLAYERS.filter(p=>p.t===teamId && p.r==='S').map(decPlayer)});
+      gd = {...g, lineups:[lineup(selGame.a, selGame.sa, g.saCol), lineup(selGame.b, selGame.sb, g.sbCol)]};
+    }
+
+    // selected player
+    let pd=null;
+    if(flags.isPlayer){ const pl=this.PLAYERS.find(p=>p.n===this.cur().pName); if(pl) pd=decPlayer(pl); }
+    if(pd){ const mk=sp=>{ const l=this.statLine(pd.n,sp); return l?{gp:l[0],g:l[1],a:l[2],sv:l[3],sh:l[4],w:l[5]}:null; };
+      const rows=[]; const s1=mk('rs1'), s2=mk('rs2'), car=mk('career');
+      if(s1) rows.push({label:'Season 1', ...s1}); if(s2) rows.push({label:'Season 2', ...s2}); if(car) rows.push({label:'Career', ...car, hl:true});
+      pd.stRows=rows.map(rr=>({...rr, rowBg: rr.hl?'rgba(70,166,239,.09)':'transparent', labelCol: rr.hl?'#7fd0ff':'#cdd8e4'})); pd.hasStats=rows.length>0; pd.noStats=rows.length===0; pd.stPO=mk('playoffs'); pd.hasPO=!!pd.stPO; }
+
+    // standings
+    const sv = st.standSeason;
+    const standConfs = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf, sv==='s1'?'s1':'s2')}));
+    const champMap={s1:this.CHAMPS[0],s2:this.CHAMPS[1],s3:this.CHAMPS[2]};
+    const scz=champMap[sv]||this.CHAMPS[1]; const sczTeam=scz.champ?this.team(scz.champ):null;
+
+    // notifications
+    const notifs = st.notifs.map(n=>({...n, ...(this.NTYPE[n.type]||this.NTYPE.news)}));
+    const unreadCount = st.notifs.filter(n=>n.unread).length;
+
+    const STATCATS=[['g','Goals',1],['a','Assists',2],['sv','Saves',3],['sh','Shots',4],['w','Wins',5]];
+    const catIx={g:1,a:2,sv:3,sh:4,w:5};
+    const statSplitKey = st.statSplit==='season' ? (st.statSeason==='1'?'rs1':'rs2') : st.statSplit;
+    const _ci = catIx[st.statCat];
+    let _board = this.PLAYERS.map(pl=>{ const line=this.statLine(pl.n, statSplitKey); return line?{pl,line,val:line[_ci]}:null; }).filter(x=>x && x.val>0);
+    _board.sort((x,y)=> (y.val-x.val) || (y.line[0]-x.line[0]));
+    const _bmax=_board.length?_board[0].val:1;
+    const statBoard=_board.map((o,i)=>{ const dp=decPlayer(o.pl); return {...dp, rank:i+1, val:o.val, gp:o.line[0], bar:Math.round(o.val/_bmax*100), rankCol:i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f')}; });
+    const statSplitChips=[['season','Season'],['career','Career'],['playoffs','Playoffs']].map(x=>this.seg(x[1], st.statSplit===x[0], ()=>this.setState({statSplit:x[0]})));
+    const statSeasonChips=[['1','Season 1'],['2','Season 2']].map(x=>this.seg(x[1], st.statSeason===x[0], ()=>this.setState({statSeason:x[0]})));
+    const statCatChips=STATCATS.map(c=>({label:c[1], active:st.statCat===c[0], onClick:()=>this.setState({statCat:c[0]}), bg:st.statCat===c[0]?'#173650':'rgba(255,255,255,.05)', fg:st.statCat===c[0]?'#7fd0ff':'#9db2cc', bd:st.statCat===c[0]?'#2c6c98':'rgba(255,255,255,.09)'}));
+    const statCatLabel=(STATCATS.find(c=>c[0]===st.statCat)||STATCATS[0])[1];
+    const statTitle= st.statSplit==='season'?('Season '+st.statSeason):(st.statSplit==='career'?'Career':'Playoffs');
+    const titleMap={home:'NRL',teams:'Teams',scores:'Scores',standings:'Standings',moves:'Player Moves',stats:'Stats',game:'Game',player:'Player',notifs:'Notifications'};
+    let title=titleMap[r]||'';
+    if(flags.isTeam&&selTeam) title=selTeam.name;
+    if(flags.isPlayer&&pd) title=pd.n;
+
+    const tc = k => base===k ? '#46a6ef' : '#63788f';
+
+    return {
+      ...flags, showBack, showBrand:!showBack, title, cd,
+      hasUnread:unreadCount>0, unreadCount, toast:st.toast,
+      champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
+      standIsS1:sv==='s1', standIsS2:sv==='s2',
+      confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s2')})),
+      teamSegs:[this.seg('Teams',st.teamSeg==='teams',()=>this.setState({teamSeg:'teams'})),this.seg('Players',st.teamSeg==='players',()=>this.setState({teamSeg:'players'}))],
+      teamViewTeams:st.teamSeg==='teams', teamViewPlayers:st.teamSeg==='players',
+      playerList, playerCount:this.PLAYERS.length, playerEmpty:playerList.length===0, pq:st.pq,
+      onPQ:(e)=>this.setState({pq:e.target.value}), clearPQ:()=>this.setState({pq:''}),
+      td, tdOverview:st.tdTab==='overview', tdRoster:st.tdTab==='roster', tdSchedule:st.tdTab==='schedule',
+      gd, pd,
+      scoreSegs:[this.seg('Results',st.scoresSeg==='results',()=>this.setState({scoresSeg:'results'})),this.seg('Schedule',st.scoresSeg==='schedule',()=>this.setState({scoresSeg:'schedule'}))],
+      scoreResults:st.scoresSeg==='results', scoreSchedule:st.scoresSeg==='schedule', resultGroups,
+      seasonChips:[this.seg('Season 1',sv==='s1',()=>this.setState({standSeason:'s1'})),this.seg('Season 2',sv==='s2',()=>this.setState({standSeason:'s2'})),this.seg('Season 3',sv==='s3',()=>this.setState({standSeason:'s3'}))],
+      standConfs, standTable:sv!=='s3', standS3:sv==='s3',
+      standLabel:scz.label+(sv==='s3'?' · UPCOMING':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},
+      moveGroups, moveTypeChips, moveSeasonChips,
+      notifs, markAllRead:()=>{ this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); this.showToast("You're all caught up"); },
+      follow:()=>this.showToast(selTeam?'Following '+selTeam.name:'Following team'),
+      setScrollRef:(el)=>{ this._scroll=el; }, back:()=>this.back(), openNotifs:()=>this.go('notifs'),
+      navHome:()=>this.setTab('home'), navTeams:()=>this.setTab('teams'), navScores:()=>this.setTab('scores'), navStandings:()=>this.setTab('standings'), navMoves:()=>this.setTab('moves'), navStats:()=>this.setTab('stats'),
+      homeCol:tc('home'), teamsCol:tc('teams'), scoresCol:tc('scores'), standCol:tc('standings'), movesCol:tc('moves'), statsCol:tc('stats'),
+      statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonChips, statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',
+    };
+  }
+}
+</script>
+</body>
+</html>

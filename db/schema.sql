@@ -3,7 +3,7 @@
 
 DROP VIEW IF EXISTS v_career_coach_stats, v_career_stats, v_playoff_career_stats, v_standings CASCADE;
 DROP TABLE IF EXISTS player_season_stats, coach_season_stats, games, draft_picks,
-  free_agents, records, players, coaches, teams, seasons, users CASCADE;
+  draft_board, moves, free_agents, records, players, coaches, teams, seasons, users CASCADE;
 
 CREATE TABLE users (
   id    serial PRIMARY KEY,
@@ -25,9 +25,16 @@ CREATE TABLE teams (
 );
 
 CREATE TABLE players (
-  id       serial PRIMARY KEY,
-  name     text UNIQUE NOT NULL,
-  user_id  int REFERENCES users(id)
+  id         serial PRIMARY KEY,
+  name       text UNIQUE NOT NULL,
+  user_id    int REFERENCES users(id),
+  -- current-roster snapshot (source: design export; workbook has no roster metadata)
+  team_id    int REFERENCES teams(id),
+  role       char(1),               -- 'S' starter / 'B' backup
+  origin     text,                  -- e.g. 'S1 Draft · Pick 1', 'Signed · Undrafted FA'
+  status     text,                  -- 'inj' / 'out' / 'bench' / NULL
+  awards     text[],                -- e.g. {'S1 MVP','S1 All-Star Starter'}
+  on_roster  boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE coaches (
@@ -103,6 +110,33 @@ CREATE TABLE records (
   amount        numeric,
   season_broken text,
   date_broken   text
+);
+
+-- Ordered draft board (source: design export). Distinct from draft_picks,
+-- which holds the workbook's per-player star ratings.
+CREATE TABLE draft_board (
+  id          serial PRIMARY KEY,
+  season_id   int NOT NULL REFERENCES seasons(id),
+  pick_no     int NOT NULL,
+  team_id     int REFERENCES teams(id),
+  player_name text,                 -- NULL when the pick was forfeited
+  owner       char(1),              -- 'G' Griffin / 'N' Nolan / 'F' forfeited
+  UNIQUE (season_id, pick_no)
+);
+
+-- Roster moves / transactions (source: design export; no workbook sheet).
+CREATE TABLE moves (
+  id          text PRIMARY KEY,     -- 'm1'..'m9' from the design
+  season_id   int REFERENCES seasons(id),
+  phase       text,                 -- 'Season 2 · Draft Night'
+  type        text NOT NULL,        -- trade / draft / sign / injury / lineup
+  when_label  text,                 -- 'Week 4', 'Draft Night', 'Preseason'
+  title       text NOT NULL,
+  detail      text,
+  team_a      int REFERENCES teams(id),
+  team_b      int REFERENCES teams(id),
+  picks_ref   text,                 -- 's1' / 's2' -> draft_board season, else NULL
+  sort_order  int NOT NULL          -- preserves the design's ordering
 );
 
 CREATE INDEX ON player_season_stats (season_id, is_playoff);

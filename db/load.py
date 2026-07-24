@@ -12,7 +12,7 @@ DSN  = os.environ.get("DATABASE_URL_UNPOOLED") or os.environ["DATABASE_URL"]
 
 CONF = {  # conference assignment
  "Surge":"F","Coyotes":"F","Frogs":"F","Guardians":"F","Barracudas":"F",
- "Vortex":"H","Scorpions":"H","Goats":"H","Turtles":"H",
+ "Vortex":"H","Scorpions":"H","Goats":"H","Turtles":"H","Vipers":"H",
 }
 
 def clean(v):
@@ -32,16 +32,30 @@ def inum(v):
     f = num(v)
     return int(f) if f is not None else None
 
+def score(v):
+    """Parse a game-score cell. Nulls Excel errors, and folds OT/shootout
+    notation like '11+1' into a single total (12)."""
+    s = clean(v)
+    if s is None: return None
+    if "+" in s:
+        try: return int(sum(float(x) for x in s.split("+")))
+        except ValueError: return None
+    return inum(s)
+
 def slug(name):
     return re.sub(r"[^a-z0-9]+","-", name.lower()).strip("-")
 
 SEED_RE = re.compile(r"^#(\d+)\s+(.*)$")
 def split_seed(v):
-    """'#3 Frogs' -> (3, 'Frogs');  'Frogs' -> (None, 'Frogs')"""
-    s = clean(v)
-    if s is None: return None, None
+    """'#3 Frogs' -> (3, 'Frogs');  'Frogs' -> (None, 'Frogs').
+    Note: does NOT run clean() first — clean() drops '#'-prefixed values,
+    which would nuke every seeded playoff team name."""
+    if v is None: return None, None
+    s = str(v).strip()
+    if not s or s in ("——", "--", "—"): return None, None
     m = SEED_RE.match(s)
-    return (int(m.group(1)), m.group(2).strip()) if m else (None, s)
+    if m: return int(m.group(1)), m.group(2).strip()
+    return (None, None) if s.startswith("#") else (None, s)
 
 wb = openpyxl.load_workbook(XLSX, data_only=True)
 cx = psycopg2.connect(DSN); cur = cx.cursor()
@@ -135,12 +149,17 @@ for s in (1,2,3):
     tot_c += load_coaches(f"Season {s} Playoff Coach Stat She", s, True)
 
 # ---- games ------------------------------------------------------------
+# These fact tables have no natural key, so re-running would duplicate rows.
+# Clear them first to keep the loader idempotent (dimensions/stats above use
+# ON CONFLICT and are safe to re-run).
+cur.execute("TRUNCATE games, draft_picks, free_agents, records RESTART IDENTITY")
+
 g = 0
 for r in wb["Regular Season Game Scores All-"].iter_rows(min_row=2, values_only=True):
     if not clean(r[0]): continue
     cur.execute("""INSERT INTO games(season_id,is_playoff,week,away_team_id,away_score,home_team_id,home_score)
                    VALUES(%s,false,%s,%s,%s,%s,%s)""",
-        (season_id(num(r[0])), inum(r[1]), team_id(r[2]), inum(r[3]), team_id(r[4]), inum(r[5])))
+        (season_id(num(r[0])), inum(r[1]), team_id(r[2]), score(r[3]), team_id(r[4]), score(r[5])))
     g += 1
 
 for r in wb["Playoff Game Scores All-Time"].iter_rows(min_row=2, values_only=True):
@@ -151,7 +170,7 @@ for r in wb["Playoff Game Scores All-Time"].iter_rows(min_row=2, values_only=Tru
                      away_team_id,away_score,away_seed,home_team_id,home_score,home_seed)
                    VALUES(%s,true,%s,%s,%s,%s,%s,%s,%s,%s)""",
         (season_id(num(r[0])), clean(r[1]), inum(r[2]),
-         team_id(aname), inum(r[4]), aseed, team_id(hname), inum(r[6]), hseed))
+         team_id(aname), score(r[4]), aseed, team_id(hname), score(r[6]), hseed))
     g += 1
 
 # ---- draft classes & free agents --------------------------------------

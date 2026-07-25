@@ -594,6 +594,8 @@ class Component extends DCLogic {
     sign:   {label:'SIGNING', badge:'SGN', color:'#37c98a', tint:'rgba(55,201,138,.15)'},
     injury: {label:'INJURY',  badge:'INJ', color:'#ff5f5f', tint:'rgba(255,95,95,.15)'},
     lineup: {label:'LINEUP',  badge:'LNP', color:'#f5a531', tint:'rgba(245,165,49,.15)'},
+    cut:    {label:'CUT',      badge:'CUT', color:'#ff8a5f', tint:'rgba(255,138,95,.15)'},
+    coach:  {label:'COACHING', badge:'CCH', color:'#5fd0c9', tint:'rgba(95,208,201,.15)'},
   };
   MOVES = [
     {id:'m1', s:'2', phase:'Season 2 · In-Season', type:'injury', when:'Week 4', title:'Watt Zapper — Engine Failure', detail:'Surge starter (Nolan) is sidelined for 3 games with an engine failure.', a:'surge'},
@@ -755,8 +757,8 @@ class Component extends DCLogic {
       return {...m, ...meta, typeLabel:meta.label, badges, hasPicks:!!m.picks, picks: m.picks==='s1'?this.S1PICKS.map(decPick):(m.picks==='s2'?this.S2PICKS.map(decPick):[])}; });
     const moveGroups=[]; movesAll.forEach(m=>{ let grp=moveGroups.find(x=>x.phase===m.phase); if(!grp){grp={phase:m.phase,items:[]};moveGroups.push(grp);} grp.items.push(m); });
     const latestMoves = this.MOVES.slice(0,3).map(m=>{ const meta=this.MTYPE[m.type]; return {title:m.title, when:m.phase.replace('Season','S').replace(' · ',' · ')+' · '+m.when, badge:meta.badge, color:meta.color, tint:meta.tint}; });
-    const moveTypeChips = [['all','All'],['trade','Trades'],['draft','Draft'],['sign','Signings'],['injury','Injuries'],['lineup','Lineup']].map(([k,lbl])=>({label:lbl, active:mt===k, onClick:()=>this.setState({moveType:k}), bg:mt===k?'#173650':'rgba(255,255,255,.05)', fg:mt===k?'#7fd0ff':'#9db2cc', bd:mt===k?'#2c6c98':'rgba(255,255,255,.09)'}));
-    const moveSeasonChips = [['all','All'],['2','Season 2'],['1','Season 1']].map(([k,lbl])=>this.seg(lbl, msn===k, ()=>this.setState({moveSeason:k})));
+    const moveTypeChips = [['all','All'],['trade','Trades'],['draft','Draft'],['sign','Signings'],['cut','Cuts'],['coach','Coaching'],['injury','Injuries'],['lineup','Lineup']].map(([k,lbl])=>({label:lbl, active:mt===k, onClick:()=>this.setState({moveType:k}), bg:mt===k?'#173650':'rgba(255,255,255,.05)', fg:mt===k?'#7fd0ff':'#9db2cc', bd:mt===k?'#2c6c98':'rgba(255,255,255,.09)'}));
+    const moveSeasonChips = [['all','All'],['3','Season 3'],['2','Season 2'],['1','Season 1']].map(([k,lbl])=>this.seg(lbl, msn===k, ()=>this.setState({moveSeason:k})));
 
     // players directory
     const pq = st.pq.trim().toLowerCase();

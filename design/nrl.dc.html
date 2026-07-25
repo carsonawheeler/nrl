@@ -340,10 +340,16 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <sc-if value="{{ isScores }}">
 <div style="padding-bottom:112px;padding-top:2px">
 <div style="margin:0 14px 10px;position:relative">
-<select value="{{ scoreSeason }}" onChange="{{ onScoreSeason }}" style="width:100%;color-scheme:dark;appearance:none;-webkit-appearance:none;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 40px 12px 14px;cursor:pointer;outline:none">
-<sc-for list="{{ scoreSeasonOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
-</select>
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
+<button onClick="{{ onScoreMenu }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 14px;cursor:pointer;outline:none;text-align:left">
+<span>{{ scoreSeasonLabel }}</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;flex:none"><path d="M6 9l6 6 6-6"/></svg>
+</button>
+<sc-if value="{{ scoreMenuOpen }}">
+<button onClick="{{ onScoreMenu }}" style="position:fixed;inset:0;z-index:40;background:transparent;border:none;cursor:default"></button>
+<div style="position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:#0c1826;border:1px solid rgba(255,255,255,.12);border-radius:13px;overflow:hidden;box-shadow:0 12px 30px -8px rgba(0,0,0,.7)">
+<sc-for list="{{ scoreSeasonOptions }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="width:100%;text-align:left;background:{{ o.bg }};border:none;border-bottom:1px solid rgba(255,255,255,.05);color:{{ o.fg }};font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 14px;cursor:pointer">{{ o.label }}</button></sc-for>
+</div>
+</sc-if>
 </div>
 <div style="margin:0 18px 4px;font:500 11.5px/1.4 'Barlow';color:#8296ad">{{ scoreCaption }}</div>
 <sc-for list="{{ resultGroups }}" as="grp" hint-placeholder-count="3">
@@ -444,10 +450,16 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <sc-if value="{{ isMoves }}">
 <div style="padding-bottom:112px;padding-top:2px">
 <div style="margin:0 14px 10px;position:relative">
-<select value="{{ moveSeason }}" onChange="{{ onMoveSeason }}" style="width:100%;color-scheme:dark;appearance:none;-webkit-appearance:none;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 40px 12px 14px;cursor:pointer;outline:none">
-<sc-for list="{{ moveSeasonOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
-</select>
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
+<button onClick="{{ onMoveMenu }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 14px;cursor:pointer;outline:none;text-align:left">
+<span>{{ moveSeasonLabel }}</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;flex:none"><path d="M6 9l6 6 6-6"/></svg>
+</button>
+<sc-if value="{{ moveMenuOpen }}">
+<button onClick="{{ onMoveMenu }}" style="position:fixed;inset:0;z-index:40;background:transparent;border:none;cursor:default"></button>
+<div style="position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:#0c1826;border:1px solid rgba(255,255,255,.12);border-radius:13px;overflow:hidden;box-shadow:0 12px 30px -8px rgba(0,0,0,.7)">
+<sc-for list="{{ moveSeasonOptions }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.onClick }}" style="width:100%;text-align:left;background:{{ o.bg }};border:none;border-bottom:1px solid rgba(255,255,255,.05);color:{{ o.fg }};font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 14px;cursor:pointer">{{ o.label }}</button></sc-for>
+</div>
+</sc-if>
 </div>
 <div data-sc style="display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px">
 <sc-for list="{{ moveTypeChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="flex:none;border:1px solid {{ c.bd }};cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};font:700 11px 'Barlow';letter-spacing:.4px;padding:8px 14px;border-radius:20px;white-space:nowrap">{{ c.label }}</button></sc-for>
@@ -490,10 +502,16 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 </div>
 <sc-if value="{{ isSeasonSplit }}">
 <div style="margin:0 14px 10px;position:relative">
-<select value="{{ statSeason }}" onChange="{{ onStatSeason }}" style="width:100%;color-scheme:dark;appearance:none;-webkit-appearance:none;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 40px 12px 14px;cursor:pointer;outline:none">
-<sc-for list="{{ statSeasonOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
-</select>
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
+<button onClick="{{ onStatMenu }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 14px;cursor:pointer;outline:none;text-align:left">
+<span>{{ statSeasonLabel }}</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;flex:none"><path d="M6 9l6 6 6-6"/></svg>
+</button>
+<sc-if value="{{ statMenuOpen }}">
+<button onClick="{{ onStatMenu }}" style="position:fixed;inset:0;z-index:40;background:transparent;border:none;cursor:default"></button>
+<div style="position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:#0c1826;border:1px solid rgba(255,255,255,.12);border-radius:13px;overflow:hidden;box-shadow:0 12px 30px -8px rgba(0,0,0,.7)">
+<sc-for list="{{ statSeasonOptions }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="width:100%;text-align:left;background:{{ o.bg }};border:none;border-bottom:1px solid rgba(255,255,255,.05);color:{{ o.fg }};font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 14px;cursor:pointer">{{ o.label }}</button></sc-for>
+</div>
+</sc-if>
 </div>
 </sc-if>
 <div data-sc style="display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px">
@@ -660,6 +678,7 @@ class Component extends DCLogic {
   state = {
     stack: [{s: (this.props && this.props.startScreen) || 'home'}],
     teamSeg:'teams', tdTab:'overview', scoreSeason:null, standSeason:'s2',
+    scoreMenuOpen:false, moveMenuOpen:false, statMenuOpen:false,
     moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'2', statCat:'g',
     notifs: [
       {id:'n1', type:'result',    time:'Now',       title:'Surge win the Season 2 Championship', body:'Surge sweep the Vipers in the Finals to claim their first NRL title.', unread:true},
@@ -802,7 +821,7 @@ class Component extends DCLogic {
     const scoredNums = [...new Set(this.RESULTS.filter(g=>g.sa!=='').map(g=>g.s))];
     const defScoreSeason = scoredNums.length ? String(Math.max(...scoredNums.map(Number))) : (scoreSeasonNums[scoreSeasonNums.length-1]||'1');
     const scoreSeason = st.scoreSeason || defScoreSeason;
-    const scoreSeasonOptions = scoreSeasonNums.map(s=>({value:s, label:'Season '+s}));
+    const scoreSeasonOptions = scoreSeasonNums.map(s=>({value:s, label:'Season '+s, active:s===scoreSeason, bg:s===scoreSeason?'#173650':'#0c1826', fg:s===scoreSeason?'#7fd0ff':'#eef4fb', onClick:()=>this.setState({scoreSeason:s, scoreMenuOpen:false})}));
     const results = this.RESULTS.filter(g=>g.s===scoreSeason).map(decGame);
     const resultGroups = [];
     results.forEach(g=>{ let grp=resultGroups.find(x=>x.rd===g.rd); if(!grp){grp={rd:g.rd,label:this.RDLABEL[g.rd],items:[]};resultGroups.push(grp);} grp.items.push(g); });
@@ -821,7 +840,7 @@ class Component extends DCLogic {
     const moveGroups=[]; movesAll.forEach(m=>{ let grp=moveGroups.find(x=>x.phase===m.phase); if(!grp){grp={phase:m.phase,items:[]};moveGroups.push(grp);} grp.items.push(m); });
     const latestMoves = this.MOVES.slice(0,3).map(m=>{ const meta=this.MTYPE[m.type]; return {title:m.title, when:m.phase.replace('Season','S').replace(' · ',' · ')+' · '+m.when, badge:meta.badge, color:meta.color, tint:meta.tint}; });
     const moveTypeChips = [['all','All'],['trade','Trades'],['draft','Draft'],['sign','Signings'],['cut','Cuts'],['coach','Coaching'],['injury','Injuries'],['lineup','Lineup']].map(([k,lbl])=>({label:lbl, active:mt===k, onClick:()=>this.setState({moveType:k}), bg:mt===k?'#173650':'rgba(255,255,255,.05)', fg:mt===k?'#7fd0ff':'#9db2cc', bd:mt===k?'#2c6c98':'rgba(255,255,255,.09)'}));
-    const moveSeasonOptions = [['all','All Seasons'],['1','Season 1'],['2','Season 2'],['3','Season 3']].map(([value,label])=>({value,label}));
+    const moveSeasonOptions = [['all','All Seasons'],['1','Season 1'],['2','Season 2'],['3','Season 3']].map(([value,label])=>({value,label, active:value===st.moveSeason, bg:value===st.moveSeason?'#173650':'#0c1826', fg:value===st.moveSeason?'#7fd0ff':'#eef4fb', onClick:()=>this.setState({moveSeason:value, moveMenuOpen:false})}));
 
     // players directory
     const pq = st.pq.trim().toLowerCase();
@@ -929,7 +948,7 @@ class Component extends DCLogic {
                  : (o.pl._isFA ? {c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent'} : dp.team);
       return {...dp, team, rank:i+1, val:o.val, gp:o.line[0], bar:Math.round(o.val/_bmax*100), rankCol:i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f')}; });
     const statSplitChips=[['season','Season'],['career','Career'],['playoffs','Playoffs']].map(x=>this.seg(x[1], st.statSplit===x[0], ()=>this.setState({statSplit:x[0]})));
-    const statSeasonOptions=[['1','Season 1'],['2','Season 2']].map(([value,label])=>({value,label}));
+    const statSeasonOptions=[['1','Season 1'],['2','Season 2']].map(([value,label])=>({value,label, active:value===st.statSeason, bg:value===st.statSeason?'#173650':'#0c1826', fg:value===st.statSeason?'#7fd0ff':'#eef4fb', onClick:()=>this.setState({statSeason:value, statMenuOpen:false})}));
     const statCatChips=STATCATS.map(c=>({label:c[1], active:st.statCat===c[0], onClick:()=>this.setState({statCat:c[0]}), bg:st.statCat===c[0]?'#173650':'rgba(255,255,255,.05)', fg:st.statCat===c[0]?'#7fd0ff':'#9db2cc', bd:st.statCat===c[0]?'#2c6c98':'rgba(255,255,255,.09)'}));
     const statCatLabel=(STATCATS.find(c=>c[0]===st.statCat)||STATCATS[0])[1];
     const statTitle= st.statSplit==='season'?('Season '+st.statSeason):(st.statSplit==='career'?'Career':'Playoffs');
@@ -952,17 +971,17 @@ class Component extends DCLogic {
       onPQ:(e)=>this.setState({pq:e.target.value}), clearPQ:()=>this.setState({pq:''}),
       td, tdOverview:st.tdTab==='overview', tdRoster:st.tdTab==='roster', tdSchedule:st.tdTab==='schedule',
       gd, pd,
-      scoreSeason, onScoreSeason:(e)=>this.setState({scoreSeason:e.target.value}), scoreSeasonOptions, scoreCaption, resultGroups, scoreEmpty:resultGroups.length===0,
+      scoreSeason, scoreMenuOpen:st.scoreMenuOpen, onScoreMenu:()=>this.setState(s=>({scoreMenuOpen:!s.scoreMenuOpen})), scoreSeasonLabel:(scoreSeasonOptions.find(o=>o.value===scoreSeason)||{}).label||('Season '+scoreSeason), scoreSeasonOptions, scoreCaption, resultGroups, scoreEmpty:resultGroups.length===0,
       seasonChips:[this.seg('Season 1',sv==='s1',()=>this.setState({standSeason:'s1'})),this.seg('Season 2',sv==='s2',()=>this.setState({standSeason:'s2'})),this.seg('Season 3',sv==='s3',()=>this.setState({standSeason:'s3'}))],
       standConfs, standTable:sv!=='s3', standS3:sv==='s3',
       standLabel:scz.label+(sv==='s3'?' · UPCOMING':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},
-      moveGroups, moveTypeChips, moveSeasonOptions, moveSeason:st.moveSeason, onMoveSeason:(e)=>this.setState({moveSeason:e.target.value}),
+      moveGroups, moveTypeChips, moveSeasonOptions, moveSeason:st.moveSeason, moveMenuOpen:st.moveMenuOpen, onMoveMenu:()=>this.setState(s=>({moveMenuOpen:!s.moveMenuOpen})), moveSeasonLabel:(moveSeasonOptions.find(o=>o.value===st.moveSeason)||{}).label||'All Seasons',
       notifs, markAllRead:()=>{ this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); this.showToast("You're all caught up"); },
       follow:()=>this.showToast(selTeam?'Following '+selTeam.name:'Following team'),
       setScrollRef:(el)=>{ this._scroll=el; }, back:()=>this.back(), openNotifs:()=>this.go('notifs'),
       navHome:()=>this.setTab('home'), navTeams:()=>this.setTab('teams'), navScores:()=>this.setTab('scores'), navStandings:()=>this.setTab('standings'), navMoves:()=>this.setTab('moves'), navStats:()=>this.setTab('stats'),
       homeCol:tc('home'), teamsCol:tc('teams'), scoresCol:tc('scores'), standCol:tc('standings'), movesCol:tc('moves'), statsCol:tc('stats'),
-      statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonOptions, statSeason:st.statSeason, onStatSeason:(e)=>this.setState({statSeason:e.target.value}), statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',
+      statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonOptions, statSeason:st.statSeason, statMenuOpen:st.statMenuOpen, onStatMenu:()=>this.setState(s=>({statMenuOpen:!s.statMenuOpen})), statSeasonLabel:(statSeasonOptions.find(o=>o.value===st.statSeason)||{}).label||('Season '+st.statSeason), statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',
       faAvailable, faCut, faAvailCount, faCutCount, faTotal:faAvailCount+faCutCount, faHasAvail:faAvailCount>0, faHasCut:faCutCount>0, openFreeAgents:()=>this.go('freeagents'),
     };
   }

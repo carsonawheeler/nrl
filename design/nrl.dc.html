@@ -401,8 +401,11 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 
 <sc-if value="{{ isMoves }}">
 <div style="padding-bottom:112px;padding-top:2px">
-<div style="margin:0 14px 10px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
-<sc-for list="{{ moveSeasonChips }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+<div style="margin:0 14px 10px;position:relative">
+<select value="{{ moveSeason }}" onChange="{{ onMoveSeason }}" style="width:100%;appearance:none;-webkit-appearance:none;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 40px 12px 14px;cursor:pointer;outline:none">
+<sc-for list="{{ moveSeasonOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}" style="background:#0c1826;color:#eef4fb">{{ o.label }}</option></sc-for>
+</select>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
 </div>
 <div data-sc style="display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px">
 <sc-for list="{{ moveTypeChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="flex:none;border:1px solid {{ c.bd }};cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};font:700 11px 'Barlow';letter-spacing:.4px;padding:8px 14px;border-radius:20px;white-space:nowrap">{{ c.label }}</button></sc-for>
@@ -588,6 +591,7 @@ class Component extends DCLogic {
     [13,'vortex','—','F'],[14,'coyotes','Cactus Carl','G'],[15,'frogs','Quack Johnson','G'],[16,'scorpions','Benny Bagel','N'],
     [17,'goats','Colby Cheddar','G'],[18,'surge','Marty Moose','G'],[19,'guardians','Rocky Balboulder','G'],[20,'turtles','Carter Cone','G'],
   ];
+  S3PICKS = [];
   MTYPE = {
     trade:  {label:'TRADE',   badge:'TRD', color:'#46a6ef', tint:'rgba(41,160,234,.15)'},
     draft:  {label:'DRAFT',   badge:'DFT', color:'#9b7cff', tint:'rgba(155,124,255,.16)'},
@@ -754,11 +758,11 @@ class Component extends DCLogic {
     const decPick = arr => { const t=this.team(arr[1]); const forf=arr[3]==='F'; const um=forf?null:this.userMeta(arr[3]);
       return {pk:String(arr[0]).padStart(2,'0'), abbr:t?t.abbr:'', color:t?t.c:'#333', name:forf?'Forfeited':arr[2], nameCol:forf?'#5f758f':'#e7eef6', u:forf?'':arr[3], userCol:um?um.col:'', userTint:um?um.tint:''}; };
     const movesAll = this.MOVES.filter(m=>(mt==='all'||m.type===mt) && (msn==='all'||m.s===msn)).map(m=>{ const meta=this.MTYPE[m.type]; const badges=[]; if(m.a)badges.push(this.team(m.a)); if(m.b)badges.push(this.team(m.b));
-      return {...m, ...meta, typeLabel:meta.label, badges, hasPicks:!!m.picks, picks: m.picks==='s1'?this.S1PICKS.map(decPick):(m.picks==='s2'?this.S2PICKS.map(decPick):[])}; });
+      return {...m, ...meta, typeLabel:meta.label, badges, hasPicks:!!m.picks, picks: m.picks==='s1'?this.S1PICKS.map(decPick):(m.picks==='s2'?this.S2PICKS.map(decPick):(m.picks==='s3'?this.S3PICKS.map(decPick):[]))}; });
     const moveGroups=[]; movesAll.forEach(m=>{ let grp=moveGroups.find(x=>x.phase===m.phase); if(!grp){grp={phase:m.phase,items:[]};moveGroups.push(grp);} grp.items.push(m); });
     const latestMoves = this.MOVES.slice(0,3).map(m=>{ const meta=this.MTYPE[m.type]; return {title:m.title, when:m.phase.replace('Season','S').replace(' · ',' · ')+' · '+m.when, badge:meta.badge, color:meta.color, tint:meta.tint}; });
     const moveTypeChips = [['all','All'],['trade','Trades'],['draft','Draft'],['sign','Signings'],['cut','Cuts'],['coach','Coaching'],['injury','Injuries'],['lineup','Lineup']].map(([k,lbl])=>({label:lbl, active:mt===k, onClick:()=>this.setState({moveType:k}), bg:mt===k?'#173650':'rgba(255,255,255,.05)', fg:mt===k?'#7fd0ff':'#9db2cc', bd:mt===k?'#2c6c98':'rgba(255,255,255,.09)'}));
-    const moveSeasonChips = [['all','All'],['3','Season 3'],['2','Season 2'],['1','Season 1']].map(([k,lbl])=>this.seg(lbl, msn===k, ()=>this.setState({moveSeason:k})));
+    const moveSeasonOptions = [['all','All Seasons'],['1','Season 1'],['2','Season 2'],['3','Season 3']].map(([value,label])=>({value,label}));
 
     // players directory
     const pq = st.pq.trim().toLowerCase();
@@ -848,7 +852,7 @@ class Component extends DCLogic {
       seasonChips:[this.seg('Season 1',sv==='s1',()=>this.setState({standSeason:'s1'})),this.seg('Season 2',sv==='s2',()=>this.setState({standSeason:'s2'})),this.seg('Season 3',sv==='s3',()=>this.setState({standSeason:'s3'}))],
       standConfs, standTable:sv!=='s3', standS3:sv==='s3',
       standLabel:scz.label+(sv==='s3'?' · UPCOMING':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},
-      moveGroups, moveTypeChips, moveSeasonChips,
+      moveGroups, moveTypeChips, moveSeasonOptions, moveSeason:st.moveSeason, onMoveSeason:(e)=>this.setState({moveSeason:e.target.value}),
       notifs, markAllRead:()=>{ this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); this.showToast("You're all caught up"); },
       follow:()=>this.showToast(selTeam?'Following '+selTeam.name:'Following team'),
       setScrollRef:(el)=>{ this._scroll=el; }, back:()=>this.back(), openNotifs:()=>this.go('notifs'),

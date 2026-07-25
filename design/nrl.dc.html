@@ -680,13 +680,20 @@ class Component extends DCLogic {
     teamSeg:'teams', tdTab:'overview', scoreSeason:null, standSeason:'s2',
     scoreMenuOpen:false, moveMenuOpen:false, statMenuOpen:false,
     moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'2', statCat:'g',
-    notifs: [
-      {id:'n1', type:'result',    time:'Now',       title:'Surge win the Season 2 Championship', body:'Surge sweep the Vipers in the Finals to claim their first NRL title.', unread:true},
-      {id:'n2', type:'injury',    time:'S2 · Wk 4', title:'Watt Zapper suffers engine failure', body:'The Surge starter will miss three games.', unread:true},
-      {id:'n3', type:'injury',    time:'S2 · Wk 4', title:'Horny Hank out for the season', body:'A bent axle ends the Goats starter\u2019s regular season.', unread:true},
-      {id:'n4', type:'roster',    time:'S2 · Wk 1', title:'Guardians promote Brock Boulder', body:'Sir Blocksalot moves to the bench.', unread:false},
-      {id:'n5', type:'news',      time:'Preseason', title:'Season 2 Draft complete', body:'20 picks, 2 trades, and rosters expand to four players per team.', unread:false},
-    ],
+    // Read/unread state persists in localStorage so refreshing the page does not
+    // re-flag already-seen notifications. A notification is unread only if its id
+    // hasn't been recorded as seen; new ids (with u:true) surface a badge again.
+    notifs: (()=>{
+      let seen=[]; try{ seen=JSON.parse(localStorage.getItem('nrl_seen_notifs')||'[]'); }catch(e){}
+      const seed=[
+        {id:'n1', type:'result',    time:'Now',       title:'Surge win the Season 2 Championship', body:'Surge sweep the Vipers in the Finals to claim their first NRL title.', u:true},
+        {id:'n2', type:'injury',    time:'S2 · Wk 4', title:'Watt Zapper suffers engine failure', body:'The Surge starter will miss three games.', u:true},
+        {id:'n3', type:'injury',    time:'S2 · Wk 4', title:'Horny Hank out for the season', body:'A bent axle ends the Goats starter\u2019s regular season.', u:true},
+        {id:'n4', type:'roster',    time:'S2 · Wk 1', title:'Guardians promote Brock Boulder', body:'Sir Blocksalot moves to the bench.', u:false},
+        {id:'n5', type:'news',      time:'Preseason', title:'Season 2 Draft complete', body:'20 picks, 2 trades, and rosters expand to four players per team.', u:false},
+      ];
+      return seed.map(n=>({id:n.id, type:n.type, time:n.time, title:n.title, body:n.body, unread: seen.includes(n.id) ? false : n.u}));
+    })(),
     toast: null,
   };
   NTYPE = {
@@ -778,6 +785,8 @@ class Component extends DCLogic {
   back(){ this.setState(st => ({stack: st.stack.length > 1 ? st.stack.slice(0, -1) : st.stack})); this.scrollTop(); }
   setTab(s){ this.setState({stack:[{s}]}); this.scrollTop(); }
   showToast(m){ this.setState({toast:m}); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({toast:null}), 2200); }
+  // Record every current notification id as seen so a refresh keeps them read.
+  _markNotifsSeen(){ try{ const ids=(this.state.notifs||[]).map(n=>n.id); localStorage.setItem('nrl_seen_notifs', JSON.stringify(ids)); }catch(e){} }
   pct(rec){ const g = rec[0]+rec[1]+rec[2]; return g ? ((rec[0]+0.5*rec[2])/g).toFixed(3).replace(/^0/, '') : '.000'; }
   recStr(rec){ return rec[2] ? rec[0]+'-'+rec[1]+'-'+rec[2] : rec[0]+'-'+rec[1]; }
   confStanding(conf, season){
@@ -976,9 +985,9 @@ class Component extends DCLogic {
       standConfs, standTable:sv!=='s3', standS3:sv==='s3',
       standLabel:scz.label+(sv==='s3'?' · UPCOMING':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},
       moveGroups, moveTypeChips, moveSeasonOptions, moveSeason:st.moveSeason, moveMenuOpen:st.moveMenuOpen, onMoveMenu:()=>this.setState(s=>({moveMenuOpen:!s.moveMenuOpen})), moveSeasonLabel:(moveSeasonOptions.find(o=>o.value===st.moveSeason)||{}).label||'All Seasons',
-      notifs, markAllRead:()=>{ this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); this.showToast("You're all caught up"); },
+      notifs, markAllRead:()=>{ this._markNotifsSeen(); this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); this.showToast("You're all caught up"); },
       follow:()=>this.showToast(selTeam?'Following '+selTeam.name:'Following team'),
-      setScrollRef:(el)=>{ this._scroll=el; }, back:()=>this.back(), openNotifs:()=>this.go('notifs'),
+      setScrollRef:(el)=>{ this._scroll=el; }, back:()=>this.back(), openNotifs:()=>{ this._markNotifsSeen(); this.go('notifs'); this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); },
       navHome:()=>this.setTab('home'), navTeams:()=>this.setTab('teams'), navScores:()=>this.setTab('scores'), navStandings:()=>this.setTab('standings'), navMoves:()=>this.setTab('moves'), navStats:()=>this.setTab('stats'),
       homeCol:tc('home'), teamsCol:tc('teams'), scoresCol:tc('scores'), standCol:tc('standings'), movesCol:tc('moves'), statsCol:tc('stats'),
       statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonOptions, statSeason:st.statSeason, statMenuOpen:st.statMenuOpen, onStatMenu:()=>this.setState(s=>({statMenuOpen:!s.statMenuOpen})), statSeasonLabel:(statSeasonOptions.find(o=>o.value===st.statSeason)||{}).label||('Season '+st.statSeason), statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',

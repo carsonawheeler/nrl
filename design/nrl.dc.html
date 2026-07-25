@@ -148,7 +148,10 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <input value="{{ pq }}" onChange="{{ onPQ }}" placeholder="Search players" style="flex:1;background:none;border:none;outline:none;color:#eef4fb;font:500 14px 'Barlow'"/>
 <sc-if value="{{ pq }}"><button onClick="{{ clearPQ }}" style="background:none;border:none;cursor:pointer;padding:2px;display:grid;place-items:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></sc-if>
 </div>
-<div style="margin:0 18px 8px;font:600 11px/1 'Barlow';color:#647c96">{{ playerCount }} players across 10 teams</div>
+<div style="margin:0 14px 8px;padding:0 4px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font:600 11px/1 'Barlow';color:#647c96">{{ playerCount }} players across 10 teams</span>
+<button onClick="{{ openFreeAgents }}" style="display:flex;align-items:center;gap:6px;border:1px solid rgba(127,208,255,.28);cursor:pointer;background:rgba(41,160,234,.12);color:#7fd0ff;font:700 10px 'Barlow';letter-spacing:.4px;padding:6px 11px;border-radius:20px;white-space:nowrap">FREE AGENTS · {{ faTotal }}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
 <div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
 <sc-for list="{{ playerList }}" as="p" hint-placeholder-count="8">
 <button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
@@ -270,6 +273,20 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="flex:1;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px"><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96">ORIGIN</div><div style="font:700 13px/1.2 'Barlow';color:#eef4fb;margin-top:7px">{{ pd.o }}</div></div>
 <div style="flex:1;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px"><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96">CONTROLLED BY</div><div style="font:700 13px/1.2 'Barlow';color:#eef4fb;margin-top:7px">{{ pd.userName }}</div></div>
 </div>
+<sc-if value="{{ pd.hasHistory }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px">
+<div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-bottom:12px">TEAM HISTORY</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ pd.teamHistory }}" as="h" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:11px">
+<div style="width:30px;height:30px;flex:none"><dc-import name="TeamBadge" t="{{ h.team }}" fs="10px" radius="9px" style="width:30px;height:30px" hint-size="30px,30px"></dc-import></div>
+<div style="flex:1;min-width:0;font:700 13px/1.1 'Saira Condensed';letter-spacing:.4px;color:#eef4fb;text-transform:uppercase">{{ h.name }}</div>
+<span style="font:700 10px/1 'Barlow';letter-spacing:.4px;color:#8ea3bd;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:20px;white-space:nowrap">{{ h.seasonLabel }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ pd.hasAwards }}">
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px">
 <div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-bottom:10px">ACCOLADES</div>
@@ -296,6 +313,36 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center;margin-top:2px"><div style="font:400 11.5px/1.5 'Barlow';color:#647c96">No game stats logged yet — this player hasn't recorded NRL minutes.</div></div>
 </sc-if>
 </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isFreeAgents }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 18px 14px;font:500 11.5px/1.5 'Barlow';color:#647c96">{{ faTotal }} unsigned players — cut veterans and the undrafted pool.</div>
+<sc-if value="{{ faHasCut }}">
+<div style="margin:4px 18px 9px;display:flex;align-items:center;gap:8px"><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">Cut Players</span><span style="font:700 10px/1 'Barlow';color:#647c96;background:rgba(255,255,255,.06);padding:4px 8px;border-radius:20px">{{ faCutCount }}</span></div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ faCut }}" as="f" hint-placeholder-count="6">
+<button onClick="{{ f.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
+<div style="width:36px;height:36px;flex:none"><dc-import name="TeamBadge" t="{{ f.team }}" fs="11px" radius="10px" style="width:36px;height:36px" hint-size="36px,36px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ f.n }}</div><div style="font:500 10.5px/1 'Barlow';color:#7089a2;margin-top:4px">Cut · {{ f.exLabel }}</div></div>
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:{{ f.userCol }};background:{{ f.userTint }};padding:5px 8px;border-radius:6px">{{ f.u }}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ faHasAvail }}">
+<div style="margin:18px 18px 9px;display:flex;align-items:center;gap:8px"><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">Available</span><span style="font:700 10px/1 'Barlow';color:#647c96;background:rgba(255,255,255,.06);padding:4px 8px;border-radius:20px">{{ faAvailCount }}</span></div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ faAvailable }}" as="f" hint-placeholder-count="8">
+<button onClick="{{ f.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
+<div style="width:36px;height:36px;flex:none;border-radius:10px;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.26);display:grid;place-items:center"><span style="font:700 16px/1 'Barlow';color:#f2c14e">★</span></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ f.n }}</div><div style="font:500 10.5px/1 'Barlow';color:#7089a2;margin-top:4px">Undrafted free agent</div></div>
+<span style="font:700 12px/1 'Barlow';letter-spacing:1px;color:#f2c14e;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.24);padding:6px 10px;border-radius:20px;white-space:nowrap">{{ f.starStr }}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
 </div>
 </sc-if>
 
@@ -447,8 +494,11 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <sc-for list="{{ statSplitChips }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:1px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
 </div>
 <sc-if value="{{ isSeasonSplit }}">
-<div style="margin:0 14px 10px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
-<sc-for list="{{ statSeasonChips }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:8px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+<div style="margin:0 14px 10px;position:relative">
+<select value="{{ statSeason }}" onChange="{{ onStatSeason }}" style="width:100%;appearance:none;-webkit-appearance:none;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 40px 12px 14px;cursor:pointer;outline:none">
+<sc-for list="{{ statSeasonOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}" style="background:#0c1826;color:#eef4fb">{{ o.label }}</option></sc-for>
+</select>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
 </div>
 </sc-if>
 <div data-sc style="display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px">
@@ -701,6 +751,8 @@ class Component extends DCLogic {
     'Cornelius Cobb':{rs2:[2,2,0,2,6,1],ps2:[1,2,1,1,3,1]},
     'Brock Boulder':{rs2:[4,4,2,2,11,1]},
   };
+  STATTEAMS = {};
+  FREEAGENTS = { cut: [], available: [] };
   kickoff = Date.now() + ((((this.props && this.props.countdownDays) != null ? this.props.countdownDays : 4) * 86400 + 6*3600 + 51*60) * 1000);
   _scroll = null;
 
@@ -733,8 +785,8 @@ class Component extends DCLogic {
   renderVals(){
     const st = this.state, r = this.cur().s, base = this.base();
     const is = k => r === k;
-    const flags = {isHome:is('home'),isTeams:is('teams'),isScores:is('scores'),isStandings:is('standings'),isMoves:is('moves'),isStats:is('stats'),isTeam:is('team'),isGame:is('game'),isPlayer:is('player'),isNotifs:is('notifs')};
-    const showBack = flags.isTeam||flags.isGame||flags.isPlayer||flags.isNotifs;
+    const flags = {isHome:is('home'),isTeams:is('teams'),isScores:is('scores'),isStandings:is('standings'),isMoves:is('moves'),isStats:is('stats'),isTeam:is('team'),isGame:is('game'),isPlayer:is('player'),isNotifs:is('notifs'),isFreeAgents:is('freeagents')};
+    const showBack = flags.isTeam||flags.isGame||flags.isPlayer||flags.isNotifs||flags.isFreeAgents;
 
     const ms = Math.max(0, this.kickoff - Date.now());
     const cd = {d:String(Math.floor(ms/86400000)), h:String(Math.floor(ms/3600000)%24).padStart(2,'0'), m:String(Math.floor(ms/60000)%60).padStart(2,'0')};
@@ -775,6 +827,30 @@ class Component extends DCLogic {
     let playerList = this.PLAYERS.filter(p=> !pq || (p.n+' '+this.team(p.t).name).toLowerCase().includes(pq));
     playerList = playerList.map(decPlayer);
 
+    // free agents — two categories: 'available' (undrafted pool, star-rated) and
+    // 'cut' (former roster players, kept with their manager + last team).
+    const faStars = s => '★'.repeat(Math.max(0, Math.round(s||0)));
+    const faAvailable = (this.FREEAGENTS.available||[]).map(f=>({n:f.n, stars:f.stars, starStr:faStars(f.stars), starNum:(f.stars||0).toFixed(1), open:()=>this.go('player',{pName:f.n})}));
+    const faCut = (this.FREEAGENTS.cut||[]).map(f=>{ const tm=f.t?this.team(f.t):null; const um=f.u?this.userMeta(f.u):null;
+      return {n:f.n, team:tm||{c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent'}, hasTeam:!!tm,
+        exLabel: tm?('EX-'+tm.abbr):'FREE AGENT', u:f.u||'', userName:um?um.name:'', userCol:um?um.col:'#8ea3bd', userTint:um?um.tint:'rgba(255,255,255,.06)', open:()=>this.go('player',{pName:f.n})}; });
+    const faAvailCount=faAvailable.length, faCutCount=faCut.length;
+    // lookup so a free-agent name opens a player card (stats + team history are
+    // keyed by name, so cut veterans get their per-season sheet for free).
+    const faByName = {};
+    for(const f of (this.FREEAGENTS.cut||[])) faByName[f.n]={...f,_fa:'cut'};
+    for(const f of (this.FREEAGENTS.available||[])) faByName[f.n]={...f,_fa:'avail'};
+    const decFreeAgent = f => { const isCut=f._fa==='cut'; const tm=f.t?this.team(f.t):null; const um=f.u?this.userMeta(f.u):null;
+      const starStr=faStars(f.stars);
+      return { n:f.n,
+        team: tm||{c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent',confName:'Free Agent'},
+        roleLabel:'Free Agent',
+        userName: um?um.name:(isCut?'—':(starStr||'Undrafted')), userCol: um?um.col:'#f2c14e', userTint: um?um.tint:'rgba(242,193,78,.13)',
+        flag: isCut?'CUT':'PROSPECT', flagCol: isCut?'#ff8a5f':'#f2c14e', flagTint: isCut?'rgba(255,138,95,.15)':'rgba(242,193,78,.13)',
+        o: f.o || (isCut?'—':(f.stars?(f.stars.toFixed(1)+'★ prospect'):'Undrafted')),
+        hasAwards:!!(f.aw&&f.aw.length), aw:f.aw||[],
+        openTeam: tm ? (()=>this.go('team',{teamId:f.t})) : (()=>{}) }; };
+
     // selected team detail
     const selTeam = flags.isTeam ? this.team(this.cur().teamId) : null;
     let td=null;
@@ -799,11 +875,21 @@ class Component extends DCLogic {
 
     // selected player
     let pd=null;
-    if(flags.isPlayer){ const pl=this.PLAYERS.find(p=>p.n===this.cur().pName); if(pl) pd=decPlayer(pl); }
+    if(flags.isPlayer){ const pl=this.PLAYERS.find(p=>p.n===this.cur().pName);
+      if(pl) pd=decPlayer(pl);
+      else { const f=faByName[this.cur().pName]; if(f) pd=decFreeAgent(f); } }
     if(pd){ const mk=sp=>{ const l=this.statLine(pd.n,sp); return l?{gp:l[0],g:l[1],a:l[2],sv:l[3],sh:l[4],w:l[5]}:null; };
       const rows=[]; const s1=mk('rs1'), s2=mk('rs2'), car=mk('career');
       if(s1) rows.push({label:'Season 1', ...s1}); if(s2) rows.push({label:'Season 2', ...s2}); if(car) rows.push({label:'Career', ...car, hl:true});
-      pd.stRows=rows.map(rr=>({...rr, rowBg: rr.hl?'rgba(70,166,239,.09)':'transparent', labelCol: rr.hl?'#7fd0ff':'#cdd8e4'})); pd.hasStats=rows.length>0; pd.noStats=rows.length===0; pd.stPO=mk('playoffs'); pd.hasPO=!!pd.stPO; }
+      pd.stRows=rows.map(rr=>({...rr, rowBg: rr.hl?'rgba(70,166,239,.09)':'transparent', labelCol: rr.hl?'#7fd0ff':'#cdd8e4'})); pd.hasStats=rows.length>0; pd.noStats=rows.length===0; pd.stPO=mk('playoffs'); pd.hasPO=!!pd.stPO;
+      // team history: the teams this player was rostered on each season, with
+      // contiguous same-team seasons grouped into a range (e.g. "Seasons 1–2").
+      const th=this.STATTEAMS[pd.n]||{}; const seasons=Object.keys(th).map(Number).sort((a,b)=>a-b);
+      const hist=[]; for(const sn of seasons){ const slug=th[sn]; const last=hist[hist.length-1];
+        if(last && last.slug===slug) last.end=sn; else hist.push({slug, start:sn, end:sn}); }
+      pd.teamHistory=hist.map(h=>{ const tm=this.team(h.slug)||{}; return {team:tm, name:tm.name||h.slug,
+        seasonLabel: h.start===h.end ? ('Season '+h.start) : ('Seasons '+h.start+'–'+h.end)}; });
+      pd.hasHistory=pd.teamHistory.length>0; }
 
     // standings
     const sv = st.standSeason;
@@ -819,16 +905,28 @@ class Component extends DCLogic {
     const catIx={g:1,a:2,sv:3,sh:4,w:5};
     const statSplitKey = st.statSplit==='season' ? (st.statSeason==='1'?'rs1':'rs2') : st.statSplit;
     const _ci = catIx[st.statCat];
-    let _board = this.PLAYERS.map(pl=>{ const line=this.statLine(pl.n, statSplitKey); return line?{pl,line,val:line[_ci]}:null; }).filter(x=>x && x.val>0);
+    // Cut free agents keep their logged stats (STATS is keyed by name, no roster
+    // filter), so they appear on the leaderboards for seasons they played and in
+    // career/playoff totals — just like rostered players.
+    const statSubjects = [...this.PLAYERS, ...(this.FREEAGENTS.cut||[]).map(f=>({...f,_isFA:true}))];
+    let _board = statSubjects.map(pl=>{ const line=this.statLine(pl.n, statSplitKey); return line?{pl,line,val:line[_ci]}:null; }).filter(x=>x && x.val>0);
     _board.sort((x,y)=> (y.val-x.val) || (y.line[0]-x.line[0]));
     const _bmax=_board.length?_board[0].val:1;
-    const statBoard=_board.map((o,i)=>{ const dp=decPlayer(o.pl); return {...dp, rank:i+1, val:o.val, gp:o.line[0], bar:Math.round(o.val/_bmax*100), rankCol:i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f')}; });
+    const statBoard=_board.map((o,i)=>{ const dp=decPlayer(o.pl);
+      // In the per-season view, badge the player with the team they played for
+      // that season (from STATTEAMS) rather than their current team.
+      const seasonSlug = st.statSplit==='season' ? (this.STATTEAMS[o.pl.n]||{})[st.statSeason] : null;
+      // In career/playoffs (no single season), a cut free agent has no current
+      // team — show a neutral "FA" badge instead of their last team's logo.
+      const team = seasonSlug ? (this.team(seasonSlug)||dp.team)
+                 : (o.pl._isFA ? {c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent'} : dp.team);
+      return {...dp, team, rank:i+1, val:o.val, gp:o.line[0], bar:Math.round(o.val/_bmax*100), rankCol:i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f')}; });
     const statSplitChips=[['season','Season'],['career','Career'],['playoffs','Playoffs']].map(x=>this.seg(x[1], st.statSplit===x[0], ()=>this.setState({statSplit:x[0]})));
-    const statSeasonChips=[['1','Season 1'],['2','Season 2']].map(x=>this.seg(x[1], st.statSeason===x[0], ()=>this.setState({statSeason:x[0]})));
+    const statSeasonOptions=[['1','Season 1'],['2','Season 2']].map(([value,label])=>({value,label}));
     const statCatChips=STATCATS.map(c=>({label:c[1], active:st.statCat===c[0], onClick:()=>this.setState({statCat:c[0]}), bg:st.statCat===c[0]?'#173650':'rgba(255,255,255,.05)', fg:st.statCat===c[0]?'#7fd0ff':'#9db2cc', bd:st.statCat===c[0]?'#2c6c98':'rgba(255,255,255,.09)'}));
     const statCatLabel=(STATCATS.find(c=>c[0]===st.statCat)||STATCATS[0])[1];
     const statTitle= st.statSplit==='season'?('Season '+st.statSeason):(st.statSplit==='career'?'Career':'Playoffs');
-    const titleMap={home:'NRL',teams:'Teams',scores:'Scores',standings:'Standings',moves:'Player Moves',stats:'Stats',game:'Game',player:'Player',notifs:'Notifications'};
+    const titleMap={home:'NRL',teams:'Teams',scores:'Scores',standings:'Standings',moves:'Player Moves',stats:'Stats',game:'Game',player:'Player',notifs:'Notifications',freeagents:'Free Agents'};
     let title=titleMap[r]||'';
     if(flags.isTeam&&selTeam) title=selTeam.name;
     if(flags.isPlayer&&pd) title=pd.n;
@@ -858,7 +956,8 @@ class Component extends DCLogic {
       setScrollRef:(el)=>{ this._scroll=el; }, back:()=>this.back(), openNotifs:()=>this.go('notifs'),
       navHome:()=>this.setTab('home'), navTeams:()=>this.setTab('teams'), navScores:()=>this.setTab('scores'), navStandings:()=>this.setTab('standings'), navMoves:()=>this.setTab('moves'), navStats:()=>this.setTab('stats'),
       homeCol:tc('home'), teamsCol:tc('teams'), scoresCol:tc('scores'), standCol:tc('standings'), movesCol:tc('moves'), statsCol:tc('stats'),
-      statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonChips, statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',
+      statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonOptions, statSeason:st.statSeason, onStatSeason:(e)=>this.setState({statSeason:e.target.value}), statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',
+      faAvailable, faCut, faAvailCount, faCutCount, faTotal:faAvailCount+faCutCount, faHasAvail:faAvailCount>0, faHasCut:faCutCount>0, openFreeAgents:()=>this.go('freeagents'),
     };
   }
 }

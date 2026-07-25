@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 
 const DATA_FIELDS = [
   'TEAMS', 'CHAMPS', 'RINGS', 'PLAYERS', 'COACHES',
-  'S1PICKS', 'S2PICKS', 'S3PICKS', 'MOVES', 'RESULTS', 'STATS',
+  'S1PICKS', 'S2PICKS', 'S3PICKS', 'MOVES', 'RESULTS', 'STATS', 'STATTEAMS', 'FREEAGENTS',
 ];
 
 // Runs after the design's field initializers, replacing the hardcoded data with

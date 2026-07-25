@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
 body{margin:0;background:#05080d;font-family:'Barlow',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 [data-sc]{scrollbar-width:none;-ms-overflow-style:none}
@@ -20,21 +21,11 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 @keyframes toastin{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 </style>
 </helmet>
-<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%,#12233a 0%,#0a1119 45%,#05080d 100%);display:flex;align-items:center;justify-content:center;padding:28px 16px;font-family:'Barlow',system-ui,sans-serif">
-<div style="width:402px;height:864px;flex:none;background:#04070c;border-radius:56px;padding:11px;box-shadow:0 40px 90px -20px rgba(0,0,0,.8),0 0 0 2px #1a2530,inset 0 0 0 1px rgba(255,255,255,.04);position:relative">
-<div style="position:relative;width:100%;height:100%;background:#0a1420;border-radius:45px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:100vh;height:100dvh;overflow:hidden;width:100%;background:radial-gradient(120% 90% at 50% -10%,#12233a 0%,#0a1119 45%,#05080d 100%);display:flex;align-items:stretch;justify-content:center;padding:0;font-family:'Barlow',system-ui,sans-serif">
+<div style="width:100%;max-width:440px;height:100%;flex:none;background:#0a1420;position:relative;display:flex;flex-direction:column;box-shadow:0 0 80px -20px rgba(0,0,0,.6)">
+<div style="position:relative;width:100%;flex:1;background:#0a1420;overflow:hidden;display:flex;flex-direction:column">
 
-<div style="height:50px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;position:relative;z-index:8;color:#fff">
-<div style="font:600 15px/1 'Barlow';letter-spacing:.4px">9:41</div>
-<div style="position:absolute;left:50%;top:10px;transform:translateX(-50%);width:98px;height:30px;background:#000;border-radius:16px"></div>
-<div style="display:flex;gap:7px;align-items:center">
-<svg width="18" height="13" viewBox="0 0 18 13" fill="#fff"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="8" rx="1"/><rect x="10" y="2.5" width="3" height="10.5" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1" opacity=".4"/></svg>
-<svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M8.5 3.4c2.2 0 4.2.85 5.7 2.25M8.5 3.4C6.3 3.4 4.3 4.25 2.8 5.65M8.5 8.2c.9 0 1.75.35 2.4.95M8.5 8.2c-.9 0-1.75.35-2.4.95" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="11.4" r="1.2" fill="#fff"/></svg>
-<svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="21" height="11" rx="3" stroke="#fff" stroke-opacity=".5" stroke-width="1.2"/><rect x="2.6" y="2.6" width="16" height="7.8" rx="1.6" fill="#fff"/><rect x="23.4" y="4.2" width="1.6" height="4.6" rx=".8" fill="#fff" fill-opacity=".5"/></svg>
-</div>
-</div>
-
-<div style="flex:none;min-height:50px;display:flex;align-items:center;justify-content:space-between;padding:4px 15px 11px;position:relative;z-index:7;gap:10px">
+<div style="flex:none;min-height:50px;display:flex;align-items:center;justify-content:space-between;padding:calc(11px + env(safe-area-inset-top)) 15px 11px;position:relative;z-index:7;gap:10px">
 <div style="display:flex;align-items:center;gap:9px;min-width:0">
 <sc-if value="{{ showBack }}"><button onClick="{{ back }}" aria-label="Back" style="width:34px;height:34px;flex:none;border-radius:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);display:grid;place-items:center;color:#dbe6f2;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></sc-if>
 <sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}"><img src="assets/nrl.png" alt="NRL" style="width:31px;height:31px;flex:none;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))"/></sc-if>
@@ -348,31 +339,35 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 
 <sc-if value="{{ isScores }}">
 <div style="padding-bottom:112px;padding-top:2px">
-<div style="margin:0 14px 14px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
-<sc-for list="{{ scoreSegs }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:1px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+<div style="margin:0 14px 10px;position:relative">
+<select value="{{ scoreSeason }}" onChange="{{ onScoreSeason }}" style="width:100%;appearance:none;-webkit-appearance:none;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;color:#eef4fb;font:700 13px 'Saira Condensed';letter-spacing:.6px;text-transform:uppercase;padding:12px 40px 12px 14px;cursor:pointer;outline:none">
+<sc-for list="{{ scoreSeasonOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}" style="background:#0c1826;color:#eef4fb">{{ o.label }}</option></sc-for>
+</select>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
 </div>
-<sc-if value="{{ scoreResults }}">
-<div style="margin:0 18px 4px;font:500 11.5px/1.4 'Barlow';color:#8296ad">Season 2 · tap a game for the box score.</div>
+<div style="margin:0 18px 4px;font:500 11.5px/1.4 'Barlow';color:#8296ad">{{ scoreCaption }}</div>
 <sc-for list="{{ resultGroups }}" as="grp" hint-placeholder-count="3">
 <div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:16px 18px 9px">{{ grp.label }}</div>
 <div style="margin:0 14px;display:flex;flex-direction:column;gap:9px">
 <sc-for list="{{ grp.items }}" as="g" hint-placeholder-count="4">
+<sc-if value="{{ g.played }}">
 <button onClick="{{ g.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:15px;text-align:left;cursor:pointer">
 <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:9px"><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ g.A }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.A.name }}</span><span style="font:800 18px/1 'Saira Condensed';color:{{ g.saCol }};font-variant-numeric:tabular-nums">{{ g.sa }}</span></div>
 <div style="display:flex;align-items:center;gap:9px;margin-top:8px"><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ g.B }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.B.name }}</span><span style="font:800 18px/1 'Saira Condensed';color:{{ g.sbCol }};font-variant-numeric:tabular-nums">{{ g.sb }}</span></div></div>
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
 </button>
+</sc-if>
+<sc-if value="{{ g.unplayed }}">
+<div style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:15px">
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:9px"><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ g.A }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#cdd8e4">{{ g.A.name }}</span></div>
+<div style="display:flex;align-items:center;gap:9px;margin-top:8px"><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ g.B }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;font:700 15px/1 'Saira Condensed';letter-spacing:.3px;color:#cdd8e4">{{ g.B.name }}</span></div></div>
+<span style="flex:none;font:700 9px/1 'Barlow';letter-spacing:1px;color:#647c96;background:rgba(255,255,255,.05);padding:6px 9px;border-radius:20px">VS</span>
+</div>
+</sc-if>
 </sc-for>
 </div>
 </sc-for>
-</sc-if>
-<sc-if value="{{ scoreSchedule }}">
-<div style="margin:34px 24px 0;text-align:center;display:flex;flex-direction:column;align-items:center">
-<img src="assets/champ3.png" alt="Season 3" style="width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))"/>
-<div style="font:800 20px/1.15 'Saira Condensed';letter-spacing:.6px;color:#eef4fb;text-transform:uppercase;margin-top:14px">Season 3 Schedule<br/>Not Released Yet</div>
-<div style="font:400 13px/1.5 'Barlow';color:#8296ad;margin-top:10px;max-width:250px">Fixtures drop when the Season 3 slate is set. Until then, relive the Season 2 results.</div>
-</div>
-</sc-if>
+<sc-if value="{{ scoreEmpty }}"><div style="margin:34px 24px 0;text-align:center;font:500 13px/1.5 'Barlow';color:#647c96">No games scheduled for this season yet.</div></sc-if>
 </div>
 </sc-if>
 
@@ -536,7 +531,7 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 
 </div>
 
-<div style="flex:none;height:82px;background:rgba(8,15,23,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.08);display:flex;padding:9px 4px 0;position:relative;z-index:9">
+<div style="flex:none;min-height:82px;background:rgba(8,15,23,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.08);display:flex;padding:9px 4px env(safe-area-inset-bottom);position:relative;z-index:9">
 <button onClick="{{ navHome }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ homeCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.8 12 4l8 6.8"/><path d="M6 9.6V20h12V9.6"/><path d="M9.6 20v-5.4h4.8V20"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Home</span></button>
 <button onClick="{{ navTeams }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ teamsCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 19 5.6v6c0 4.4-3.1 7.3-7 9-3.9-1.7-7-4.6-7-9v-6z"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Teams</span></button>
 <button onClick="{{ navScores }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:5px;color:{{ scoresCol }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span style="font:700 9px/1 'Barlow';letter-spacing:.2px">Scores</span></button>
@@ -664,7 +659,7 @@ class Component extends DCLogic {
   ];
   state = {
     stack: [{s: (this.props && this.props.startScreen) || 'home'}],
-    teamSeg:'teams', tdTab:'overview', scoresSeg:'results', standSeason:'s2',
+    teamSeg:'teams', tdTab:'overview', scoreSeason:null, standSeason:'s2',
     moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'2', statCat:'g',
     notifs: [
       {id:'n1', type:'result',    time:'Now',       title:'Surge win the Season 2 Championship', body:'Surge sweep the Vipers in the Finals to claim their first NRL title.', unread:true},
@@ -797,13 +792,25 @@ class Component extends DCLogic {
     // home conference preview (top 3)
     const confPreview = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s2').slice(0,3)}));
 
-    // results decorated
-    const decGame = g => { const A=this.team(g.a), B=this.team(g.b); return {id:g.id, A, B, sa:g.sa, sb:g.sb, rd:g.rd, w:g.w, round:this.RDSHORT[g.rd], roundLabel:this.RDLABEL[g.rd],
+    // scores: a season dropdown drives which season's games are shown. Games are
+    // grouped by round label (weeks for the regular season, QF/CF/F for playoffs).
+    // Unplayed games (upcoming schedule) render as non-clickable fixtures.
+    const decGame = g => { const A=this.team(g.a), B=this.team(g.b); const played=g.sa!==''; return {id:g.id, A, B, sa:g.sa, sb:g.sb, rd:g.rd, w:g.w, round:this.RDSHORT[g.rd], roundLabel:this.RDLABEL[g.rd],
       saCol: g.w==='a'?'#fff':(g.w==='t'?'#cdd8e4':'#647c96'), sbCol: g.w==='b'?'#fff':(g.w==='t'?'#cdd8e4':'#647c96'),
-      open:()=>this.go('game',{gameId:g.id})}; };
-    const results = this.RESULTS.map(decGame);
+      played, unplayed:!played, open:()=>this.go('game',{gameId:g.id})}; };
+    const scoreSeasonNums = [...new Set(this.RESULTS.map(g=>g.s))].sort((a,b)=>Number(a)-Number(b));
+    const scoredNums = [...new Set(this.RESULTS.filter(g=>g.sa!=='').map(g=>g.s))];
+    const defScoreSeason = scoredNums.length ? String(Math.max(...scoredNums.map(Number))) : (scoreSeasonNums[scoreSeasonNums.length-1]||'1');
+    const scoreSeason = st.scoreSeason || defScoreSeason;
+    const scoreSeasonOptions = scoreSeasonNums.map(s=>({value:s, label:'Season '+s}));
+    const results = this.RESULTS.filter(g=>g.s===scoreSeason).map(decGame);
     const resultGroups = [];
     results.forEach(g=>{ let grp=resultGroups.find(x=>x.rd===g.rd); if(!grp){grp={rd:g.rd,label:this.RDLABEL[g.rd],items:[]};resultGroups.push(grp);} grp.items.push(g); });
+    const scoreHasPlayed = results.some(g=>g.played);
+    const scoreCaption = scoreHasPlayed ? ('Season '+scoreSeason+' · tap a game for the box score.') : ('Season '+scoreSeason+' · upcoming fixtures — scores TBD.');
+    // team-detail schedule stays on the latest completed season, independent of
+    // the Scores dropdown selection.
+    const teamGames = this.RESULTS.filter(g=>g.s===defScoreSeason).map(decGame);
 
     // moves
     const mt = st.moveType, msn = st.moveSeason;
@@ -859,7 +866,7 @@ class Component extends DCLogic {
       const byUser = u => roster.filter(p=>p.u===u).sort((a,b)=> (a.r==='S'?0:1)-(b.r==='S'?0:1));
       const rosterGroups = [{user:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)', players:byUser('G')},{user:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)', players:byUser('N')}];
       const staff = this.COACHES.filter(c=>c.t===selTeam.id).map(c=>({...c, roleLabel:this.ROLELABEL[c.role]}));
-      const games = results.filter(g=>g.A.id===selTeam.id||g.B.id===selTeam.id);
+      const games = teamGames.filter(g=>g.A.id===selTeam.id||g.B.id===selTeam.id);
       td = {...selTeam, confName:this.CONFS[selTeam.conf].name, confAbbr:this.CONFS[selTeam.conf].abbr, rec:this.recStr(selTeam.s2), rank:this.rankInConf(selTeam.id), rings:this.RINGS[selTeam.id]||0,
         rosterGroups, staff, games,
         tdTabs:[this.seg('Overview',st.tdTab==='overview',()=>this.setState({tdTab:'overview'})),this.seg('Roster',st.tdTab==='roster',()=>this.setState({tdTab:'roster'})),this.seg('Schedule',st.tdTab==='schedule',()=>this.setState({tdTab:'schedule'}))]};
@@ -945,8 +952,7 @@ class Component extends DCLogic {
       onPQ:(e)=>this.setState({pq:e.target.value}), clearPQ:()=>this.setState({pq:''}),
       td, tdOverview:st.tdTab==='overview', tdRoster:st.tdTab==='roster', tdSchedule:st.tdTab==='schedule',
       gd, pd,
-      scoreSegs:[this.seg('Results',st.scoresSeg==='results',()=>this.setState({scoresSeg:'results'})),this.seg('Schedule',st.scoresSeg==='schedule',()=>this.setState({scoresSeg:'schedule'}))],
-      scoreResults:st.scoresSeg==='results', scoreSchedule:st.scoresSeg==='schedule', resultGroups,
+      scoreSeason, onScoreSeason:(e)=>this.setState({scoreSeason:e.target.value}), scoreSeasonOptions, scoreCaption, resultGroups, scoreEmpty:resultGroups.length===0,
       seasonChips:[this.seg('Season 1',sv==='s1',()=>this.setState({standSeason:'s1'})),this.seg('Season 2',sv==='s2',()=>this.setState({standSeason:'s2'})),this.seg('Season 3',sv==='s3',()=>this.setState({standSeason:'s3'}))],
       standConfs, standTable:sv!=='s3', standS3:sv==='s3',
       standLabel:scz.label+(sv==='s3'?' · UPCOMING':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},

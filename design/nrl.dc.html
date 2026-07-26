@@ -47,15 +47,10 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="display:flex;align-items:center;gap:11px">
 <img src="assets/nrl.png" alt="NRL crest" style="width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 5px 12px rgba(0,0,0,.55))"/>
 <div style="min-width:0"><div style="font:700 11px/1.1 'Barlow';letter-spacing:2.4px;color:#9fc4e6">NATIONAL ROCKET LEAGUE</div><div style="font:800 17px/1 'Saira Condensed';letter-spacing:.6px;color:#fff;margin-top:5px">SEASON III</div></div>
-<div style="margin-left:auto;font:700 10px/1 'Barlow';letter-spacing:1.6px;color:#ffce8a;background:rgba(245,130,45,.16);border:1px solid rgba(245,130,45,.42);padding:6px 10px;border-radius:20px;white-space:nowrap">OFF-SEASON</div>
+<div style="margin-left:auto;font:700 10px/1 'Barlow';letter-spacing:1.6px;color:#7fe0a3;background:rgba(52,199,120,.16);border:1px solid rgba(52,199,120,.42);padding:6px 10px;border-radius:20px;white-space:nowrap">● LIVE</div>
 </div>
-<div style="margin-top:18px;font:600 10.5px/1 'Barlow';letter-spacing:2px;color:#8ea9c6;text-transform:uppercase">Season 3 kicks off in</div>
-<div style="display:flex;gap:7px;margin-top:10px">
-<div style="flex:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:11px 0;text-align:center"><div style="font:800 27px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.d }}</div><div style="font:700 8.5px/1 'Barlow';letter-spacing:1.4px;color:#7f96b0;margin-top:5px">DAYS</div></div>
-<div style="flex:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:11px 0;text-align:center"><div style="font:800 27px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.h }}</div><div style="font:700 8.5px/1 'Barlow';letter-spacing:1.4px;color:#7f96b0;margin-top:5px">HRS</div></div>
-<div style="flex:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:11px 0;text-align:center"><div style="font:800 27px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.m }}</div><div style="font:700 8.5px/1 'Barlow';letter-spacing:1.4px;color:#7f96b0;margin-top:5px">MIN</div></div>
-</div>
-<button onClick="{{ navMoves }}" style="margin-top:17px;width:100%;border:none;cursor:pointer;background:linear-gradient(135deg,#1c93da,#37a9ec);color:#03121e;font:800 13px/1 'Saira Condensed';letter-spacing:1.2px;text-transform:uppercase;padding:14px;border-radius:13px;box-shadow:0 8px 20px -6px rgba(41,160,234,.6)">View Player Moves</button>
+<div style="margin-top:16px;font:600 11px/1.5 'Barlow';color:#9fc4e6">Season III is underway — follow the standings race and the latest roster moves.</div>
+<button onClick="{{ navMoves }}" style="margin-top:16px;width:100%;border:none;cursor:pointer;background:linear-gradient(135deg,#1c93da,#37a9ec);color:#03121e;font:800 13px/1 'Saira Condensed';letter-spacing:1.2px;text-transform:uppercase;padding:14px;border-radius:13px;box-shadow:0 8px 20px -6px rgba(41,160,234,.6)">View Player Moves</button>
 </div>
 </div>
 
@@ -74,12 +69,12 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="flex:1;background:radial-gradient(120% 100% at 50% 0%,#132638,#0c1826);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:13px 10px 12px;text-align:center">
 <img src="assets/champ3.png" alt="Season 3" style="width:100%;max-width:78px;aspect-ratio:1;object-fit:contain;margin:0 auto;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))"/>
 <div style="font:700 9.5px/1 'Barlow';letter-spacing:1.3px;color:#8ea9c6;margin-top:9px">{{ champ3.label }}</div>
-<div style="margin-top:7px;font:700 9px/1 'Barlow';letter-spacing:1.2px;color:#5fd0ff;background:rgba(41,160,234,.14);border-radius:20px;padding:5px 0">UP NEXT</div>
+<div style="margin-top:7px;font:700 9px/1 'Barlow';letter-spacing:1.2px;color:#7fe0a3;background:rgba(52,199,120,.14);border-radius:20px;padding:5px 0">IN PROGRESS</div>
 </div>
 </div>
 
 <div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
-<div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Playoff Picture · S2</div>
+<div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Playoff Picture · S3</div>
 <button onClick="{{ navStandings }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">Standings <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
 </div>
 <div style="display:flex;gap:11px;padding:0 14px">
@@ -677,9 +672,9 @@ class Component extends DCLogic {
   ];
   state = {
     stack: [{s: (this.props && this.props.startScreen) || 'home'}],
-    teamSeg:'teams', tdTab:'overview', scoreSeason:null, standSeason:'s2',
+    teamSeg:'teams', tdTab:'overview', scoreSeason:null, standSeason:'s3',
     scoreMenuOpen:false, moveMenuOpen:false, statMenuOpen:false,
-    moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'2', statCat:'g',
+    moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'3', statCat:'g',
     // Read/unread state persists in localStorage so refreshing the page does not
     // re-flag already-seen notifications. A notification is unread only if its id
     // hasn't been recorded as seen; new ids (with u:true) surface a badge again.
@@ -774,7 +769,6 @@ class Component extends DCLogic {
   };
   STATTEAMS = {};
   FREEAGENTS = { cut: [], available: [] };
-  kickoff = Date.now() + ((((this.props && this.props.countdownDays) != null ? this.props.countdownDays : 4) * 86400 + 6*3600 + 51*60) * 1000);
   _scroll = null;
 
   team(id){ return this.TEAMS.find(t => t.id === id); }
@@ -802,8 +796,8 @@ class Component extends DCLogic {
   userMeta(u){ return u==='G' ? {name:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)'} : {name:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)'}; }
   flagMeta(st){ if(st==='out') return {label:'OUT', col:'#ff7a7a', tint:'rgba(255,95,95,.16)'}; if(st==='inj') return {label:'INJ', col:'#ffb066', tint:'rgba(245,165,49,.16)'}; if(st==='bench') return {label:'BENCH', col:'#9db2cc', tint:'rgba(255,255,255,.08)'}; return null; }
   statLine(name, split){ const s=this.STATS[name]; if(!s) return null; const add=(a,b)=>{ if(!a&&!b)return null; a=a||[0,0,0,0,0,0]; b=b||[0,0,0,0,0,0]; return a.map((v,i)=>v+(b[i]||0)); };
-    if(split==='rs1') return s.rs1||null; if(split==='rs2') return s.rs2||null; if(split==='ps1') return s.ps1||null; if(split==='ps2') return s.ps2||null;
-    if(split==='career') return add(s.rs1,s.rs2); if(split==='playoffs') return add(s.ps1,s.ps2); return null; }
+    if(split==='rs1') return s.rs1||null; if(split==='rs2') return s.rs2||null; if(split==='rs3') return s.rs3||null; if(split==='ps1') return s.ps1||null; if(split==='ps2') return s.ps2||null; if(split==='ps3') return s.ps3||null;
+    if(split==='career') return add(add(s.rs1,s.rs2),s.rs3); if(split==='playoffs') return add(add(s.ps1,s.ps2),s.ps3); return null; }
 
   renderVals(){
     const st = this.state, r = this.cur().s, base = this.base();
@@ -811,14 +805,11 @@ class Component extends DCLogic {
     const flags = {isHome:is('home'),isTeams:is('teams'),isScores:is('scores'),isStandings:is('standings'),isMoves:is('moves'),isStats:is('stats'),isTeam:is('team'),isGame:is('game'),isPlayer:is('player'),isNotifs:is('notifs'),isFreeAgents:is('freeagents')};
     const showBack = flags.isTeam||flags.isGame||flags.isPlayer||flags.isNotifs||flags.isFreeAgents;
 
-    const ms = Math.max(0, this.kickoff - Date.now());
-    const cd = {d:String(Math.floor(ms/86400000)), h:String(Math.floor(ms/3600000)%24).padStart(2,'0'), m:String(Math.floor(ms/60000)%60).padStart(2,'0')};
-
     // champions
     const champRow = this.CHAMPS.map(c=>{ const ct=c.champ?this.team(c.champ):null; return {s:c.s,label:c.label,logo:c.logo,hasChamp:!!ct,upcoming:!ct,champName:ct?ct.name:'',champTeam:ct||{}}; });
 
     // home conference preview (top 3)
-    const confPreview = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s2').slice(0,3)}));
+    const confPreview = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3').slice(0,3)}));
 
     // scores: a season dropdown drives which season's games are shown. Games are
     // grouped by round label (weeks for the regular season, QF/CF/F for playoffs).
@@ -914,8 +905,8 @@ class Component extends DCLogic {
       if(pl) pd=decPlayer(pl);
       else { const f=faByName[this.cur().pName]; if(f) pd=decFreeAgent(f); } }
     if(pd){ const mk=sp=>{ const l=this.statLine(pd.n,sp); return l?{gp:l[0],g:l[1],a:l[2],sv:l[3],sh:l[4],w:l[5]}:null; };
-      const rows=[]; const s1=mk('rs1'), s2=mk('rs2'), car=mk('career');
-      if(s1) rows.push({label:'Season 1', ...s1}); if(s2) rows.push({label:'Season 2', ...s2}); if(car) rows.push({label:'Career', ...car, hl:true});
+      const rows=[]; const s1=mk('rs1'), s2=mk('rs2'), s3=mk('rs3'), car=mk('career');
+      if(s1) rows.push({label:'Season 1', ...s1}); if(s2) rows.push({label:'Season 2', ...s2}); if(s3) rows.push({label:'Season 3', ...s3}); if(car) rows.push({label:'Career', ...car, hl:true});
       pd.stRows=rows.map(rr=>({...rr, rowBg: rr.hl?'rgba(70,166,239,.09)':'transparent', labelCol: rr.hl?'#7fd0ff':'#cdd8e4'})); pd.hasStats=rows.length>0; pd.noStats=rows.length===0; pd.stPO=mk('playoffs'); pd.hasPO=!!pd.stPO;
       // team history: the teams this player was rostered on each season, with
       // contiguous same-team seasons grouped into a range (e.g. "Seasons 1–2").
@@ -928,7 +919,7 @@ class Component extends DCLogic {
 
     // standings
     const sv = st.standSeason;
-    const standConfs = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf, sv==='s1'?'s1':'s2')}));
+    const standConfs = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf, sv)}));
     const champMap={s1:this.CHAMPS[0],s2:this.CHAMPS[1],s3:this.CHAMPS[2]};
     const scz=champMap[sv]||this.CHAMPS[1]; const sczTeam=scz.champ?this.team(scz.champ):null;
 
@@ -938,7 +929,7 @@ class Component extends DCLogic {
 
     const STATCATS=[['g','Goals',1],['a','Assists',2],['sv','Saves',3],['sh','Shots',4],['w','Wins',5]];
     const catIx={g:1,a:2,sv:3,sh:4,w:5};
-    const statSplitKey = st.statSplit==='season' ? (st.statSeason==='1'?'rs1':'rs2') : st.statSplit;
+    const statSplitKey = st.statSplit==='season' ? ('rs'+st.statSeason) : st.statSplit;
     const _ci = catIx[st.statCat];
     // Cut free agents keep their logged stats (STATS is keyed by name, no roster
     // filter), so they appear on the leaderboards for seasons they played and in
@@ -957,7 +948,7 @@ class Component extends DCLogic {
                  : (o.pl._isFA ? {c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent'} : dp.team);
       return {...dp, team, rank:i+1, val:o.val, gp:o.line[0], bar:Math.round(o.val/_bmax*100), rankCol:i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f')}; });
     const statSplitChips=[['season','Season'],['career','Career'],['playoffs','Playoffs']].map(x=>this.seg(x[1], st.statSplit===x[0], ()=>this.setState({statSplit:x[0]})));
-    const statSeasonOptions=[['1','Season 1'],['2','Season 2']].map(([value,label])=>({value,label, active:value===st.statSeason, bg:value===st.statSeason?'#173650':'#0c1826', fg:value===st.statSeason?'#7fd0ff':'#eef4fb', onClick:()=>this.setState({statSeason:value, statMenuOpen:false})}));
+    const statSeasonOptions=[['1','Season 1'],['2','Season 2'],['3','Season 3']].map(([value,label])=>({value,label, active:value===st.statSeason, bg:value===st.statSeason?'#173650':'#0c1826', fg:value===st.statSeason?'#7fd0ff':'#eef4fb', onClick:()=>this.setState({statSeason:value, statMenuOpen:false})}));
     const statCatChips=STATCATS.map(c=>({label:c[1], active:st.statCat===c[0], onClick:()=>this.setState({statCat:c[0]}), bg:st.statCat===c[0]?'#173650':'rgba(255,255,255,.05)', fg:st.statCat===c[0]?'#7fd0ff':'#9db2cc', bd:st.statCat===c[0]?'#2c6c98':'rgba(255,255,255,.09)'}));
     const statCatLabel=(STATCATS.find(c=>c[0]===st.statCat)||STATCATS[0])[1];
     const statTitle= st.statSplit==='season'?('Season '+st.statSeason):(st.statSplit==='career'?'Career':'Playoffs');
@@ -969,7 +960,7 @@ class Component extends DCLogic {
     const tc = k => base===k ? '#46a6ef' : '#63788f';
 
     return {
-      ...flags, showBack, showBrand:!showBack, title, cd,
+      ...flags, showBack, showBrand:!showBack, title,
       hasUnread:unreadCount>0, unreadCount, toast:st.toast,
       champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
       standIsS1:sv==='s1', standIsS2:sv==='s2',
@@ -982,8 +973,8 @@ class Component extends DCLogic {
       gd, pd,
       scoreSeason, scoreMenuOpen:st.scoreMenuOpen, onScoreMenu:()=>this.setState(s=>({scoreMenuOpen:!s.scoreMenuOpen})), scoreSeasonLabel:(scoreSeasonOptions.find(o=>o.value===scoreSeason)||{}).label||('Season '+scoreSeason), scoreSeasonOptions, scoreCaption, resultGroups, scoreEmpty:resultGroups.length===0,
       seasonChips:[this.seg('Season 1',sv==='s1',()=>this.setState({standSeason:'s1'})),this.seg('Season 2',sv==='s2',()=>this.setState({standSeason:'s2'})),this.seg('Season 3',sv==='s3',()=>this.setState({standSeason:'s3'}))],
-      standConfs, standTable:sv!=='s3', standS3:sv==='s3',
-      standLabel:scz.label+(sv==='s3'?' · UPCOMING':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},
+      standConfs, standTable:true, standS3:false,
+      standLabel:scz.label+(sv==='s3'?' · IN PROGRESS':' · FINAL'), standChampHas:!!sczTeam, standChampLogo:scz.logo, standChampName:sczTeam?sczTeam.name:'', standChampTeam:sczTeam||{},
       moveGroups, moveTypeChips, moveSeasonOptions, moveSeason:st.moveSeason, moveMenuOpen:st.moveMenuOpen, onMoveMenu:()=>this.setState(s=>({moveMenuOpen:!s.moveMenuOpen})), moveSeasonLabel:(moveSeasonOptions.find(o=>o.value===st.moveSeason)||{}).label||'All Seasons',
       notifs, markAllRead:()=>{ this._markNotifsSeen(); this.setState(s=>({notifs:s.notifs.map(n=>({...n,unread:false}))})); this.showToast("You're all caught up"); },
       follow:()=>this.showToast(selTeam?'Following '+selTeam.name:'Following team'),

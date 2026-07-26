@@ -15,13 +15,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 const TABS = [
   { id: 'boxScore', label: 'Box Score', kind: 'boxScore', hint: 'Enter a game and each player\u2019s line. Season + career stats update automatically and a result posts to the news feed.' },
   { id: 'season', label: 'Season', kind: 'form', action: 'season', hint: 'Start a new season. Posts a news item.' },
-  { id: 'player', label: 'Player', kind: 'form', action: 'player', editAction: 'editPlayer', hint: 'Add a player, or pick one to edit their team, role, status, and awards.' },
+  { id: 'player', label: 'Player', kind: 'form', action: 'player', editAction: 'editPlayer', deleteAction: 'deletePlayer', hint: 'Add a player, or pick one to edit their team, role, status, and awards. Players with stats can\u2019t be deleted \u2014 use the roster toggle.' },
   { id: 'playerStats', label: 'Player Stats', kind: 'form', action: 'playerStats', hint: 'Manually set a player\u2019s stat line for a season (overwrites). Box scores usually do this for you.' },
-  { id: 'draftPick', label: 'Draft Pick', kind: 'form', action: 'draftPick', hint: 'Add or overwrite a single pick on a season draft board.' },
+  { id: 'draftPick', label: 'Draft Pick', kind: 'form', action: 'draftPick', editAction: 'draftPick', deleteAction: 'deleteDraftPick', hint: 'Add or overwrite a single pick, or pick one to edit or delete.' },
   { id: 'draftClass', label: 'Draft Class', kind: 'draftClass', hint: 'Enter a whole draft at once. Posts to both the moves feed and the news feed.' },
-  { id: 'move', label: 'Move', kind: 'form', action: 'move', editAction: 'editMove', hint: 'Add a roster move / transaction, or pick one to edit.' },
-  { id: 'freeAgent', label: 'Free Agent', kind: 'form', action: 'freeAgent', editAction: 'editFreeAgent', hint: 'Add a free agent, or pick one to edit.' },
+  { id: 'move', label: 'Move', kind: 'form', action: 'move', editAction: 'editMove', deleteAction: 'deleteMove', hint: 'Add a roster move / transaction, or pick one to edit or delete.' },
+  { id: 'freeAgent', label: 'Free Agent', kind: 'form', action: 'freeAgent', editAction: 'editFreeAgent', deleteAction: 'deleteFreeAgent', hint: 'Add a free agent, or pick one to edit or delete.' },
+  { id: 'news', label: 'News', kind: 'form', action: 'notification', editAction: 'editNotification', deleteAction: 'deleteNotification', hint: 'Post a news item, or pick one to edit or delete.' },
   { id: 'team', label: 'Team', kind: 'form', action: 'team', hint: 'Add a team.' },
+];
+
+const NOTIF_TYPE_OPTS = [
+  { value: 'news', label: 'News' },
+  { value: 'result', label: 'Result (FINAL)' },
+  { value: 'injury', label: 'Injury' },
+  { value: 'roster', label: 'Lineup / roster' },
 ];
 
 const OWNER_OPTS = [
@@ -113,6 +121,13 @@ function fieldsFor(tabId, meta) {
         { key: 'user_id', label: 'Manager (if cut)', type: 'select', options: userOpts },
         { key: 'star_rating', label: 'Star rating (if undrafted)', type: 'number' },
       ];
+    case 'news':
+      return [
+        { key: 'type', label: 'Type', type: 'select', options: NOTIF_TYPE_OPTS },
+        { key: 'time_label', label: 'When', type: 'text', placeholder: 'e.g. S3 · Wk 1, Preseason' },
+        { key: 'title', label: 'Title', type: 'text', required: true },
+        { key: 'body', label: 'Body', type: 'textarea' },
+      ];
     default:
       return [];
   }
@@ -135,6 +150,18 @@ function recordToForm(tabId, rec) {
       };
     case 'freeAgent':
       return { id: rec.id, user_id: rec.user_id ?? '', star_rating: rec.star_rating ?? '' };
+    case 'draftPick':
+      // id is the draft_board row id, kept so delete can target it; the upsert
+      // matches on (season_id, pick_no).
+      return {
+        id: rec.id, season_id: rec.season_id ?? '', pick_no: rec.pick_no ?? '',
+        team_id: rec.team_id ?? '', player_name: rec.player_name ?? '', owner: rec.owner ?? '',
+      };
+    case 'news':
+      return {
+        id: rec.id, type: rec.type ?? 'news', time_label: rec.time_label ?? '',
+        title: rec.title ?? '', body: rec.body ?? '',
+      };
     default:
       return { id: rec.id };
   }
@@ -144,6 +171,8 @@ function editRecords(tabId, meta) {
   if (tabId === 'player') return (meta.players || []).map((p) => ({ id: p.id, label: p.name, rec: p }));
   if (tabId === 'move') return (meta.moves || []).map((m) => ({ id: m.id, label: `${m.title} (${m.type})`, rec: m }));
   if (tabId === 'freeAgent') return (meta.freeAgents || []).map((f) => ({ id: f.id, label: f.name, rec: f }));
+  if (tabId === 'draftPick') return (meta.draftPicks || []).map((d) => ({ id: d.id, label: `S${d.season} · Pick ${d.pick_no}${d.player_name ? ' · ' + d.player_name : ''}`, rec: d }));
+  if (tabId === 'news') return (meta.notifications || []).map((n) => ({ id: n.id, label: `${n.title}`, rec: n }));
   return [];
 }
 
@@ -258,6 +287,25 @@ function BoxScorePanel({ meta, token, onSaved }) {
     } finally { setBusy(false); }
   };
 
+  const removeGame = async () => {
+    if (!game.game_id) return;
+    if (!window.confirm('Delete this game and its box score? Player stats will be recomputed. This can\u2019t be undone.')) return;
+    setBusy(true); setMsg(null);
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST', headers: { 'content-type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify({ action: 'deleteGame', data: { id: game.game_id } }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'Delete failed.');
+      setMsg({ ok: true, text: body.message || 'Deleted.' });
+      loadGame('');
+      onSaved && onSaved();
+    } catch (err) {
+      setMsg({ ok: false, text: err.message });
+    } finally { setBusy(false); }
+  };
+
   const gameOpts = meta.games.map((g) => ({ value: g.id, label: `S${g.season} ${g.is_playoff ? g.round || 'PO' : 'W' + (g.week ?? '?')} · ${g.away || '?'} @ ${g.home || '?'} ${g.away_score != null ? `(${g.away_score}-${g.home_score})` : ''}` }));
 
   return (
@@ -311,9 +359,16 @@ function BoxScorePanel({ meta, token, onSaved }) {
       <p style={{ font: '500 11.5px system-ui, sans-serif', color: C.dim, margin: '8px 0 0' }}>Columns: Goals · Assists · Saves · Shots. Wins are derived from the final score and each player&rsquo;s team.</p>
 
       {msg ? <Msg msg={msg} /> : null}
-      <button type="submit" disabled={busy} style={{ ...btnStyle, marginTop: 18, background: busy ? '#2b4a63' : C.accent, cursor: busy ? 'default' : 'pointer' }}>
-        {busy ? 'Saving…' : 'Save game + box score'}
-      </button>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 18, flexWrap: 'wrap' }}>
+        <button type="submit" disabled={busy} style={{ ...btnStyle, background: busy ? '#2b4a63' : C.accent, cursor: busy ? 'default' : 'pointer' }}>
+          {busy ? 'Saving…' : 'Save game + box score'}
+        </button>
+        {game.game_id ? (
+          <button type="button" onClick={removeGame} disabled={busy} style={{ background: 'transparent', color: '#ff8a8a', border: '1px solid rgba(255,95,95,.4)', borderRadius: 10, font: '800 14px system-ui, sans-serif', padding: '12px 20px', cursor: busy ? 'default' : 'pointer' }}>
+            Delete game
+          </button>
+        ) : null}
+      </div>
     </form>
   );
 }
@@ -408,7 +463,7 @@ function Msg({ msg }) {
 export default function AdminPage() {
   const [token, setToken] = useState('');
   const [authed, setAuthed] = useState(false);
-  const [meta, setMeta] = useState({ teams: [], seasons: [], players: [], users: [], games: [], moves: [], freeAgents: [] });
+  const [meta, setMeta] = useState({ teams: [], seasons: [], players: [], users: [], games: [], moves: [], freeAgents: [], draftPicks: [], notifications: [] });
   const [tab, setTab] = useState('boxScore');
   const [form, setForm] = useState({});
   const [editId, setEditId] = useState(''); // record id when editing an existing row
@@ -491,6 +546,27 @@ export default function AdminPage() {
     } finally { setBusy(false); }
   };
 
+  const del = async () => {
+    if (!editId || !activeTab.deleteAction) return;
+    const label = editRecords(tab, meta).find((r) => String(r.id) === String(editId));
+    if (!window.confirm(`Delete "${label ? label.label : editId}"? This can\u2019t be undone.`)) return;
+    setBusy(true); setMsg(null);
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify({ action: activeTab.deleteAction, data: { id: editId } }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'Delete failed.');
+      setMsg({ ok: true, text: body.message || 'Deleted.' });
+      setEditId(''); setForm({});
+      loadMeta(token).then(setMeta).catch(() => {});
+    } catch (err) {
+      setMsg({ ok: false, text: err.message });
+    } finally { setBusy(false); }
+  };
+
   if (!authed) {
     return (
       <div style={{ minHeight: '100vh', background: C.bg, color: C.text, display: 'grid', placeItems: 'center', padding: 20 }}>
@@ -557,9 +633,16 @@ export default function AdminPage() {
 
             {msg ? <Msg msg={msg} /> : null}
 
-            <button type="submit" disabled={busy} style={{ ...btnStyle, marginTop: 18, background: busy ? '#2b4a63' : C.accent, cursor: busy ? 'default' : 'pointer' }}>
-              {busy ? 'Saving…' : editId ? `Update ${activeTab.label}` : `Save ${activeTab.label}`}
-            </button>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 18, flexWrap: 'wrap' }}>
+              <button type="submit" disabled={busy} style={{ ...btnStyle, background: busy ? '#2b4a63' : C.accent, cursor: busy ? 'default' : 'pointer' }}>
+                {busy ? 'Saving…' : editId ? `Update ${activeTab.label}` : `Save ${activeTab.label}`}
+              </button>
+              {editId && activeTab.deleteAction ? (
+                <button type="button" onClick={del} disabled={busy} style={{ background: 'transparent', color: '#ff8a8a', border: '1px solid rgba(255,95,95,.4)', borderRadius: 10, font: '800 14px system-ui, sans-serif', padding: '12px 20px', cursor: busy ? 'default' : 'pointer' }}>
+                  Delete {activeTab.label}
+                </button>
+              ) : null}
+            </div>
           </form>
         )}
       </div>

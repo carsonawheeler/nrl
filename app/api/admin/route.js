@@ -113,7 +113,7 @@ export async function GET(req) {
     return json({ box: rows });
   }
 
-  const [teams, seasons, players, users, games, moves, freeAgents] = await Promise.all([
+  const [teams, seasons, players, users, games, moves, freeAgents, draftPicks, notifications] = await Promise.all([
     sql`SELECT id, name, slug, conference FROM teams ORDER BY name`,
     sql`SELECT id, number FROM seasons ORDER BY number`,
     sql`SELECT p.id, p.name, p.team_id, p.role, p.origin, p.status, p.awards, p.on_roster,
@@ -135,8 +135,14 @@ export async function GET(req) {
         FROM moves m LEFT JOIN seasons se ON se.id = m.season_id
         ORDER BY m.sort_order`,
     sql`SELECT id, name, user_id, star_rating FROM free_agents ORDER BY name`,
+    sql`SELECT db.id, db.season_id, se.number AS season, db.pick_no, db.team_id,
+               t.slug AS team_slug, db.player_name, db.owner
+        FROM draft_board db JOIN seasons se ON se.id = db.season_id
+        LEFT JOIN teams t ON t.id = db.team_id
+        ORDER BY se.number DESC, db.pick_no`,
+    sql`SELECT id, type, time_label, title, body FROM notifications ORDER BY created_at DESC, id DESC`,
   ]);
-  return json({ teams, seasons, players, users, games, moves, freeAgents });
+  return json({ teams, seasons, players, users, games, moves, freeAgents, draftPicks, notifications });
 }
 
 export async function POST(req) {
@@ -382,6 +388,87 @@ export async function POST(req) {
           WHERE id = ${id} RETURNING id, name`;
         if (!row) return json({ error: 'Free agent not found.' }, 404);
         return json({ ok: true, message: `Free agent ${row.name} updated.`, row });
+      }
+
+      // Manually add a news/notifications item (auto-posts happen elsewhere).
+      case 'notification': {
+        const title = str(data.title);
+        if (!title) return json({ error: 'Title is required.' }, 400);
+        const row = await postNews({ type: str(data.type) || 'news', time_label: str(data.time_label), title, body: str(data.body) });
+        return json({ ok: true, message: 'News item posted.', row });
+      }
+
+      case 'editNotification': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'News id is required.' }, 400);
+        const [row] = await sql`
+          UPDATE notifications SET
+            type = ${str(data.type) || 'news'}, time_label = ${str(data.time_label)},
+            title = ${str(data.title)}, body = ${str(data.body)}
+          WHERE id = ${id} RETURNING id`;
+        if (!row) return json({ error: 'News item not found.' }, 404);
+        return json({ ok: true, message: 'News item updated.', row });
+      }
+
+      case 'deleteNotification': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'News id is required.' }, 400);
+        const [row] = await sql`DELETE FROM notifications WHERE id = ${id} RETURNING id`;
+        if (!row) return json({ error: 'News item not found.' }, 404);
+        return json({ ok: true, message: 'News item deleted.' });
+      }
+
+      // Delete a game and its box scores (cascade), then recompute the affected
+      // players so their season/career totals drop back down.
+      case 'deleteGame': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'Game id is required.' }, 400);
+        const [g] = await sql`SELECT season_id, is_playoff FROM games WHERE id = ${id}`;
+        if (!g) return json({ error: 'Game not found.' }, 404);
+        const prior = await sql`SELECT player_id FROM game_player_stats WHERE game_id = ${id}`;
+        const affected = prior.map((r) => Number(r.player_id));
+        await sql`DELETE FROM games WHERE id = ${id}`;
+        if (affected.length) await recompute(affected, g.season_id, g.is_playoff);
+        return json({ ok: true, message: `Game #${id} deleted.` });
+      }
+
+      // Delete a player only if they carry no stats history (otherwise use the
+      // roster toggle — deleting would orphan season stats and box scores).
+      case 'deletePlayer': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'Player id is required.' }, 400);
+        const [{ cnt }] = await sql`
+          SELECT (SELECT count(*) FROM player_season_stats WHERE player_id = ${id})
+               + (SELECT count(*) FROM game_player_stats WHERE player_id = ${id}) AS cnt`;
+        if (Number(cnt) > 0)
+          return json({ error: 'This player has stats or box scores on record. Take them off the roster instead of deleting.' }, 400);
+        const [row] = await sql`DELETE FROM players WHERE id = ${id} RETURNING name`;
+        if (!row) return json({ error: 'Player not found.' }, 404);
+        return json({ ok: true, message: `Player ${row.name} deleted.` });
+      }
+
+      case 'deleteMove': {
+        const id = str(data.id);
+        if (!id) return json({ error: 'Move id is required.' }, 400);
+        const [row] = await sql`DELETE FROM moves WHERE id = ${id} RETURNING id`;
+        if (!row) return json({ error: 'Move not found.' }, 404);
+        return json({ ok: true, message: `Move ${id} deleted.` });
+      }
+
+      case 'deleteFreeAgent': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'Free agent id is required.' }, 400);
+        const [row] = await sql`DELETE FROM free_agents WHERE id = ${id} RETURNING name`;
+        if (!row) return json({ error: 'Free agent not found.' }, 404);
+        return json({ ok: true, message: `Free agent ${row.name} deleted.` });
+      }
+
+      case 'deleteDraftPick': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'Draft pick id is required.' }, 400);
+        const [row] = await sql`DELETE FROM draft_board WHERE id = ${id} RETURNING pick_no`;
+        if (!row) return json({ error: 'Draft pick not found.' }, 404);
+        return json({ ok: true, message: `Pick #${row.pick_no} deleted.` });
       }
 
       default:

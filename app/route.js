@@ -29,6 +29,13 @@ const OVERRIDE_CTOR =
   `\n  constructor(...a){ super(...a);\n` +
   `    const D = (typeof globalThis!=='undefined' && globalThis.__DC_DATA__) || null;\n` +
   `    if(D){ for(const k of ${JSON.stringify(DATA_FIELDS)}) if(D[k]!==undefined) this[k]=D[k]; }\n` +
+  // notifs lives in this.state (not a class field). Replace the design's seeded
+  // feed with the DB-injected one, applying the same localStorage seen-set so
+  // only genuinely new items surface as unread.
+  `    if(D && Array.isArray(D.NOTIFS) && this.state){\n` +
+  `      let seen=[]; try{ seen=JSON.parse(localStorage.getItem('nrl_seen_notifs')||'[]'); }catch(e){}\n` +
+  `      this.state.notifs = D.NOTIFS.map(n=>({id:n.id, type:n.type, time:n.time, title:n.title, body:n.body, unread: seen.includes(n.id) ? false : n.u}));\n` +
+  `    }\n` +
   `  }`;
 
 let templatePromise;

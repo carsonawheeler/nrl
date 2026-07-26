@@ -2,8 +2,8 @@
 -- Source of truth: per-season stat sheets + game scores. Aggregates are VIEWS.
 
 DROP VIEW IF EXISTS v_career_coach_stats, v_career_stats, v_playoff_career_stats, v_standings CASCADE;
-DROP TABLE IF EXISTS player_season_stats, coach_season_stats, games, draft_picks,
-  draft_board, moves, free_agents, records, players, coaches, teams, seasons, users CASCADE;
+DROP TABLE IF EXISTS game_player_stats, notifications, player_season_stats, coach_season_stats,
+  games, draft_picks, draft_board, moves, free_agents, records, players, coaches, teams, seasons, users CASCADE;
 
 CREATE TABLE users (
   id    serial PRIMARY KEY,
@@ -81,6 +81,30 @@ CREATE TABLE games (
   home_team_id int REFERENCES teams(id),
   home_score   int,
   home_seed    int
+);
+
+-- Per-game player box scores. The admin box-score screen writes these, then
+-- recomputes player_season_stats (games/goals/assists/saves/shots/wins) from
+-- them; career totals are a live view, so they follow automatically.
+CREATE TABLE game_player_stats (
+  id         serial PRIMARY KEY,
+  game_id    int NOT NULL REFERENCES games(id) ON DELETE CASCADE,
+  player_id  int NOT NULL REFERENCES players(id),
+  team_id    int REFERENCES teams(id),
+  goals int NOT NULL DEFAULT 0, assists int NOT NULL DEFAULT 0,
+  saves int NOT NULL DEFAULT 0, shots int NOT NULL DEFAULT 0,
+  UNIQUE (game_id, player_id)
+);
+
+-- News feed. Admin actions (game results, new seasons, draft classes, moves)
+-- append rows here; the site renders them as notifications, newest first.
+CREATE TABLE notifications (
+  id          serial PRIMARY KEY,
+  type        text NOT NULL DEFAULT 'news',  -- result / injury / roster / news
+  time_label  text,
+  title       text NOT NULL,
+  body        text,
+  created_at  timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE TABLE draft_picks (

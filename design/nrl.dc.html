@@ -423,15 +423,16 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <sc-for list="{{ standConfs }}" as="cf" hint-placeholder-count="2">
 <div style="margin:2px 18px 9px;display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:{{ cf.color }}"></span><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">{{ cf.name }}</span></div>
 <div style="margin:0 14px 16px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
-<div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(255,255,255,.03)"><span style="width:14px;text-align:center;font:700 9px 'Barlow';color:#647c96">#</span><span style="width:30px"></span><span style="flex:1;font:700 9px 'Barlow';letter-spacing:1px;color:#647c96">TEAM</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">W</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">L</span><span style="width:26px;text-align:center;font:700 9px 'Barlow';color:#647c96">T</span><span style="width:42px;text-align:right;font:700 9px 'Barlow';color:#647c96">PCT</span></div>
+<div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(255,255,255,.03)"><span style="width:14px;text-align:center;font:700 9px 'Barlow';color:#647c96">#</span><span style="width:30px"></span><span style="flex:1;font:700 9px 'Barlow';letter-spacing:1px;color:#647c96">TEAM</span><span style="width:22px;text-align:center;font:700 9px 'Barlow';color:#647c96">W</span><span style="width:22px;text-align:center;font:700 9px 'Barlow';color:#647c96">L</span><span style="width:22px;text-align:center;font:700 9px 'Barlow';color:#647c96">T</span><span style="width:40px;text-align:right;font:700 9px 'Barlow';color:#647c96">DIFF</span><span style="width:42px;text-align:right;font:700 9px 'Barlow';color:#647c96">PCT</span></div>
 <sc-for list="{{ cf.rows }}" as="row" hint-placeholder-count="5">
 <button onClick="{{ row.open }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
 <span style="width:14px;text-align:center;font:800 14px 'Saira Condensed';color:{{ row.seedCol }};font-variant-numeric:tabular-nums">{{ row.rank }}</span>
 <div style="width:30px;height:30px;flex:none"><dc-import name="TeamBadge" t="{{ row }}" fs="10px" radius="9px" style="width:30px;height:30px" hint-size="30px,30px"></dc-import></div>
 <span style="flex:1;min-width:0;font:700 15px 'Saira Condensed';letter-spacing:.4px;color:#eef4fb;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.name }}</span>
-<span style="width:26px;text-align:center;font:700 12px 'Barlow';color:#cdd8e4;font-variant-numeric:tabular-nums">{{ row.w }}</span>
-<span style="width:26px;text-align:center;font:700 12px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ row.l }}</span>
-<span style="width:26px;text-align:center;font:700 12px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ row.t }}</span>
+<span style="width:22px;text-align:center;font:700 12px 'Barlow';color:#cdd8e4;font-variant-numeric:tabular-nums">{{ row.w }}</span>
+<span style="width:22px;text-align:center;font:700 12px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ row.l }}</span>
+<span style="width:22px;text-align:center;font:700 12px 'Barlow';color:#8ea3bd;font-variant-numeric:tabular-nums">{{ row.t }}</span>
+<span style="width:40px;text-align:right;font:700 12px 'Barlow';color:{{ row.diffCol }};font-variant-numeric:tabular-nums">{{ row.diffStr }}</span>
 <span style="width:42px;text-align:right;font:700 12px 'Barlow';color:#fff;font-variant-numeric:tabular-nums">{{ row.pct }}</span>
 </button>
 </sc-for>
@@ -792,9 +793,11 @@ class Component extends DCLogic {
   recStr(rec){ return rec[2] ? rec[0]+'-'+rec[1]+'-'+rec[2] : rec[0]+'-'+rec[1]; }
   confStanding(conf, season){
     const key = season || 's2';
-    return this.TEAMS.filter(t=>t.conf===conf).map(t=>({t, rec:t[key]}))
+    const dkey = 'd'+key.slice(1);
+    return this.TEAMS.filter(t=>t.conf===conf).map(t=>({t, rec:t[key], diff:t[dkey]||0}))
       .sort((x,y)=> (parseFloat(this.pct(y.rec))-parseFloat(this.pct(x.rec))) || (y.rec[0]-x.rec[0]) || ((x.rec[3]||0)-(y.rec[3]||0)))
       .map((o,i)=>({...o.t, rank:i+1, w:o.rec[0], l:o.rec[1], t:o.rec[2], rec:this.recStr(o.rec), pct:this.pct(o.rec),
+        diff:o.diff, diffStr:(o.diff>0?'+':'')+o.diff, diffCol:o.diff>0?'#5fd08a':(o.diff<0?'#ff8a8a':'#8ea3bd'),
         seedCol: i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f'),
         open:()=>this.go('team',{teamId:o.t.id})}));
   }

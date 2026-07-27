@@ -112,6 +112,23 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 </button>
 </sc-for>
 </div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
+<div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Award Race · S{{ awardSeason }}</div>
+<button onClick="{{ navStats }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">Stats <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+<sc-if value="{{ awardsEmpty }}"><div style="margin:0 18px;font:500 12px/1.5 'Barlow';color:#647c96">No games have been played this season yet — the award race opens once results are in.</div></sc-if>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ awardRaces }}" as="aw" hint-placeholder-count="5">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:11px 14px;background:rgba(255,255,255,.03)"><span style="font:800 12px/1 'Saira Condensed';letter-spacing:1px;color:#7fd0ff;background:rgba(41,160,234,.14);padding:6px 9px;border-radius:7px">{{ aw.code }}</span><span style="flex:1;font:600 10.5px/1 'Barlow';color:#8ea3bd">{{ aw.sub }}</span><span style="font:700 8px/1 'Barlow';letter-spacing:.6px;color:#5f758f">{{ aw.unit }}</span></div>
+<sc-for list="{{ aw.rows }}" as="p" hint-placeholder-count="5">
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:9px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer"><span style="width:14px;font:800 13px/1 'Saira Condensed';color:{{ p.rankCol }};font-variant-numeric:tabular-nums">{{ p.rank }}</span><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ p.team }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;min-width:0;font:700 13.5px/1.1 'Barlow';color:#eef4fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.n }}</span><span style="font:700 8px/1 'Barlow';letter-spacing:.4px;color:{{ p.userCol }};background:{{ p.userTint }};padding:4px 6px;border-radius:5px">{{ p.u }}</span><span style="font:800 15px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums;min-width:36px;text-align:right">{{ p.disp }}</span></button>
+</sc-for>
+<sc-if value="{{ aw.empty }}"><div style="padding:12px 14px;font:500 11px/1 'Barlow';color:#647c96">No qualified players yet.</div></sc-if>
+</div>
+</sc-for>
+</div>
 </div>
 </sc-if>
 
@@ -400,7 +417,7 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
 <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,.03)"><div style="width:24px;height:24px;flex:none"><dc-import name="TeamBadge" t="{{ ln.team }}" fs="8px" radius="7px" style="width:24px;height:24px" hint-size="24px,24px"></dc-import></div><span style="flex:1;font:700 13px/1 'Saira Condensed';letter-spacing:.5px;color:#eef4fb;text-transform:uppercase">{{ ln.team.name }}</span><span style="font:800 16px/1 'Saira Condensed';color:{{ ln.scoreCol }};font-variant-numeric:tabular-nums">{{ ln.score }}</span></div>
 <sc-for list="{{ ln.players }}" as="p" hint-placeholder-count="2">
-<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ p.userCol }};background:{{ p.userTint }};padding:5px 7px;border-radius:6px">{{ p.u }}</span><span style="flex:1;font:700 14px/1.1 'Barlow';color:#eef4fb">{{ p.n }}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer"><span style="font:700 8px/1 'Barlow';letter-spacing:.5px;color:{{ p.userCol }};background:{{ p.userTint }};padding:5px 7px;border-radius:6px">{{ p.u }}</span><span style="flex:1;min-width:0;font:700 14px/1.1 'Barlow';color:#eef4fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.n }}</span><sc-if value="{{ p.bx }}"><div style="display:flex;gap:13px;flex:none;font-variant-numeric:tabular-nums;margin-right:2px"><div style="text-align:center;min-width:14px"><div style="font:800 15px/1 'Saira Condensed';color:#eef4fb">{{ p.g }}</div><div style="font:700 7px/1 'Barlow';letter-spacing:.4px;color:#5f758f;margin-top:3px">G</div></div><div style="text-align:center;min-width:14px"><div style="font:800 15px/1 'Saira Condensed';color:#cdd8e4">{{ p.a }}</div><div style="font:700 7px/1 'Barlow';letter-spacing:.4px;color:#5f758f;margin-top:3px">A</div></div><div style="text-align:center;min-width:14px"><div style="font:800 15px/1 'Saira Condensed';color:#cdd8e4">{{ p.sv }}</div><div style="font:700 7px/1 'Barlow';letter-spacing:.4px;color:#5f758f;margin-top:3px">SV</div></div><div style="text-align:center;min-width:14px"><div style="font:800 15px/1 'Saira Condensed';color:#cdd8e4">{{ p.sh }}</div><div style="font:700 7px/1 'Barlow';letter-spacing:.4px;color:#5f758f;margin-top:3px">SH</div></div></div></sc-if><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
 </sc-for>
 </div>
 </sc-for>
@@ -777,6 +794,8 @@ class Component extends DCLogic {
   };
   STATTEAMS = {};
   FREEAGENTS = { cut: [], available: [] };
+  BOXSCORES = {};
+  AWARDS = {};
   _scroll = null;
 
   team(id){ return this.TEAMS.find(t => t.id === id); }
@@ -826,6 +845,19 @@ class Component extends DCLogic {
 
     // home conference preview (top 3)
     const confPreview = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3').slice(0,3)}));
+
+    // live award race (home page) — top 5 per award, computed server-side.
+    const awSub={mvp:'Player rating',dpoy:'Saves / game',tmoy:'Assists / game',soy:'Shots / game',roy:'Rookie rating'};
+    const awUnit={mvp:'RATING',dpoy:'SV/G',tmoy:'A/G',soy:'SH/G',roy:'RATING'};
+    const AW=this.AWARDS||{};
+    const awardRaces=['mvp','dpoy','tmoy','soy','roy'].map(k=>({
+      code:k.toUpperCase(), sub:awSub[k], unit:awUnit[k], empty:!((AW[k]||[]).length),
+      rows:(AW[k]||[]).map(e=>{ const tm=this.team(e.t)||{}; const um=this.userMeta(e.u);
+        return {rank:e.rank, n:e.n, team:tm, u:e.u, userCol:um.col, userTint:um.tint, disp:e.disp,
+          rankCol: e.rank===1?'#f2c14e':(e.rank<=3?'#cbd8e6':'#5f758f'), open:()=>this.go('player',{pName:e.n})}; })
+    }));
+    const awardSeason=AW.season||3;
+    const awardsEmpty=awardRaces.every(r=>r.empty);
 
     // scores: a season dropdown drives which season's games are shown. Games are
     // grouped by round label (weeks for the regular season, QF/CF/F for playoffs).
@@ -911,7 +943,13 @@ class Component extends DCLogic {
     const selGame = flags.isGame ? this.RESULTS.find(x=>x.id===this.cur().gameId) : null;
     let gd=null;
     if(selGame){ const g=decGame(selGame);
-      const lineup = (teamId, score, scoreCol) => ({team:this.team(teamId), score, scoreCol, players:this.PLAYERS.filter(p=>p.t===teamId && p.r==='S').map(decPlayer)});
+      // Prefer the recorded box score (players who actually played, with stats);
+      // fall back to the current roster's starters for games not yet scored out.
+      const box=(this.BOXSCORES||{})[selGame.id]||null;
+      const lineup = (teamId, score, scoreCol) => { const bx=box&&box[teamId];
+        const src = bx&&bx.length ? bx : this.PLAYERS.filter(p=>p.t===teamId && p.r==='S');
+        return {team:this.team(teamId), score, scoreCol, hasStats:!!(bx&&bx.length),
+          players:src.map(p=>({...decPlayer(p), bx:!!(bx&&bx.length)}))}; };
       gd = {...g, lineups:[lineup(selGame.a, selGame.sa, g.saCol), lineup(selGame.b, selGame.sb, g.sbCol)]};
     }
 
@@ -979,6 +1017,7 @@ class Component extends DCLogic {
       ...flags, showBack, showBrand:!showBack, title,
       hasUnread:unreadCount>0, unreadCount, toast:st.toast,
       champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
+      awardRaces, awardSeason, awardsEmpty,
       standIsS1:sv==='s1', standIsS2:sv==='s2',
       confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3')})),
       teamSegs:[this.seg('Teams',st.teamSeg==='teams',()=>this.setState({teamSeg:'teams'})),this.seg('Players',st.teamSeg==='players',()=>this.setState({teamSeg:'players'}))],

@@ -128,7 +128,7 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <button onClick="{{ t.open }}" style="display:flex;align-items:center;gap:13px;width:100%;padding:13px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-left:4px solid {{ t.c }};border-radius:15px;text-align:left;cursor:pointer">
 <div style="width:46px;height:46px;flex:none"><dc-import name="TeamBadge" t="{{ t }}" fs="15px" radius="13px" style="width:46px;height:46px" hint-size="46px,46px"></dc-import></div>
 <div style="flex:1;min-width:0"><div style="font:700 18px/1 'Saira Condensed';letter-spacing:.5px;color:#eef4fb;text-transform:uppercase">{{ t.name }}</div></div>
-<div style="text-align:right"><div style="font:700 16px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ t.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#5f758f;margin-top:5px">S2</div></div>
+<div style="text-align:right"><div style="font:700 16px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ t.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#5f758f;margin-top:5px">S3</div></div>
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
 </button>
 </sc-for>
@@ -971,7 +971,7 @@ class Component extends DCLogic {
       hasUnread:unreadCount>0, unreadCount, toast:st.toast,
       champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
       standIsS1:sv==='s1', standIsS2:sv==='s2',
-      confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s2')})),
+      confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3')})),
       teamSegs:[this.seg('Teams',st.teamSeg==='teams',()=>this.setState({teamSeg:'teams'})),this.seg('Players',st.teamSeg==='players',()=>this.setState({teamSeg:'players'}))],
       teamViewTeams:st.teamSeg==='teams', teamViewPlayers:st.teamSeg==='players',
       playerList, playerCount:this.PLAYERS.length, playerEmpty:playerList.length===0, pq:st.pq,

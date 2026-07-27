@@ -994,37 +994,5 @@ class Component extends DCLogic {
   }
 }
 </script>
-<div id="vpdbg" style="position:fixed;top:calc(env(safe-area-inset-top) + 4px);left:4px;z-index:2147483647;background:rgba(0,0,0,.85);color:#0f0;font:11px/1.35 ui-monospace,monospace;padding:6px 8px;border-radius:6px;pointer-events:none;white-space:pre;max-width:60vw"></div>
-<script>
-(function(){
-  var probe=document.createElement('div');
-  probe.style.cssText='position:fixed;bottom:0;height:env(safe-area-inset-bottom);width:0;visibility:hidden';
-  document.body.appendChild(probe);
-  function fixedDiv(){
-    return [].slice.call(document.querySelectorAll('div')).find(function(d){
-      var s=getComputedStyle(d); return s.position==='fixed' && d.style.background && d.style.background.indexOf('radial-gradient')>-1;
-    });
-  }
-  function upd(){
-    var el=document.getElementById('vpdbg'); if(!el) return;
-    var vv=window.visualViewport||{};
-    var fx=fixedDiv();
-    var r=fx?fx.getBoundingClientRect():null;
-    var sab=getComputedStyle(probe).height;
-    el.textContent=[
-      'innerH '+window.innerHeight,
-      'docCH  '+document.documentElement.clientHeight,
-      'visualV '+(vv.height?Math.round(vv.height):'-')+' @'+(vv.offsetTop?Math.round(vv.offsetTop):0),
-      'screen '+screen.height+' dpr'+window.devicePixelRatio,
-      'safeB  '+sab,
-      'appBox '+(r?Math.round(r.top)+'..'+Math.round(r.bottom)+' h'+Math.round(r.height):'none'),
-      'gapBot '+(r?Math.round(window.innerHeight-r.bottom):'-')
-    ].join('\n');
-  }
-  var iv=setInterval(upd,400); upd();
-  window.addEventListener('resize',upd);
-  if(window.visualViewport){window.visualViewport.addEventListener('resize',upd);window.visualViewport.addEventListener('scroll',upd);}
-})();
-</script>
 </body>
 </html>

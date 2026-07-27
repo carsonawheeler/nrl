@@ -793,9 +793,14 @@ class Component extends DCLogic {
   recStr(rec){ return rec[2] ? rec[0]+'-'+rec[1]+'-'+rec[2] : rec[0]+'-'+rec[1]; }
   confStanding(conf, season){
     const key = season || 's2';
-    const dkey = 'd'+key.slice(1);
-    return this.TEAMS.filter(t=>t.conf===conf).map(t=>({t, rec:t[key], diff:t[dkey]||0}))
-      .sort((x,y)=> (parseFloat(this.pct(y.rec))-parseFloat(this.pct(x.rec))) || (y.rec[0]-x.rec[0]) || ((x.rec[3]||0)-(y.rec[3]||0)))
+    const sn = +key.slice(1);              // numeric season for diff/points/h2h lookups
+    const dkey = 'd'+key.slice(1), pkey = 'pf'+key.slice(1);
+    return this.TEAMS.filter(t=>t.conf===conf).map(t=>({t, rec:t[key], diff:t[dkey]||0, pf:t[pkey]||0}))
+      // Tie-breaker order: record (win%) → head-to-head → point differential → total points.
+      .sort((x,y)=> (parseFloat(this.pct(y.rec))-parseFloat(this.pct(x.rec)))
+        || -(((x.t.h2h||{})[sn]||{})[y.t.id]||0)
+        || (y.diff-x.diff)
+        || (y.pf-x.pf))
       .map((o,i)=>({...o.t, rank:i+1, w:o.rec[0], l:o.rec[1], t:o.rec[2], rec:this.recStr(o.rec), pct:this.pct(o.rec),
         diff:o.diff, diffStr:(o.diff>0?'+':'')+o.diff, diffCol:o.diff>0?'#5fd08a':(o.diff<0?'#ff8a8a':'#8ea3bd'),
         seedCol: i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f'),

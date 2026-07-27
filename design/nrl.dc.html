@@ -796,8 +796,8 @@ class Component extends DCLogic {
     const sn = +key.slice(1);              // numeric season for diff/points/h2h lookups
     const dkey = 'd'+key.slice(1), pkey = 'pf'+key.slice(1);
     return this.TEAMS.filter(t=>t.conf===conf).map(t=>({t, rec:t[key], diff:t[dkey]||0, pf:t[pkey]||0}))
-      // Tie-breaker order: record (win%) → head-to-head → point differential → total points.
-      .sort((x,y)=> (parseFloat(this.pct(y.rec))-parseFloat(this.pct(x.rec)))
+      // Tie-breaker order: record (most wins) → head-to-head → point differential → total points.
+      .sort((x,y)=> (y.rec[0]-x.rec[0])
         || -(((x.t.h2h||{})[sn]||{})[y.t.id]||0)
         || (y.diff-x.diff)
         || (y.pf-x.pf))

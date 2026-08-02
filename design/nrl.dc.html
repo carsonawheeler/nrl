@@ -100,6 +100,28 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 </sc-for>
 </div>
 
+<sc-if value="{{ !playoffOddsEmpty }}">
+<div style="margin:24px 18px 4px;font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Playoff Odds · S{{ poSeason }}</div>
+<div style="margin:0 18px 11px;font:500 10.5px/1.4 'Barlow';color:#647c96">Chance of reaching the playoffs — top 3 per conference qualify — projected from the remaining schedule.</div>
+<div style="display:flex;gap:11px;padding:0 14px">
+<sc-for list="{{ playoffOddsConfs }}" as="cf" hint-placeholder-count="2">
+<div style="flex:1;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 12px 9px">
+<div style="font:700 10px/1 'Barlow';letter-spacing:1.4px;color:{{ cf.color }};text-transform:uppercase;margin-bottom:6px">{{ cf.name }}</div>
+<sc-for list="{{ cf.rows }}" as="r" hint-placeholder-count="5">
+<button onClick="{{ r.open }}" style="display:block;width:100%;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);padding:8px 0 7px;text-align:left;cursor:pointer">
+<div style="display:flex;align-items:center;gap:8px">
+<div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ r }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div>
+<span style="flex:1;font:700 12px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.abbr }}</span>
+<span style="font:800 13px/1 'Saira Condensed';color:{{ r.pctCol }};font-variant-numeric:tabular-nums">{{ r.pctDisp }}%</span>
+</div>
+<div style="margin-top:6px;height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden"><div style="width:{{ r.bar }}%;height:100%;background:{{ r.barCol }};border-radius:3px"></div></div>
+</button>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
 <div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
 <div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Latest Moves</div>
 <button onClick="{{ navMoves }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">All <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -807,6 +829,7 @@ class Component extends DCLogic {
   FREEAGENTS = { cut: [], available: [] };
   BOXSCORES = {};
   AWARDS = {};
+  PLAYOFF_ODDS = {};
   _scroll = null;
 
   team(id){ return this.TEAMS.find(t => t.id === id); }
@@ -876,6 +899,27 @@ class Component extends DCLogic {
 
     // home conference preview (top 3)
     const confPreview = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3').slice(0,3)}));
+
+    // playoff odds (home page) — server-computed % chance each team makes the
+    // playoffs, grouped by conference and sorted by odds. Teams currently in a
+    // playoff spot (top 3 by odds) are tinted; clinched/eliminated read 100/0.
+    const PO = this.PLAYOFF_ODDS || {};
+    const poSpots = PO.spots || 3;
+    const poSeason = PO.season || 3;
+    const poBySlug = {}; (PO.teams||[]).forEach(o=>{ poBySlug[o.t]=o.pct; });
+    const playoffOddsEmpty = !((PO.teams||[]).length);
+    const playoffOddsConfs = ['F','H'].map(cf=>{
+      const rows = this.TEAMS.filter(t=>t.conf===cf).map(t=>({t, pct:poBySlug[t.id]||0}))
+        .sort((a,b)=> b.pct-a.pct)
+        .map((o,i)=>{ const rank=i+1, inField=rank<=poSpots, clinched=o.pct>=99.95, elim=o.pct<=0.05;
+          return {...o.t, rank, pct:o.pct, inField,
+            pctDisp: clinched?'100':(elim?'0':String(Math.min(99,Math.max(1,Math.round(o.pct))))),
+            bar: Math.max(2, Math.round(o.pct)),
+            barCol: inField?'#5fd08a':'#3a4a5e',
+            pctCol: clinched?'#5fd08a':(elim?'#5f758f':'#eef4fb'),
+            open:()=>this.go('team',{teamId:o.t.id})}; });
+      return {name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows};
+    });
 
     // live award race (home page) — top 5 per award, computed server-side.
     const awSub={mvp:'Player rating',dpoy:'Saves / game',tmoy:'Assists / game',soy:'Shots / game',roy:'Rookie rating'};
@@ -1057,6 +1101,7 @@ class Component extends DCLogic {
       ...flags, showBack, showBrand:!showBack, title,
       hasUnread:unreadCount>0, unreadCount, toast:st.toast,
       champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
+      playoffOddsConfs, playoffOddsEmpty, poSeason,
       awardRaces, awardSeason, awardsEmpty,
       standIsS1:sv==='s1', standIsS2:sv==='s2',
       confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3')})),

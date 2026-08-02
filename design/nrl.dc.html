@@ -184,7 +184,7 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="position:relative;display:flex;align-items:center;gap:15px">
 <div style="width:74px;height:74px;flex:none"><dc-import name="TeamBadge" t="{{ td }}" fs="24px" radius="20px" style="width:74px;height:74px" hint-size="74px,74px"></dc-import></div>
 <div style="min-width:0"><div style="font:600 11px/1 'Barlow';letter-spacing:1.6px;color:#9fb2c8;text-transform:uppercase">{{ td.confName }} Conference</div><div style="font:800 30px/1 'Saira Condensed';letter-spacing:.5px;color:#fff;text-transform:uppercase;margin-top:5px">{{ td.name }}</div>
-<div style="display:flex;align-items:center;gap:10px;margin-top:9px"><span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:#0a1420;background:#eef4fb;padding:4px 8px;border-radius:6px">#{{ td.rank }} {{ td.confAbbr }}</span><span style="font:700 13px/1 'Saira Condensed';color:#cdd8e4;font-variant-numeric:tabular-nums">{{ td.rec }} · S2</span></div></div>
+<div style="display:flex;align-items:center;gap:10px;margin-top:9px"><span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:#0a1420;background:#eef4fb;padding:4px 8px;border-radius:6px">#{{ td.rank }} {{ td.confAbbr }}</span><span style="font:700 13px/1 'Saira Condensed';color:#cdd8e4;font-variant-numeric:tabular-nums">{{ td.rec }} · S{{ td.curSeason }}</span></div></div>
 </div>
 <button onClick="{{ follow }}" style="position:relative;margin-top:16px;width:100%;border:1px solid rgba(255,255,255,.14);cursor:pointer;background:rgba(255,255,255,.06);color:#eef4fb;font:700 12px 'Saira Condensed';letter-spacing:1.4px;text-transform:uppercase;padding:12px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:7px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Follow Team</button>
 </div>
@@ -194,12 +194,23 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 
 <sc-if value="{{ tdOverview }}">
 <div style="padding:14px 14px 0">
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px">
-<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 8px;text-align:center"><div style="font:800 24px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ td.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-top:6px">S2 RECORD</div></div>
-<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 8px;text-align:center"><div style="font:800 24px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">#{{ td.rank }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-top:6px">{{ td.confAbbr }} SEED</div></div>
-<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 8px;text-align:center"><div style="font:800 24px/1 'Saira Condensed';color:#f2c14e;font-variant-numeric:tabular-nums">{{ td.rings }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:1px;color:#647c96;margin-top:6px">TITLES</div></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ td.rec }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">S{{ td.curSeason }} REC</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">#{{ td.rank }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">{{ td.confAbbr }} SEED</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#f2c14e;font-variant-numeric:tabular-nums">{{ td.rings }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">TITLES</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#7fd0ff;font-variant-numeric:tabular-nums">{{ td.playoffApps }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">PLAYOFFS</div></div>
 </div>
-<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Recent Games · S2</div>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Season History</div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<sc-for list="{{ td.seasonHistory }}" as="h" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-top:1px solid rgba(255,255,255,.05)">
+<span style="font:800 15px/1 'Saira Condensed';letter-spacing:.5px;color:#9fb2c8;width:34px">S{{ h.s }}</span>
+<div style="flex:1;min-width:0"><div style="font:800 16px/1 'Saira Condensed';color:#eef4fb;font-variant-numeric:tabular-nums">{{ h.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:5px">#{{ h.seed }} {{ td.confAbbr }} SEED</div></div>
+<span style="font:700 10px/1 'Barlow';letter-spacing:.4px;color:{{ h.resultCol }};background:rgba(255,255,255,.06);padding:6px 10px;border-radius:20px;white-space:nowrap">{{ h.result }}</span>
+</div>
+</sc-for>
+</div>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Recent Games · S{{ td.curSeason }}</div>
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
 <sc-for list="{{ td.games }}" as="g" hint-placeholder-count="3">
 <button onClick="{{ g.open }}" style="display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
@@ -243,11 +254,11 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 
 <sc-if value="{{ tdSchedule }}">
 <div style="padding:14px 14px 0">
-<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:0 4px 10px">Season 2 · Games</div>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:0 4px 10px">All Games · Newest First</div>
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
-<sc-for list="{{ td.games }}" as="g" hint-placeholder-count="5">
+<sc-for list="{{ td.schedule }}" as="g" hint-placeholder-count="5">
 <button onClick="{{ g.open }}" style="display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
-<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#647c96;width:34px">{{ g.round }}</span>
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#647c96;width:52px">{{ g.swLabel }}</span>
 <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ g.A }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div><span style="flex:1;font:700 14px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.A.abbr }}</span><span style="font:800 15px/1 'Saira Condensed';color:{{ g.saCol }};font-variant-numeric:tabular-nums">{{ g.sa }}</span></div>
 <div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div style="width:22px;height:22px;flex:none"><dc-import name="TeamBadge" t="{{ g.B }}" fs="8px" radius="6px" style="width:22px;height:22px" hint-size="22px,22px"></dc-import></div><span style="flex:1;font:700 14px/1 'Saira Condensed';letter-spacing:.3px;color:#eef4fb">{{ g.B.abbr }}</span><span style="font:800 15px/1 'Saira Condensed';color:{{ g.sbCol }};font-variant-numeric:tabular-nums">{{ g.sb }}</span></div></div>
 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
@@ -826,7 +837,27 @@ class Component extends DCLogic {
         seedCol: i===0?'#f2c14e':(i<3?'#cbd8e6':'#5f758f'),
         open:()=>this.go('team',{teamId:o.t.id})}));
   }
-  rankInConf(id){ const t=this.team(id); const arr=this.confStanding(t.conf,'s2'); return (arr.find(r=>r.id===id)||{}).rank || '—'; }
+  rankInConf(id, season){ const t=this.team(id); const arr=this.confStanding(t.conf, season||'s2'); return (arr.find(r=>r.id===id)||{}).rank || '—'; }
+  // How far a team advanced in a given season's playoffs. Playoffs are best-of-3
+  // series per round (QF→CF→F); the #1 seed skips the QF on a bye. A team's result
+  // is decided by the deepest round it appears in and whether it won that series.
+  playoffResult(teamId, s){
+    const po = this.RESULTS.filter(g=>g.playoff && String(g.s)===String(s) && (g.a===teamId||g.b===teamId));
+    if(!po.length){
+      // No playoff games at all this season → the season is still in progress, so the
+      // team hasn't "missed" anything yet. Only call it a miss once playoffs exist.
+      const seasonHasPlayoffs = this.RESULTS.some(g=>g.playoff && String(g.s)===String(s));
+      return {label: seasonHasPlayoffs?'Missed Playoffs':'In Progress', made:false, champ:false};
+    }
+    const deepest = ['QF','CF','F'].filter(rd=>po.some(g=>g.rd===rd)).pop();
+    const rg = po.filter(g=>g.rd===deepest);
+    let wins=0, losses=0;
+    rg.forEach(g=>{ if(g.w==='t') return; const isA=g.a===teamId; ((g.w==='a')===isA) ? wins++ : losses++; });
+    const wonSeries = wins>=2;
+    if(deepest==='F') return {label: wonSeries?'Champions':(losses>=2?'Runner-Up':'In Finals'), made:true, champ:wonSeries};
+    if(deepest==='CF') return {label:'Conf. Finals', made:true, champ:false};
+    return {label:'Quarterfinals', made:true, champ:false};
+  }
   seg(label,active,onClick){ return {label,active,onClick, bg: active?'#eef4fb':'transparent', fg: active?'#0a1420':'#8ea3bd'}; }
   userMeta(u){ return u==='G' ? {name:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)'} : {name:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)'}; }
   flagMeta(st){ if(st==='out') return {label:'OUT', col:'#ff7a7a', tint:'rgba(255,95,95,.16)'}; if(st==='inj') return {label:'INJ', col:'#ffb066', tint:'rgba(245,165,49,.16)'}; if(st==='bench') return {label:'BENCH', col:'#9db2cc', tint:'rgba(255,255,255,.08)'}; return null; }
@@ -875,9 +906,8 @@ class Component extends DCLogic {
     results.forEach(g=>{ let grp=resultGroups.find(x=>x.rd===g.rd); if(!grp){grp={rd:g.rd,label:this.RDLABEL[g.rd],items:[]};resultGroups.push(grp);} grp.items.push(g); });
     const scoreHasPlayed = results.some(g=>g.played);
     const scoreCaption = scoreHasPlayed ? ('Season '+scoreSeason+' · tap a game for the box score.') : ('Season '+scoreSeason+' · upcoming fixtures — scores TBD.');
-    // team-detail schedule stays on the latest completed season, independent of
-    // the Scores dropdown selection.
-    const teamGames = this.RESULTS.filter(g=>g.s===defScoreSeason).map(decGame);
+    // The newest season present drives the team-detail "current" record/seed/games.
+    const curSeason = scoreSeasonNums[scoreSeasonNums.length-1] || defScoreSeason;
 
     // moves
     const mt = st.moveType, msn = st.moveSeason;
@@ -933,9 +963,19 @@ class Component extends DCLogic {
       const byUser = u => roster.filter(p=>p.u===u).sort((a,b)=> (a.r==='S'?0:1)-(b.r==='S'?0:1));
       const rosterGroups = [{user:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)', players:byUser('G')},{user:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)', players:byUser('N')}];
       const staff = this.COACHES.filter(c=>c.t===selTeam.id).map(c=>({...c, roleLabel:this.ROLELABEL[c.role]}));
-      const games = teamGames.filter(g=>g.A.id===selTeam.id||g.B.id===selTeam.id);
-      td = {...selTeam, confName:this.CONFS[selTeam.conf].name, confAbbr:this.CONFS[selTeam.conf].abbr, rec:this.recStr(selTeam.s2), rank:this.rankInConf(selTeam.id), rings:this.RINGS[selTeam.id]||0,
-        rosterGroups, staff, games,
+      // Overview: current-season played games, most recent first.
+      const games = this.RESULTS.filter(g=>g.s===curSeason && (g.a===selTeam.id||g.b===selTeam.id) && g.sa!=='').map(decGame).reverse().slice(0,5);
+      // Schedule: every game the team has ever played, newest first, labeled by season+week.
+      const schedule = this.RESULTS.filter(g=>g.a===selTeam.id||g.b===selTeam.id).map(g=>{ const dg=decGame(g); return {...dg, swLabel:'S'+g.s+' · '+dg.round}; }).reverse();
+      // Per-season history: record, seed, and how far the team advanced — newest first.
+      // Only seasons the team actually played (has a non-empty record) are shown.
+      const seasonHistory = scoreSeasonNums.filter(n=>{ const rec=selTeam['s'+n]; return rec && (rec[0]+rec[1]+rec[2])>0; }).map(n=>{
+        const rec=selTeam['s'+n]; const pr=this.playoffResult(selTeam.id, n);
+        return {s:n, seasonLabel:'Season '+n, rec:this.recStr(rec), seed:this.rankInConf(selTeam.id,'s'+n), result:pr.label,
+          resultCol: pr.champ?'#f2c14e':(pr.made?'#7fd0ff':'#5f758f')}; }).reverse();
+      const playoffApps = scoreSeasonNums.filter(n=>this.RESULTS.some(g=>g.playoff && String(g.s)===String(n) && (g.a===selTeam.id||g.b===selTeam.id))).length;
+      td = {...selTeam, confName:this.CONFS[selTeam.conf].name, confAbbr:this.CONFS[selTeam.conf].abbr, rec:this.recStr(selTeam['s'+curSeason]), rank:this.rankInConf(selTeam.id,'s'+curSeason), rings:this.RINGS[selTeam.id]||0, curSeason,
+        rosterGroups, staff, games, schedule, seasonHistory, playoffApps,
         tdTabs:[this.seg('Overview',st.tdTab==='overview',()=>this.setState({tdTab:'overview'})),this.seg('Roster',st.tdTab==='roster',()=>this.setState({tdTab:'roster'})),this.seg('Schedule',st.tdTab==='schedule',()=>this.setState({tdTab:'schedule'}))]};
     }
 

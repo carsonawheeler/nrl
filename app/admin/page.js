@@ -223,7 +223,7 @@ function Field({ f, value, onChange }) {
 // ---- Box Score panel: game header + per-player lines ----
 function BoxScorePanel({ meta, token, onSaved }) {
   const emptyRow = () => ({ player_id: '', team_id: '', goals: '', assists: '', saves: '', shots: '' });
-  const [game, setGame] = useState({ game_id: '', season_id: '', is_playoff: false, week: '', round: '', game_no: '', away_team_id: '', home_team_id: '', away_score: '', home_score: '', away_seed: '', home_seed: '' });
+  const [game, setGame] = useState({ game_id: '', season_id: '', is_playoff: false, week: '', round: '', game_no: '', away_team_id: '', home_team_id: '', away_score: '', home_score: '', away_bonus: '', home_bonus: '', away_seed: '', home_seed: '' });
   const [rows, setRows] = useState([emptyRow()]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -246,7 +246,7 @@ function BoxScorePanel({ meta, token, onSaved }) {
   const loadGame = async (id) => {
     setMsg(null);
     if (!id) {
-      setGame({ game_id: '', season_id: '', is_playoff: false, week: '', round: '', game_no: '', away_team_id: '', home_team_id: '', away_score: '', home_score: '', away_seed: '', home_seed: '' });
+      setGame({ game_id: '', season_id: '', is_playoff: false, week: '', round: '', game_no: '', away_team_id: '', home_team_id: '', away_score: '', home_score: '', away_bonus: '', home_bonus: '', away_seed: '', home_seed: '' });
       setRows([emptyRow()]);
       return;
     }
@@ -256,7 +256,8 @@ function BoxScorePanel({ meta, token, onSaved }) {
     setGame({
       game_id: g.id, season_id: season ? season.id : '', is_playoff: !!g.is_playoff, week: g.week ?? '',
       round: g.round ?? '', game_no: g.game_no ?? '', away_team_id: g.away_team_id ?? '', home_team_id: g.home_team_id ?? '',
-      away_score: g.away_score ?? '', home_score: g.home_score ?? '', away_seed: g.away_seed ?? '', home_seed: g.home_seed ?? '',
+      away_score: g.away_score ?? '', home_score: g.home_score ?? '', away_bonus: g.away_bonus ?? '', home_bonus: g.home_bonus ?? '',
+      away_seed: g.away_seed ?? '', home_seed: g.home_seed ?? '',
     });
     try {
       const res = await fetch(`/api/admin?box=${g.id}`, { headers: { 'x-admin-token': token } });
@@ -306,7 +307,8 @@ function BoxScorePanel({ meta, token, onSaved }) {
     } finally { setBusy(false); }
   };
 
-  const gameOpts = meta.games.map((g) => ({ value: g.id, label: `S${g.season} ${g.is_playoff ? g.round || 'PO' : 'W' + (g.week ?? '?')} · ${g.away || '?'} @ ${g.home || '?'} ${g.away_score != null ? `(${g.away_score}-${g.home_score})` : ''}` }));
+  const sDisp = (s, b) => (b ? `${s}+${b}` : `${s}`);
+  const gameOpts = meta.games.map((g) => ({ value: g.id, label: `S${g.season} ${g.is_playoff ? g.round || 'PO' : 'W' + (g.week ?? '?')} · ${g.away || '?'} @ ${g.home || '?'} ${g.away_score != null ? `(${sDisp(g.away_score, g.away_bonus)}-${sDisp(g.home_score, g.home_bonus)})` : ''}` }));
 
   return (
     <form onSubmit={save} style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20 }}>
@@ -329,9 +331,14 @@ function BoxScorePanel({ meta, token, onSaved }) {
         <Field f={{ key: 'round', label: 'Round', type: 'select', options: ROUND_OPTS, placeholder: 'playoffs' }} value={game.round} onChange={(v) => setG('round', v)} />
         <Field f={{ key: 'away_team_id', label: 'Away team', type: 'select', options: teamOpts, required: true }} value={game.away_team_id} onChange={(v) => setG('away_team_id', v)} />
         <Field f={{ key: 'away_score', label: 'Away score', type: 'number', placeholder: 'blank = TBD' }} value={game.away_score} onChange={(v) => setG('away_score', v)} />
+        <Field f={{ key: 'away_bonus', label: 'Away bonus (+)', type: 'number', placeholder: 'tiebreak, e.g. 1' }} value={game.away_bonus} onChange={(v) => setG('away_bonus', v)} />
         <Field f={{ key: 'home_team_id', label: 'Home team', type: 'select', options: teamOpts, required: true }} value={game.home_team_id} onChange={(v) => setG('home_team_id', v)} />
         <Field f={{ key: 'home_score', label: 'Home score', type: 'number', placeholder: 'blank = TBD' }} value={game.home_score} onChange={(v) => setG('home_score', v)} />
+        <Field f={{ key: 'home_bonus', label: 'Home bonus (+)', type: 'number', placeholder: 'tiebreak, e.g. 1' }} value={game.home_bonus} onChange={(v) => setG('home_bonus', v)} />
       </div>
+      <p style={{ font: '500 11.5px system-ui, sans-serif', color: C.dim, margin: '10px 0 0' }}>
+        Bonus points break a tied score to decide the winner (e.g. 9&ndash;9 with a home bonus of 1 shows as 9&ndash;9+1 and counts as a home win). Bonus points do <strong>not</strong> count toward point differential or total points scored.
+      </p>
 
       <div style={{ marginTop: 22, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ ...labelStyle, margin: 0 }}>Box score</span>

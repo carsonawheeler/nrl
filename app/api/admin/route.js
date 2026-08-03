@@ -71,8 +71,8 @@ async function recompute(playerIds, season_id, is_playoff) {
            sum(gps.goals) AS goals, sum(gps.assists) AS assists,
            sum(gps.saves) AS saves, sum(gps.shots) AS shots,
            count(*) FILTER (
-             WHERE (gps.team_id = g.home_team_id AND g.home_score > g.away_score)
-                OR (gps.team_id = g.away_team_id AND g.away_score > g.home_score)
+             WHERE (gps.team_id = g.home_team_id AND g.home_score + g.home_bonus > g.away_score + g.away_bonus)
+                OR (gps.team_id = g.away_team_id AND g.away_score + g.away_bonus > g.home_score + g.home_bonus)
            ) AS wins
     FROM game_player_stats gps
     JOIN games g ON g.id = gps.game_id
@@ -122,8 +122,8 @@ export async function GET(req) {
         ORDER BY p.name`,
     sql`SELECT id, name FROM users ORDER BY name`,
     sql`SELECT g.id, se.number AS season, g.is_playoff, g.week, g.round, g.game_no,
-               g.away_team_id, g.away_score, g.away_seed,
-               g.home_team_id, g.home_score, g.home_seed,
+               g.away_team_id, g.away_score, g.away_bonus, g.away_seed,
+               g.home_team_id, g.home_score, g.home_bonus, g.home_seed,
                ta.slug AS away, th.slug AS home
         FROM games g
         JOIN seasons se ON se.id = g.season_id
@@ -238,11 +238,11 @@ export async function POST(req) {
           return json({ error: 'Both teams are required.' }, 400);
         const [row] = await sql`
           INSERT INTO games
-            (season_id, is_playoff, week, round, game_no, away_team_id, away_score, away_seed, home_team_id, home_score, home_seed)
+            (season_id, is_playoff, week, round, game_no, away_team_id, away_score, away_bonus, away_seed, home_team_id, home_score, home_bonus, home_seed)
           VALUES
             (${season_id}, ${bool(data.is_playoff)}, ${num(data.week)}, ${str(data.round)}, ${num(data.game_no)},
-             ${num(data.away_team_id)}, ${num(data.away_score)}, ${num(data.away_seed)},
-             ${num(data.home_team_id)}, ${num(data.home_score)}, ${num(data.home_seed)})
+             ${num(data.away_team_id)}, ${num(data.away_score)}, ${int0(data.away_bonus)}, ${num(data.away_seed)},
+             ${num(data.home_team_id)}, ${num(data.home_score)}, ${int0(data.home_bonus)}, ${num(data.home_seed)})
           RETURNING id`;
         return json({ ok: true, message: `Game #${row.id} added.`, row });
       }
@@ -264,18 +264,18 @@ export async function POST(req) {
             UPDATE games SET
               season_id = ${season_id}, is_playoff = ${is_playoff}, week = ${num(data.week)},
               round = ${str(data.round)}, game_no = ${num(data.game_no)},
-              away_team_id = ${away_team_id}, away_score = ${num(data.away_score)}, away_seed = ${num(data.away_seed)},
-              home_team_id = ${home_team_id}, home_score = ${num(data.home_score)}, home_seed = ${num(data.home_seed)}
+              away_team_id = ${away_team_id}, away_score = ${num(data.away_score)}, away_bonus = ${int0(data.away_bonus)}, away_seed = ${num(data.away_seed)},
+              home_team_id = ${home_team_id}, home_score = ${num(data.home_score)}, home_bonus = ${int0(data.home_bonus)}, home_seed = ${num(data.home_seed)}
             WHERE id = ${game_id} RETURNING id`;
           if (!row) return json({ error: 'Game not found.' }, 404);
         } else {
           const [row] = await sql`
             INSERT INTO games
-              (season_id, is_playoff, week, round, game_no, away_team_id, away_score, away_seed, home_team_id, home_score, home_seed)
+              (season_id, is_playoff, week, round, game_no, away_team_id, away_score, away_bonus, away_seed, home_team_id, home_score, home_bonus, home_seed)
             VALUES
               (${season_id}, ${is_playoff}, ${num(data.week)}, ${str(data.round)}, ${num(data.game_no)},
-               ${away_team_id}, ${num(data.away_score)}, ${num(data.away_seed)},
-               ${home_team_id}, ${num(data.home_score)}, ${num(data.home_seed)})
+               ${away_team_id}, ${num(data.away_score)}, ${int0(data.away_bonus)}, ${num(data.away_seed)},
+               ${home_team_id}, ${num(data.home_score)}, ${int0(data.home_bonus)}, ${num(data.home_seed)})
             RETURNING id`;
           game_id = row.id;
         }
@@ -297,16 +297,22 @@ export async function POST(req) {
         // Post a result to the news feed when both scores are present.
         const as = num(data.away_score), hs = num(data.home_score);
         if (as != null && hs != null) {
+          const ab = int0(data.away_bonus), hb = int0(data.home_bonus);
           const [tt] = await sql`
             SELECT (SELECT name FROM teams WHERE id = ${away_team_id}) AS away,
                    (SELECT name FROM teams WHERE id = ${home_team_id}) AS home`;
           const [{ number: snum }] = await sql`SELECT number FROM seasons WHERE id = ${season_id}`;
-          const winner = as > hs ? tt.away : hs > as ? tt.home : null;
+          // Bonus points break a tie to decide the winner; the "+N" is shown so a
+          // 9-9 (+1) result reads as a win rather than a draw.
+          const at = as + ab, ht = hs + hb;
+          const fmt = (s, b) => (b ? `${s}+${b}` : `${s}`);
+          const winner = at > ht ? tt.away : ht > at ? tt.home : null;
+          const [ws, ls] = at >= ht ? [fmt(as, ab), fmt(hs, hb)] : [fmt(hs, hb), fmt(as, ab)];
           const title = winner
-            ? `${winner} win ${Math.max(as, hs)}-${Math.min(as, hs)}`
+            ? `${winner} win ${ws}-${ls}`
             : `${tt.away} and ${tt.home} draw ${as}-${hs}`;
           const label = is_playoff ? `S${snum} · Playoffs` : `S${snum} · Wk ${int0(data.week) || '?'}`;
-          await postNews({ type: 'result', time_label: label, title, body: `${tt.away} ${as}, ${tt.home} ${hs}.` });
+          await postNews({ type: 'result', time_label: label, title, body: `${tt.away} ${fmt(as, ab)}, ${tt.home} ${fmt(hs, hb)}.` });
         }
         return json({ ok: true, message: `Game #${game_id} saved (${box.length} box lines).`, row: { id: game_id } });
       }

@@ -20,6 +20,7 @@ const DATA_FIELDS = [
   'TEAMS', 'CHAMPS', 'RINGS', 'PLAYERS', 'COACHES',
   'S1PICKS', 'S2PICKS', 'S3PICKS', 'MOVES', 'RESULTS', 'STATS', 'STATTEAMS', 'FREEAGENTS',
   'BOXSCORES', 'AWARDS', 'PLAYOFF_ODDS',
+  'COACHDIR', 'COACHSTATS', 'COACHFA',
 ];
 
 // Runs after the design's field initializers, replacing the hardcoded data with

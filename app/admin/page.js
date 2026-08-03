@@ -21,6 +21,7 @@ const TABS = [
   { id: 'draftClass', label: 'Draft Class', kind: 'draftClass', hint: 'Enter a whole draft at once. Posts to both the moves feed and the news feed.' },
   { id: 'move', label: 'Move', kind: 'form', action: 'move', editAction: 'editMove', deleteAction: 'deleteMove', hint: 'Add a roster move / transaction, or pick one to edit or delete.' },
   { id: 'freeAgent', label: 'Free Agent', kind: 'form', action: 'freeAgent', editAction: 'editFreeAgent', deleteAction: 'deleteFreeAgent', hint: 'Add a free agent, or pick one to edit or delete.' },
+  { id: 'coachFreeAgent', label: 'Coach FA', kind: 'form', action: 'coachFreeAgent', editAction: 'editCoachFreeAgent', deleteAction: 'deleteCoachFreeAgent', hint: 'Add a coach free agent, or pick one to edit or delete.' },
   { id: 'news', label: 'News', kind: 'form', action: 'notification', editAction: 'editNotification', deleteAction: 'deleteNotification', hint: 'Post a news item, or pick one to edit or delete.' },
   { id: 'team', label: 'Team', kind: 'form', action: 'team', hint: 'Add a team.' },
 ];
@@ -121,6 +122,11 @@ function fieldsFor(tabId, meta) {
         { key: 'user_id', label: 'Manager (if cut)', type: 'select', options: userOpts },
         { key: 'star_rating', label: 'Star rating (if undrafted)', type: 'number' },
       ];
+    case 'coachFreeAgent':
+      return [
+        { key: 'name', label: 'Name', type: 'text', required: true, editHidden: true },
+        { key: 'star_rating', label: 'Star rating (if undrafted)', type: 'number' },
+      ];
     case 'news':
       return [
         { key: 'type', label: 'Type', type: 'select', options: NOTIF_TYPE_OPTS },
@@ -150,6 +156,8 @@ function recordToForm(tabId, rec) {
       };
     case 'freeAgent':
       return { id: rec.id, user_id: rec.user_id ?? '', star_rating: rec.star_rating ?? '' };
+    case 'coachFreeAgent':
+      return { id: rec.id, star_rating: rec.star_rating ?? '' };
     case 'draftPick':
       // id is the draft_board row id, kept so delete can target it; the upsert
       // matches on (season_id, pick_no).
@@ -171,6 +179,7 @@ function editRecords(tabId, meta) {
   if (tabId === 'player') return (meta.players || []).map((p) => ({ id: p.id, label: p.name, rec: p }));
   if (tabId === 'move') return (meta.moves || []).map((m) => ({ id: m.id, label: `${m.title} (${m.type})`, rec: m }));
   if (tabId === 'freeAgent') return (meta.freeAgents || []).map((f) => ({ id: f.id, label: f.name, rec: f }));
+  if (tabId === 'coachFreeAgent') return (meta.coachFreeAgents || []).map((f) => ({ id: f.id, label: f.name, rec: f }));
   if (tabId === 'draftPick') return (meta.draftPicks || []).map((d) => ({ id: d.id, label: `S${d.season} · Pick ${d.pick_no}${d.player_name ? ' · ' + d.player_name : ''}`, rec: d }));
   if (tabId === 'news') return (meta.notifications || []).map((n) => ({ id: n.id, label: `${n.title}`, rec: n }));
   return [];
@@ -470,7 +479,7 @@ function Msg({ msg }) {
 export default function AdminPage() {
   const [token, setToken] = useState('');
   const [authed, setAuthed] = useState(false);
-  const [meta, setMeta] = useState({ teams: [], seasons: [], players: [], users: [], games: [], moves: [], freeAgents: [], draftPicks: [], notifications: [] });
+  const [meta, setMeta] = useState({ teams: [], seasons: [], players: [], users: [], games: [], moves: [], freeAgents: [], draftPicks: [], notifications: [], coachFreeAgents: [] });
   const [tab, setTab] = useState('boxScore');
   const [form, setForm] = useState({});
   const [editId, setEditId] = useState(''); // record id when editing an existing row

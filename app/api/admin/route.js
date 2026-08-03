@@ -113,7 +113,7 @@ export async function GET(req) {
     return json({ box: rows });
   }
 
-  const [teams, seasons, players, users, games, moves, freeAgents, draftPicks, notifications] = await Promise.all([
+  const [teams, seasons, players, users, games, moves, freeAgents, draftPicks, notifications, coachFreeAgents] = await Promise.all([
     sql`SELECT id, name, slug, conference FROM teams ORDER BY name`,
     sql`SELECT id, number FROM seasons ORDER BY number`,
     sql`SELECT p.id, p.name, p.team_id, p.role, p.origin, p.status, p.awards, p.on_roster,
@@ -141,8 +141,9 @@ export async function GET(req) {
         LEFT JOIN teams t ON t.id = db.team_id
         ORDER BY se.number DESC, db.pick_no`,
     sql`SELECT id, type, time_label, title, body FROM notifications ORDER BY created_at DESC, id DESC`,
+    sql`SELECT id, name, star_rating FROM coach_free_agents ORDER BY name`,
   ]);
-  return json({ teams, seasons, players, users, games, moves, freeAgents, draftPicks, notifications });
+  return json({ teams, seasons, players, users, games, moves, freeAgents, draftPicks, notifications, coachFreeAgents });
 }
 
 export async function POST(req) {
@@ -396,6 +397,27 @@ export async function POST(req) {
         return json({ ok: true, message: `Free agent ${row.name} updated.`, row });
       }
 
+      case 'coachFreeAgent': {
+        const name = str(data.name);
+        if (!name) return json({ error: 'Coach name is required.' }, 400);
+        const [row] = await sql`
+          INSERT INTO coach_free_agents (name, star_rating)
+          VALUES (${name}, ${num(data.star_rating)})
+          RETURNING id, name`;
+        return json({ ok: true, message: `Coach free agent ${row.name} added.`, row });
+      }
+
+      // Edit an existing coach free agent (star rating).
+      case 'editCoachFreeAgent': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'Coach free agent id is required.' }, 400);
+        const [row] = await sql`
+          UPDATE coach_free_agents SET star_rating = ${num(data.star_rating)}
+          WHERE id = ${id} RETURNING id, name`;
+        if (!row) return json({ error: 'Coach free agent not found.' }, 404);
+        return json({ ok: true, message: `Coach free agent ${row.name} updated.`, row });
+      }
+
       // Manually add a news/notifications item (auto-posts happen elsewhere).
       case 'notification': {
         const title = str(data.title);
@@ -467,6 +489,14 @@ export async function POST(req) {
         const [row] = await sql`DELETE FROM free_agents WHERE id = ${id} RETURNING name`;
         if (!row) return json({ error: 'Free agent not found.' }, 404);
         return json({ ok: true, message: `Free agent ${row.name} deleted.` });
+      }
+
+      case 'deleteCoachFreeAgent': {
+        const id = num(data.id);
+        if (!id) return json({ error: 'Coach free agent id is required.' }, 400);
+        const [row] = await sql`DELETE FROM coach_free_agents WHERE id = ${id} RETURNING name`;
+        if (!row) return json({ error: 'Coach free agent not found.' }, 404);
+        return json({ ok: true, message: `Coach free agent ${row.name} deleted.` });
       }
 
       case 'deleteDraftPick': {

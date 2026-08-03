@@ -143,7 +143,7 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="margin:0 14px;display:flex;flex-direction:column;gap:11px">
 <sc-for list="{{ awardRaces }}" as="aw" hint-placeholder-count="5">
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
-<div style="display:flex;align-items:center;gap:9px;padding:11px 14px;background:rgba(255,255,255,.03)"><span style="font:800 12px/1 'Saira Condensed';letter-spacing:1px;color:#7fd0ff;background:rgba(41,160,234,.14);padding:6px 9px;border-radius:7px">{{ aw.code }}</span><span style="flex:1;font:600 10.5px/1 'Barlow';color:#8ea3bd">{{ aw.sub }}</span><span style="font:700 8px/1 'Barlow';letter-spacing:.6px;color:#5f758f">{{ aw.unit }}</span></div>
+<button onClick="{{ aw.open }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:11px 14px;background:rgba(255,255,255,.03);border:none;cursor:pointer;text-align:left"><span style="font:800 12px/1 'Saira Condensed';letter-spacing:1px;color:#7fd0ff;background:rgba(41,160,234,.14);padding:6px 9px;border-radius:7px">{{ aw.code }}</span><span style="flex:1;font:600 10.5px/1 'Barlow';color:#8ea3bd">{{ aw.sub }}</span><span style="font:700 8px/1 'Barlow';letter-spacing:.6px;color:#5f758f">{{ aw.unit }}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
 <sc-for list="{{ aw.rows }}" as="p" hint-placeholder-count="5">
 <button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:9px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer"><span style="width:14px;font:800 13px/1 'Saira Condensed';color:{{ p.rankCol }};font-variant-numeric:tabular-nums">{{ p.rank }}</span><div style="width:26px;height:26px;flex:none"><dc-import name="TeamBadge" t="{{ p.team }}" fs="9px" radius="8px" style="width:26px;height:26px" hint-size="26px,26px"></dc-import></div><span style="flex:1;min-width:0;font:700 13.5px/1.1 'Barlow';color:#eef4fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.n }}</span><span style="font:700 8px/1 'Barlow';letter-spacing:.4px;color:{{ p.userCol }};background:{{ p.userTint }};padding:4px 6px;border-radius:5px">{{ p.u }}</span><span style="font:800 15px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums;min-width:36px;text-align:right">{{ p.disp }}</span></button>
 </sc-for>
@@ -195,6 +195,137 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 </div>
 <sc-if value="{{ playerEmpty }}"><div style="text-align:center;font:500 13px/1.5 'Barlow';color:#647c96;margin:24px 24px 0">No players match your search.</div></sc-if>
 </sc-if>
+<sc-if value="{{ teamViewCoaches }}">
+<div style="margin:0 14px 12px;display:flex;align-items:center;gap:9px;background:#0f1e2d;border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:0 12px;height:44px">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#647c96" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+<input value="{{ cq }}" onChange="{{ onCQ }}" placeholder="Search coaches" style="flex:1;background:none;border:none;outline:none;color:#eef4fb;font:500 14px 'Barlow'"/>
+<sc-if value="{{ cq }}"><button onClick="{{ clearCQ }}" style="background:none;border:none;cursor:pointer;padding:2px;display:grid;place-items:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8ea3bd" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></sc-if>
+</div>
+<div style="margin:0 14px 8px;padding:0 4px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font:600 11px/1 'Barlow';color:#647c96">{{ coachCount }} coaches</span>
+<button onClick="{{ openCoachFreeAgents }}" style="display:flex;align-items:center;gap:6px;border:1px solid rgba(127,208,255,.28);cursor:pointer;background:rgba(41,160,234,.12);color:#7fd0ff;font:700 10px 'Barlow';letter-spacing:.4px;padding:6px 11px;border-radius:20px;white-space:nowrap">FREE AGENTS · {{ cfaTotal }}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ coachList }}" as="c" hint-placeholder-count="8">
+<button onClick="{{ c.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
+<div style="width:36px;height:36px;flex:none"><dc-import name="TeamBadge" t="{{ c.team }}" fs="11px" radius="10px" style="width:36px;height:36px" hint-size="36px,36px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ c.n }}</div><div style="font:500 10.5px/1 'Barlow';color:#7089a2;margin-top:4px">{{ c.subLabel }}</div></div>
+<sc-if value="{{ c.fa }}"><span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#f2c14e;background:rgba(242,193,78,.13);padding:5px 8px;border-radius:6px">FA</span></sc-if>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ coachEmpty }}"><div style="text-align:center;font:500 13px/1.5 'Barlow';color:#647c96;margin:24px 24px 0">No coaches match your search.</div></sc-if>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCoach }}">
+<div style="padding-bottom:112px">
+<sc-if value="{{ cd }}">
+<div style="position:relative;overflow:hidden;text-align:center;padding:10px 18px 20px">
+<div style="position:absolute;inset:0;background:linear-gradient(160deg,{{ cd.curTeam.c }} -20%,transparent 60%);opacity:.16"></div>
+<div style="position:relative">
+<sc-if value="{{ cd.hasCurTeam }}"><div style="width:84px;height:84px;margin:2px auto 0;border-radius:24px;overflow:hidden;display:inline-block"><dc-import name="TeamBadge" t="{{ cd.curTeam }}" fs="30px" radius="24px" style="width:84px;height:84px" hint-size="84px,84px"></dc-import></div></sc-if>
+<div style="font:800 26px/1 'Saira Condensed';color:#fff;margin-top:13px;letter-spacing:.5px;text-transform:uppercase">{{ cd.n }}</div>
+<div style="display:inline-flex;align-items:center;gap:8px;margin-top:11px">
+<span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:#cdd8e4;background:rgba(255,255,255,.07);padding:6px 10px;border-radius:20px">{{ cd.curRoleLabel }}</span>
+<sc-if value="{{ cd.hasCurTeam }}"><span style="font:700 10px/1 'Barlow';letter-spacing:.5px;color:#8ea3bd;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:20px">{{ cd.curTeam.name }}</span></sc-if>
+</div>
+</div>
+</div>
+<div style="padding:2px 14px 0">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums">{{ cd.career.rec }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">CAREER W-L-D</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#7fd0ff;font-variant-numeric:tabular-nums">{{ cd.career.apps }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">PLAYOFFS</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#eef4fb;font-variant-numeric:tabular-nums">{{ cd.career.sw }}-{{ cd.career.sl }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">SERIES W-L</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 6px;text-align:center"><div style="font:800 21px/1 'Saira Condensed';color:#f2c14e;font-variant-numeric:tabular-nums">{{ cd.career.rings }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">RINGS</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 6px;text-align:center"><div style="font:800 18px/1 'Saira Condensed';color:#7fd0ff;font-variant-numeric:tabular-nums">{{ cd.career.poW }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">PO WINS</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 6px;text-align:center"><div style="font:800 18px/1 'Saira Condensed';color:#eef4fb;font-variant-numeric:tabular-nums">{{ cd.career.poL }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">PO LOSSES</div></div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 6px;text-align:center"><div style="font:800 18px/1 'Saira Condensed';color:#eef4fb;font-variant-numeric:tabular-nums">{{ cd.career.w }}-{{ cd.career.l }}</div><div style="font:600 8px/1.2 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:6px">REG W-L</div></div>
+</div>
+<sc-if value="{{ cd.hasRows }}">
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Team History</div>
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<sc-for list="{{ cd.rows }}" as="h" hint-placeholder-count="3">
+<button onClick="{{ h.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
+<span style="font:800 15px/1 'Saira Condensed';letter-spacing:.5px;color:#9fb2c8;width:30px">{{ h.seasonLabel }}</span>
+<div style="width:30px;height:30px;flex:none"><dc-import name="TeamBadge" t="{{ h.team }}" fs="10px" radius="9px" style="width:30px;height:30px" hint-size="30px,30px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:800 15px/1 'Saira Condensed';color:#eef4fb;font-variant-numeric:tabular-nums">{{ h.rec }}</div><div style="font:600 9px/1 'Barlow';letter-spacing:.6px;color:#647c96;margin-top:5px">{{ h.roleLabel }}</div></div>
+<sc-if value="{{ h.hasPO }}"><span style="font:700 10px/1 'Barlow';letter-spacing:.4px;color:#7fd0ff;background:rgba(41,160,234,.13);padding:6px 9px;border-radius:20px;white-space:nowrap">PO {{ h.poRec }}</span></sc-if>
+<sc-if value="{{ h.hasRings }}"><span style="font:700 11px/1 'Barlow';color:#f2c14e">★{{ h.rings }}</span></sc-if>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Personal Awards</div>
+<sc-if value="{{ cd.hasPersonalAwards }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ cd.personalAwards }}" as="a" hint-placeholder-count="1"><span style="font:700 10px/1 'Barlow';letter-spacing:.3px;color:#f2c14e;background:rgba(242,193,78,.13);border:1px solid rgba(242,193,78,.28);padding:6px 10px;border-radius:8px">{{ a }}</span></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ cd.emptyPersonal }}"><div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center"><div style="font:400 11.5px/1.5 'Barlow';color:#647c96">No coaching awards yet.</div></div></sc-if>
+<div style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase;margin:22px 4px 10px">Player Awards</div>
+<sc-if value="{{ cd.hasPlayerAwards }}">
+<div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
+<sc-for list="{{ cd.playerAwards }}" as="a" hint-placeholder-count="2">
+<button onClick="{{ a.open }}" style="display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
+<span style="font:700 10px/1 'Barlow';letter-spacing:.3px;color:#f2c14e;background:rgba(242,193,78,.13);border:1px solid rgba(242,193,78,.28);padding:6px 9px;border-radius:8px;white-space:nowrap">{{ a.type }}</span>
+<div style="flex:1;min-width:0"><div style="font:700 14px/1.1 'Barlow';color:#eef4fb">{{ a.player }}</div><div style="font:500 10px/1 'Barlow';color:#647c96;margin-top:4px">{{ a.seasonLabel }} · {{ a.teamAbbr }}</div></div>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ cd.emptyPlayerAwards }}"><div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center"><div style="font:400 11.5px/1.5 'Barlow';color:#647c96">No player awards under this coach yet.</div></div></sc-if>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCoachFreeAgents }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 18px 14px;font:500 11.5px/1.5 'Barlow';color:#647c96">{{ cfaTotal }} unsigned coaches — cut staff and undrafted prospects.</div>
+<sc-if value="{{ cfaHasCut }}">
+<div style="margin:4px 18px 9px;display:flex;align-items:center;gap:8px"><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">Cut Coaches</span><span style="font:700 10px/1 'Barlow';color:#647c96;background:rgba(255,255,255,.06);padding:4px 8px;border-radius:20px">{{ cfaCutCount }}</span></div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ cfaCut }}" as="f" hint-placeholder-count="4">
+<button onClick="{{ f.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
+<div style="width:36px;height:36px;flex:none"><dc-import name="TeamBadge" t="{{ f.team }}" fs="11px" radius="10px" style="width:36px;height:36px" hint-size="36px,36px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ f.n }}</div><div style="font:500 10.5px/1 'Barlow';color:#7089a2;margin-top:4px">Cut · {{ f.exLabel }} · {{ f.roleLabel }}</div></div>
+<span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#ff8a5f;background:rgba(255,138,95,.15);padding:5px 8px;border-radius:6px">CUT</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ cfaHasAvail }}">
+<div style="margin:18px 18px 9px;display:flex;align-items:center;gap:8px"><span style="font:700 12px/1 'Saira Condensed';letter-spacing:1.4px;color:#9fb2c8;text-transform:uppercase">Available</span><span style="font:700 10px/1 'Barlow';color:#647c96;background:rgba(255,255,255,.06);padding:4px 8px;border-radius:20px">{{ cfaAvailCount }}</span></div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ cfaAvailable }}" as="f" hint-placeholder-count="6">
+<button onClick="{{ f.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer">
+<div style="width:36px;height:36px;flex:none;border-radius:10px;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.26);display:grid;place-items:center"><span style="font:700 16px/1 'Barlow';color:#f2c14e">★</span></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb">{{ f.n }}</div><div style="font:500 10.5px/1 'Barlow';color:#7089a2;margin-top:4px">Undrafted coach</div></div>
+<span style="font:700 12px/1 'Barlow';letter-spacing:1px;color:#f2c14e;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.24);padding:6px 10px;border-radius:20px;white-space:nowrap">{{ f.starStr }}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAwardRace }}">
+<div style="padding-bottom:112px;padding-top:2px">
+<div style="margin:0 14px 12px;display:flex;gap:4px;background:#0c1826;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:4px">
+<sc-for list="{{ awardFullTabs }}" as="s" hint-placeholder-count="5"><button onClick="{{ s.onClick }}" style="flex:1;border:none;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font:700 12px 'Saira Condensed';letter-spacing:.5px;text-transform:uppercase;padding:9px 0;border-radius:9px">{{ s.label }}</button></sc-for>
+</div>
+<div style="margin:0 18px 12px"><div style="font:800 18px/1.1 'Saira Condensed';letter-spacing:.5px;color:#eef4fb;text-transform:uppercase">{{ awardFullName }}</div><div style="font:600 11px/1 'Barlow';color:#7089a2;margin-top:5px">{{ awardFullSub }} · S{{ awardSeason }} · full ranking</div></div>
+<sc-if value="{{ awardFullEmpty }}"><div style="margin:0 18px;font:500 12px/1.5 'Barlow';color:#647c96">No qualified players yet — the race opens once results are in.</div></sc-if>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ awardFullRows }}" as="p" hint-placeholder-count="12">
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 13px;background:#0f1e2d;border:1px solid rgba(255,255,255,.07);border-radius:13px;text-align:left;cursor:pointer"><span style="width:22px;font:800 14px/1 'Saira Condensed';color:{{ p.rankCol }};font-variant-numeric:tabular-nums">{{ p.rank }}</span><div style="width:32px;height:32px;flex:none"><dc-import name="TeamBadge" t="{{ p.team }}" fs="10px" radius="9px" style="width:32px;height:32px" hint-size="32px,32px"></dc-import></div><span style="flex:1;min-width:0;font:700 14px/1.1 'Barlow';color:#eef4fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.n }}</span><span style="font:700 8px/1 'Barlow';letter-spacing:.4px;color:{{ p.userCol }};background:{{ p.userTint }};padding:4px 6px;border-radius:5px">{{ p.u }}</span><span style="font:800 16px/1 'Saira Condensed';color:#fff;font-variant-numeric:tabular-nums;min-width:40px;text-align:right">{{ p.disp }}</span></button>
+</sc-for>
+</div>
 </div>
 </sc-if>
 
@@ -264,11 +395,12 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 <div style="margin:0 4px 9px;font:700 11px/1 'Saira Condensed';letter-spacing:1px;color:#9fb2c8;text-transform:uppercase">Coaching Staff</div>
 <div style="background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden">
 <sc-for list="{{ td.staff }}" as="co" hint-placeholder-count="3">
-<div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-top:1px solid rgba(255,255,255,.05)">
+<button onClick="{{ co.open }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;background:none;border:none;border-top:1px solid rgba(255,255,255,.05);text-align:left;cursor:pointer">
 <span style="font:700 9px/1 'Barlow';letter-spacing:.5px;color:#9fb2c8;background:rgba(255,255,255,.06);padding:6px 8px;border-radius:6px;width:40px;text-align:center">{{ co.role }}</span>
 <div style="flex:1;font:700 15px/1.1 'Barlow';color:#eef4fb">{{ co.n }}</div>
 <span style="font:600 10px/1 'Barlow';color:#647c96">{{ co.roleLabel }}</span>
-</div>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a5f78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
 </sc-for>
 </div>
 </div>
@@ -732,7 +864,7 @@ class Component extends DCLogic {
     stack: [{s: (this.props && this.props.startScreen) || 'home'}],
     teamSeg:'teams', tdTab:'overview', scoreSeason:null, standSeason:'s3',
     scoreMenuOpen:false, moveMenuOpen:false, statMenuOpen:false,
-    moveType:'all', moveSeason:'all', pq:'', statSplit:'career', statSeason:'3', statCat:'g',
+    moveType:'all', moveSeason:'all', pq:'', cq:'', awardTab:'mvp', statSplit:'career', statSeason:'3', statCat:'g',
     // Read/unread state persists in localStorage so refreshing the page does not
     // re-flag already-seen notifications. A notification is unread only if its id
     // hasn't been recorded as seen; new ids (with u:true) surface a badge again.
@@ -830,6 +962,9 @@ class Component extends DCLogic {
   BOXSCORES = {};
   AWARDS = {};
   PLAYOFF_ODDS = {};
+  COACHDIR = [];
+  COACHSTATS = {};
+  COACHFA = { cut: [], available: [] };
   _scroll = null;
 
   team(id){ return this.TEAMS.find(t => t.id === id); }
@@ -891,8 +1026,8 @@ class Component extends DCLogic {
   renderVals(){
     const st = this.state, r = this.cur().s, base = this.base();
     const is = k => r === k;
-    const flags = {isHome:is('home'),isTeams:is('teams'),isScores:is('scores'),isStandings:is('standings'),isMoves:is('moves'),isStats:is('stats'),isTeam:is('team'),isGame:is('game'),isPlayer:is('player'),isNotifs:is('notifs'),isFreeAgents:is('freeagents')};
-    const showBack = flags.isTeam||flags.isGame||flags.isPlayer||flags.isNotifs||flags.isFreeAgents;
+    const flags = {isHome:is('home'),isTeams:is('teams'),isScores:is('scores'),isStandings:is('standings'),isMoves:is('moves'),isStats:is('stats'),isTeam:is('team'),isGame:is('game'),isPlayer:is('player'),isNotifs:is('notifs'),isFreeAgents:is('freeagents'),isCoach:is('coach'),isCoachFreeAgents:is('coachfa'),isAwardRace:is('awardrace')};
+    const showBack = flags.isTeam||flags.isGame||flags.isPlayer||flags.isNotifs||flags.isFreeAgents||flags.isCoach||flags.isCoachFreeAgents||flags.isAwardRace;
 
     // champions
     const champRow = this.CHAMPS.map(c=>{ const ct=c.champ?this.team(c.champ):null; return {s:c.s,label:c.label,logo:c.logo,hasChamp:!!ct,upcoming:!ct,champName:ct?ct.name:'',champTeam:ct||{}}; });
@@ -925,14 +1060,27 @@ class Component extends DCLogic {
     const awSub={mvp:'Player rating',dpoy:'Saves / game',tmoy:'Assists / game',soy:'Shots / game',roy:'Rookie rating'};
     const awUnit={mvp:'RATING',dpoy:'SV/G',tmoy:'A/G',soy:'SH/G',roy:'RATING'};
     const AW=this.AWARDS||{};
+    const awName={mvp:'Most Valuable Player',dpoy:'Defensive Player of the Year',tmoy:'Teammate of the Year',soy:'Shooter of the Year',roy:'Rookie of the Year'};
+    const awRow=e=>{ const tm=this.team(e.t)||{}; const um=this.userMeta(e.u);
+      return {rank:e.rank, n:e.n, team:tm, u:e.u, userCol:um.col, userTint:um.tint, disp:e.disp,
+        rankCol: e.rank===1?'#f2c14e':(e.rank<=3?'#cbd8e6':'#5f758f'), open:()=>this.go('player',{pName:e.n})}; };
     const awardRaces=['mvp','dpoy','tmoy','soy','roy'].map(k=>({
       code:k.toUpperCase(), sub:awSub[k], unit:awUnit[k], empty:!((AW[k]||[]).length),
-      rows:(AW[k]||[]).map(e=>{ const tm=this.team(e.t)||{}; const um=this.userMeta(e.u);
-        return {rank:e.rank, n:e.n, team:tm, u:e.u, userCol:um.col, userTint:um.tint, disp:e.disp,
-          rankCol: e.rank===1?'#f2c14e':(e.rank<=3?'#cbd8e6':'#5f758f'), open:()=>this.go('player',{pName:e.n})}; })
+      rows:(AW[k]||[]).map(awRow),
+      open:()=>{ this.setState({awardTab:k}); this.go('awardrace'); }
     }));
     const awardSeason=AW.season||3;
     const awardsEmpty=awardRaces.every(r=>r.empty);
+
+    // award-race full list — every ranked player for the selected award.
+    const awFull=AW.full||{};
+    const awTab=st.awardTab||'mvp';
+    const awardFullTabs=['mvp','dpoy','tmoy','soy','roy'].map(k=>this.seg(k.toUpperCase(), k===awTab, ()=>this.setState({awardTab:k})));
+    const awardFullRows=(awFull[awTab]||[]).map(awRow);
+    const awardFullName=awName[awTab];
+    const awardFullSub=awSub[awTab];
+    const awardFullUnit=awUnit[awTab];
+    const awardFullEmpty=awardFullRows.length===0;
 
     // scores: a season dropdown drives which season's games are shown. Games are
     // grouped by round label (weeks for the regular season, QF/CF/F for playoffs).
@@ -1006,7 +1154,7 @@ class Component extends DCLogic {
       const roster = this.PLAYERS.filter(p=>p.t===selTeam.id).map(decPlayer);
       const byUser = u => roster.filter(p=>p.u===u).sort((a,b)=> (a.r==='S'?0:1)-(b.r==='S'?0:1));
       const rosterGroups = [{user:'Griffin', col:'#7fd0ff', tint:'rgba(41,160,234,.16)', players:byUser('G')},{user:'Nolan', col:'#ffb47a', tint:'rgba(245,130,45,.16)', players:byUser('N')}];
-      const staff = this.COACHES.filter(c=>c.t===selTeam.id).map(c=>({...c, roleLabel:this.ROLELABEL[c.role]}));
+      const staff = this.COACHES.filter(c=>c.t===selTeam.id).map(c=>({...c, roleLabel:this.ROLELABEL[c.role], open:()=>this.go('coach',{cName:c.n})}));
       // Overview: current-season played games, most recent first.
       const games = this.RESULTS.filter(g=>g.s===curSeason && (g.a===selTeam.id||g.b===selTeam.id) && g.sa!=='').map(decGame).reverse().slice(0,5);
       // Schedule: every game the team has ever played, newest first, labeled by season+week.
@@ -1055,6 +1203,45 @@ class Component extends DCLogic {
         seasonLabel: h.start===h.end ? ('Season '+h.start) : ('Seasons '+h.start+'–'+h.end)}; });
       pd.hasHistory=pd.teamHistory.length>0; }
 
+    // coaches directory — every coach, badged by their current team (active) or
+    // marked FA. Filtered by the coach search box.
+    const cq = st.cq.trim().toLowerCase();
+    const decCoachDir = c => { const tm=c.t?this.team(c.t):null;
+      return {n:c.n, team: tm||{c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent'}, hasTeam:!!tm,
+        roleLabel: c.role?this.ROLELABEL[c.role]:'Free Agent',
+        subLabel: tm?(tm.name+' · '+(c.role?this.ROLELABEL[c.role]:'')):'Free Agent',
+        fa:c.fa, faTag:c.fa?'FA':'', open:()=>this.go('coach',{cName:c.n})}; };
+    let coachList = (this.COACHDIR||[]).filter(c=> !cq || c.n.toLowerCase().includes(cq)).map(decCoachDir);
+    const coachCount=(this.COACHDIR||[]).length;
+
+    // selected coach detail
+    let cd=null;
+    if(flags.isCoach){ const cs=this.COACHSTATS[this.cur().cName];
+      if(cs){ const car=cs.career;
+        const curTeam=cs.curTeam?this.team(cs.curTeam):null;
+        const rows=cs.rows.map(rw=>{ const tm=rw.team?this.team(rw.team):null; const po=rw.po;
+          return {s:rw.s, seasonLabel:'S'+rw.s, team: tm||{c:'#5f758f',abbr:'—',mono:true,logo:'',name:'—'}, hasTeam:!!tm,
+            role:rw.role||'', roleLabel: rw.role?this.ROLELABEL[rw.role]:'',
+            rec: rw.t?(rw.w+'-'+rw.l+'-'+rw.t):(rw.w+'-'+rw.l),
+            hasPO:!!po, poRec: po?(po.w+'-'+po.l):'', rings: po?po.rings:0, hasRings:!!(po&&po.rings>0),
+            open: tm?(()=>this.go('team',{teamId:rw.team})):(()=>{})}; });
+        const playerAwards=cs.playerAwards.map(a=>{ const tm=a.team?this.team(a.team):null;
+          return {award:a.award, player:a.player, type:a.type, teamAbbr:tm?tm.abbr:'', teamCol:tm?tm.c:'#5f758f',
+            seasonLabel:'S'+a.season, open:()=>this.go('player',{pName:a.player})}; });
+        cd={ n:cs.n, curTeam, hasCurTeam:!!curTeam, curRole:cs.curRole||null, curRoleLabel:cs.curRole?this.ROLELABEL[cs.curRole]:'Free Agent',
+          rows, hasRows:rows.length>0,
+          career:{ rec:(car.w+'-'+car.l+(car.t?('-'+car.t):'')), w:car.w, l:car.l, t:car.t,
+            apps:car.apps, poW:car.poW, poL:car.poL, sw:car.sw, sl:car.sl, rings:car.rings },
+          personalAwards:cs.personalAwards, hasPersonalAwards:cs.personalAwards.length>0, emptyPersonal:cs.personalAwards.length===0,
+          playerAwards, hasPlayerAwards:playerAwards.length>0, emptyPlayerAwards:playerAwards.length===0 }; } }
+
+    // coach free agents
+    const cfaCut=(this.COACHFA.cut||[]).map(f=>{ const tm=f.t?this.team(f.t):null;
+      return {n:f.n, team: tm||{c:'#5f758f',abbr:'FA',mono:true,logo:'',name:'Free Agent'}, hasTeam:!!tm,
+        exLabel: tm?('EX-'+tm.abbr):'FREE AGENT', roleLabel:f.role?this.ROLELABEL[f.role]:'Coach', open:()=>this.go('coach',{cName:f.n})}; });
+    const cfaAvailable=(this.COACHFA.available||[]).map(f=>({n:f.n, stars:f.stars, starStr:'★'.repeat(Math.max(0,Math.round(f.stars||0))), open:()=>this.go('coach',{cName:f.n})}));
+    const cfaCutCount=cfaCut.length, cfaAvailCount=cfaAvailable.length;
+
     // standings
     const sv = st.standSeason;
     const standConfs = ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf, sv)}));
@@ -1090,10 +1277,11 @@ class Component extends DCLogic {
     const statCatChips=STATCATS.map(c=>({label:c[1], active:st.statCat===c[0], onClick:()=>this.setState({statCat:c[0]}), bg:st.statCat===c[0]?'#173650':'rgba(255,255,255,.05)', fg:st.statCat===c[0]?'#7fd0ff':'#9db2cc', bd:st.statCat===c[0]?'#2c6c98':'rgba(255,255,255,.09)'}));
     const statCatLabel=(STATCATS.find(c=>c[0]===st.statCat)||STATCATS[0])[1];
     const statTitle= st.statSplit==='season'?('Season '+st.statSeason):(st.statSplit==='career'?'Career':'Playoffs');
-    const titleMap={home:'NRL',teams:'Teams',scores:'Scores',standings:'Standings',moves:'Player Moves',stats:'Stats',game:'Game',player:'Player',notifs:'Notifications',freeagents:'Free Agents'};
+    const titleMap={home:'NRL',teams:'Teams',scores:'Scores',standings:'Standings',moves:'Player Moves',stats:'Stats',game:'Game',player:'Player',notifs:'Notifications',freeagents:'Free Agents',coach:'Coach',coachfa:'Coach Free Agents',awardrace:'Award Race'};
     let title=titleMap[r]||'';
     if(flags.isTeam&&selTeam) title=selTeam.name;
     if(flags.isPlayer&&pd) title=pd.n;
+    if(flags.isCoach&&cd) title=cd.n;
 
     const tc = k => base===k ? '#46a6ef' : '#63788f';
 
@@ -1103,10 +1291,11 @@ class Component extends DCLogic {
       champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
       playoffOddsConfs, playoffOddsEmpty, poSeason,
       awardRaces, awardSeason, awardsEmpty,
+      awardFullTabs, awardFullRows, awardFullName, awardFullSub, awardFullUnit, awardFullEmpty,
       standIsS1:sv==='s1', standIsS2:sv==='s2',
       confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3')})),
-      teamSegs:[this.seg('Teams',st.teamSeg==='teams',()=>this.setState({teamSeg:'teams'})),this.seg('Players',st.teamSeg==='players',()=>this.setState({teamSeg:'players'}))],
-      teamViewTeams:st.teamSeg==='teams', teamViewPlayers:st.teamSeg==='players',
+      teamSegs:[this.seg('Teams',st.teamSeg==='teams',()=>this.setState({teamSeg:'teams'})),this.seg('Players',st.teamSeg==='players',()=>this.setState({teamSeg:'players'})),this.seg('Coaches',st.teamSeg==='coaches',()=>this.setState({teamSeg:'coaches'}))],
+      teamViewTeams:st.teamSeg==='teams', teamViewPlayers:st.teamSeg==='players', teamViewCoaches:st.teamSeg==='coaches',
       playerList, playerCount:this.PLAYERS.length, playerEmpty:playerList.length===0, pq:st.pq,
       onPQ:(e)=>this.setState({pq:e.target.value}), clearPQ:()=>this.setState({pq:''}),
       td, tdOverview:st.tdTab==='overview', tdRoster:st.tdTab==='roster', tdSchedule:st.tdTab==='schedule',
@@ -1123,6 +1312,10 @@ class Component extends DCLogic {
       homeCol:tc('home'), teamsCol:tc('teams'), scoresCol:tc('scores'), standCol:tc('standings'), movesCol:tc('moves'), statsCol:tc('stats'),
       statBoard, statBoardEmpty:statBoard.length===0, statSplitChips, statSeasonOptions, statSeason:st.statSeason, statMenuOpen:st.statMenuOpen, onStatMenu:()=>this.setState(s=>({statMenuOpen:!s.statMenuOpen})), statSeasonLabel:(statSeasonOptions.find(o=>o.value===st.statSeason)||{}).label||('Season '+st.statSeason), statCatChips, statCatLabel, statTitle, isSeasonSplit:st.statSplit==='season',
       faAvailable, faCut, faAvailCount, faCutCount, faTotal:faAvailCount+faCutCount, faHasAvail:faAvailCount>0, faHasCut:faCutCount>0, openFreeAgents:()=>this.go('freeagents'),
+      coachList, coachCount, coachEmpty:coachList.length===0, cq:st.cq,
+      onCQ:(e)=>this.setState({cq:e.target.value}), clearCQ:()=>this.setState({cq:''}),
+      cd, openCoachFreeAgents:()=>this.go('coachfa'),
+      cfaCut, cfaAvailable, cfaCutCount, cfaAvailCount, cfaTotal:cfaCutCount+cfaAvailCount, cfaHasCut:cfaCutCount>0, cfaHasAvail:cfaAvailCount>0,
     };
   }
 }

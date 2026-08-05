@@ -38,8 +38,9 @@ CREATE TABLE players (
 );
 
 CREATE TABLE coaches (
-  id    serial PRIMARY KEY,
-  name  text UNIQUE NOT NULL
+  id      serial PRIMARY KEY,
+  name    text UNIQUE NOT NULL,
+  awards  text[]                 -- personal coaching honors, e.g. {'S3 Coach of the Year'}
 );
 
 -- role lives here, not on coaches: it changes season to season

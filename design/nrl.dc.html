@@ -135,6 +135,23 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 </sc-for>
 </div>
 
+<sc-if value="{{ awardsFinal }}">
+<div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
+<div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Award Winners · S{{ awardSeason }}</div>
+<button onClick="{{ navStats }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">Stats <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+<div style="margin:0 14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ awardWinners }}" as="w" hint-placeholder-count="5">
+<button onClick="{{ w.open }}" style="display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:#0f1e2d;border:1px solid rgba(255,255,255,.08);border-radius:15px;text-align:left;cursor:pointer">
+<span style="width:52px;flex:none;font:800 12px/1 'Saira Condensed';letter-spacing:.8px;color:#f2c14e;background:rgba(242,193,78,.12);padding:7px 0;border-radius:8px;text-align:center">{{ w.code }}</span>
+<div style="width:34px;height:34px;flex:none"><dc-import name="TeamBadge" t="{{ w.team }}" fs="11px" radius="10px" style="width:34px;height:34px" hint-size="34px,34px"></dc-import></div>
+<div style="flex:1;min-width:0"><div style="font:700 15px/1.1 'Barlow';color:#eef4fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.n }}</div><div style="font:600 10px/1 'Barlow';color:#7089a2;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.name }}</div></div>
+<span style="font:700 8px/1 'Barlow';letter-spacing:.4px;color:{{ w.userCol }};background:{{ w.userTint }};padding:5px 7px;border-radius:6px">{{ w.u }}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ !awardsFinal }}">
 <div style="display:flex;align-items:center;justify-content:space-between;margin:24px 18px 11px">
 <div style="font:700 14px/1 'Saira Condensed';letter-spacing:1.4px;color:#eef4fb;text-transform:uppercase">Award Race · S{{ awardSeason }}</div>
 <button onClick="{{ navStats }}" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font:600 11px/1 'Barlow';color:#7fbef0">Stats <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -151,6 +168,7 @@ a{color:#46a6ef;text-decoration:none}a:hover{color:#7cc2f4}
 </div>
 </sc-for>
 </div>
+</sc-if>
 </div>
 </sc-if>
 
@@ -1072,6 +1090,14 @@ class Component extends DCLogic {
     const awardSeason=AW.season||3;
     const awardsEmpty=awardRaces.every(r=>r.empty);
 
+    // Official award winners (set once the season's awards are handed out). When
+    // present we show these in place of the live race — the race markup above
+    // stays intact and reappears automatically next season (awardsFinal=false).
+    const awardsFinal=!!AW.final;
+    const awardWinners=(AW.winners||[]).filter(w=>w.n).map(w=>{ const tm=this.team(w.t)||{}; const um=this.userMeta(w.u);
+      return {code:w.code.toUpperCase(), name:awName[w.code]||w.label, n:w.n, team:tm,
+        u:w.u, userCol:um.col, userTint:um.tint, open:()=>this.go('player',{pName:w.n})}; });
+
     // award-race full list — every ranked player for the selected award.
     const awFull=AW.full||{};
     const awTab=st.awardTab||'mvp';
@@ -1290,7 +1316,7 @@ class Component extends DCLogic {
       hasUnread:unreadCount>0, unreadCount, toast:st.toast,
       champRow, champ1:champRow[0], champ2:champRow[1], champ3:champRow[2], confPreview, latestMoves,
       playoffOddsConfs, playoffOddsEmpty, poSeason,
-      awardRaces, awardSeason, awardsEmpty,
+      awardRaces, awardSeason, awardsEmpty, awardsFinal, awardWinners,
       awardFullTabs, awardFullRows, awardFullName, awardFullSub, awardFullUnit, awardFullEmpty,
       standIsS1:sv==='s1', standIsS2:sv==='s2',
       confList: ['F','H'].map(cf=>({name:this.CONFS[cf].name, color:this.CONFS[cf].color, rows:this.confStanding(cf,'s3')})),

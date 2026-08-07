@@ -106,7 +106,7 @@ def season_id(num_):
                          k, f"/logos/champ{k}.webp")
     return seasons[k]
 
-for s in (1,2,3): season_id(s)
+for s in (1,2,3,4): season_id(s)
 
 # ---- player season stats ---------------------------------------------
 def load_players(sheet, season, playoff):

@@ -66,6 +66,7 @@ export async function GET() {
     .replace(/src="assets\/champ1\.png"/g, 'src="/logos/champ1.webp"')
     .replace(/src="assets\/champ2\.png"/g, 'src="/logos/champ2.webp"')
     .replace(/src="assets\/champ3\.png"/g, 'src="/logos/champ3.webp"')
+    .replace(/src="assets\/champ4\.png"/g, 'src="/logos/champ4.webp"')
     // inject the data-override constructor into the component class
     .replace(CLASS_OPEN, OVERRIDE_CTOR)
     // inject the data + resource map just before the component script
